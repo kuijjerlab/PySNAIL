@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Documentation &mdash; Caiman 0.0.1b documentation</title>
+  <title>Documentation &mdash; Caiman 0.0.b2 documentation</title>
   
 
   
@@ -445,17 +445,7 @@ components.</p>
 <dt>store_checkpoints: bool</dt><dd><p>Whether to store for means and standard deviation for each component during
 fitting process.</p>
 </dd>
-<dt>num_augmented_components: int</dt><dd><p>Number of augmented mixture components.</p>
-</dd>
 <dt>is_fitted: bool</dt><dd><p>Whether the model is fitted to a dataset.</p>
-</dd>
-<dt>means: numpy.ndarray, shape (2 * num_flank_components + 2, )</dt><dd><p>The fitted means for each augmented component</p>
-</dd>
-<dt>stds: numpy.ndarray, shape (2 * num_components + 2, )</dt><dd><p>The fitted standard deviation for each augmented component</p>
-</dd>
-<dt>weights: numpy.ndarray, shape (2 * num_components + 2, )</dt><dd><p>The fitted weights for each augmented component</p>
-</dd>
-<dt>checkpoints: List[CheckPoint] (optional)</dt><dd><p>The checkpoints for parameters in the fitting process.</p>
 </dd>
 </dl>
 </dd>
@@ -517,22 +507,7 @@ updated to maximize the likelihood given the data.</p>
 <dl class="py method">
 <dt id="caiman.model.GaussianMixtureModel.log_likelihood">
 <code class="sig-name descname">log_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>numpy.ndarray<span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.log_likelihood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the log likelihood of each component given the input data.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>target: numpy.ndarray (required)</dt><dd><p>Expression values for the genes.</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>numpy.ndarray</dt><dd><p>The log likelihood of each component given the input data. The rows
-are the components, and the columns are the index of the input values.
-Return None if the model has not been fitted.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="caiman.model.GaussianMixtureModel.posterior">
@@ -575,11 +550,13 @@ model has not been fitted.</p>
 
 <dl class="py method">
 <dt id="caiman.model.GaussianMixtureModel.sample">
-<code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_samples</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.sample" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_samples</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">augmented</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.sample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sample from the fitted mixture model.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
 <dt>num_samples: int (required)</dt><dd><p>Number of samples to generate.</p>
+</dd>
+<dt>augmented: bool, defualt: False</dt><dd><p>Enabling sampling from augmented distribution.</p>
 </dd>
 <dt>seed: int (optional)</dt><dd><p>Random seed for sampling algorithm.</p>
 </dd>
@@ -837,11 +814,13 @@ headers and must be separated by tab.</p>
 
 <dl class="py function">
 <dt id="caiman.utils.reduce_data">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">reduce_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#caiman.utils.reduce_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">reduce_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#caiman.utils.reduce_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the reduced (the first half) data.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
 <dt>target: numpy.ndarray (required)</dt><dd><p>Input data.</p>
+</dd>
+<dt>axis: int, default: 0</dt><dd><p>Axis to reduce the data</p>
 </dd>
 </dl>
 </dd>

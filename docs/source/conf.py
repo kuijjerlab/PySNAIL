@@ -22,7 +22,7 @@ copyright = '2020, Ping-Han Hsieh'
 author = 'Ping-Han Hsieh'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1b'
+release = '0.0.b2'
 
 
 # -- General configuration ---------------------------------------------------

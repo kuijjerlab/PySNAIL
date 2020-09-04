@@ -76,23 +76,8 @@ class GaussianMixtureModel:
             Whether to store for means and standard deviation for each component during
             fitting process.
 
-        num_augmented_components: int
-            Number of augmented mixture components.
-
         is_fitted: bool
             Whether the model is fitted to a dataset.
-
-        means: numpy.ndarray, shape (2 * num_flank_components + 2, )
-            The fitted means for each augmented component
-
-        stds: numpy.ndarray, shape (2 * num_components + 2, )
-            The fitted standard deviation for each augmented component
-
-        weights: numpy.ndarray, shape (2 * num_components + 2, )
-            The fitted weights for each augmented component
-
-        checkpoints: List[CheckPoint] (optional)
-            The checkpoints for parameters in the fitting process.
 
     """
     def __init__(
@@ -103,17 +88,18 @@ class GaussianMixtureModel:
         store_checkpoints: bool = False,
         verbose: bool = False,
     ) -> None:
-        self.__num_flank_components: int = num_flank_components
+        
         self.max_iterations: int = max_iterations
         self.verbose: bool = verbose
         self.store_checkpoints: bool = store_checkpoints
-        self.adaptive_num_components: bool = adaptive_num_components
-        self.num_augmented_components: int = 0
         self.is_fitted: bool = False
-        self.means: np.ndarray = np.array([])
-        self.stds: np.ndarray = np.array([])
-        self.weights: np.ndarray = np.array([])
-        self.checkpoints: List[CheckPoint] = []
+        self.adaptive_num_components: bool = adaptive_num_components
+        self.__num_augmented_components: int = 0
+        self.__num_flank_components: int = num_flank_components
+        self.__means: np.ndarray = np.array([])
+        self.__stds: np.ndarray = np.array([])
+        self.__weights: np.ndarray = np.array([])
+        self.__checkpoints: List[CheckPoint] = []
 
         if not is_positive_integer(self.max_iterations):
             message: str = ''.join((
@@ -224,14 +210,14 @@ class GaussianMixtureModel:
 
                 iteration_log_likelihood = log_likelihood
                 checkpoint = CheckPoint(
-                    self.num_augmented_components,
+                    self.__num_augmented_components,
                     iteration,
-                    np.copy(self.weights),
-                    np.copy(self.means),
-                    np.copy(self.stds)
+                    np.copy(self.__weights),
+                    np.copy(self.__means),
+                    np.copy(self.__stds)
                 )
                 if self.store_checkpoints:
-                    self.checkpoints.append(checkpoint)
+                    self.__checkpoints.append(checkpoint)
 
             if self.verbose:
                 message = ''.join((
@@ -267,13 +253,17 @@ class GaussianMixtureModel:
     def sample(
         self,
         num_samples: int,
-        seed: int = None
+        augmented: bool = False,
+        seed: Optional[int] = None
     ) -> Optional[Tuple[np.ndarray, np.ndarray]]:
         """Sample from the fitted mixture model.
 
         Parameters:
             num_samples: int (required)
                 Number of samples to generate.
+
+            augmented: bool, defualt: False
+                Enabling sampling from augmented distribution.
 
             seed: int (optional)
                 Random seed for sampling algorithm.
@@ -288,13 +278,28 @@ class GaussianMixtureModel:
         if not self.__check_is_fitted():
             return None
 
-        rng = get_random_state(seed)
+        end_index = 2 + int(self.__num_flank_components)
 
-        size_by_components = rng.multinomial(num_samples, self.weights)
+        if not augmented:
+            centered_weights = np.array([self.__weights[0] + self.__weights[1]])
+            flank_weights_pos = self.__weights[2:end_index]
+            flank_weights_neg = self.__weights[end_index:]
+            flank_weights = np.array(flank_weights_pos + flank_weights_neg)
+            if len(np.array(0).shape):
+                flank_weights = np.array([flank_weights])
+            weights = np.concatenate([
+                centered_weights,
+                flank_weights
+            ])
+        else:
+            weights = self.__weights
+
+        rng = get_random_state(seed)
+        size_by_components = rng.multinomial(num_samples, weights)
         samples = []
         components = []
         for i, size in enumerate(size_by_components):
-            samples_by_component = rng.normal(self.means[i], self.stds[i], size)
+            samples_by_component = rng.normal(self.__means[i], self.__stds[i], size)
             if len(samples_by_component) != 0:
                 samples.append(samples_by_component)
                 components.append([i] * size)
@@ -318,7 +323,14 @@ class GaussianMixtureModel:
 
         target = target.astype(np.float32)
         target = augment_data(target)
-        return reduce_data(np.argmax(self.__expectation(target).posterior, axis=0))
+        end_index = 2 + int(self.__num_flank_components)
+
+        pred_label = np.argmax(
+            self.__expectation(target).posterior[1:end_index] - 1,
+            axis=0
+        )
+
+        return reduce_data(pred_label)
 
     def posterior(self, target: np.ndarray) -> Optional[np.ndarray]:
         """Compute the posterior probability of each component given the input data.
@@ -339,22 +351,19 @@ class GaussianMixtureModel:
 
         target = target.astype(np.float32)
         target = augment_data(target, warn=True)
-        return reduce_data(self.__expectation(target).posterior.T).T
+        end_index = 2 + int(self.__num_flank_components)
+
+        posterior_prob = self.__expectation(target).posterior
+        centered_prob = (posterior_prob[0] + posterior_prob[1]).reshape(1, -1)
+        flank_prob_pos = posterior_prob[2:end_index]
+        flank_prob_neg = posterior_prob[end_index:]
+
+        flank_prob = (flank_prob_pos + flank_prob_neg)
+        flank_prob = flank_prob.reshape(int(self.__num_flank_components), -1)
+
+        return reduce_data(np.concatenate([centered_prob, flank_prob]), axis=1)
 
     def log_likelihood(self, target: np.ndarray) -> Optional[np.ndarray]:
-        """Compute the log likelihood of each component given the input data.
-
-        Parameters:
-            target: numpy.ndarray (required)
-                Expression values for the genes.
-
-        Returns:
-            numpy.ndarray
-                The log likelihood of each component given the input data. The rows
-                are the components, and the columns are the index of the input values.
-                Return None if the model has not been fitted.
-
-        """
         if not self.__check_is_fitted():
             return None
 
@@ -370,8 +379,8 @@ class GaussianMixtureModel:
                 Return the means of the mixture components.
 
         """
-        end_index = int(self.__num_flank_components)
-        return self.means[1:2 + end_index]
+        end_index = 2 + int(self.__num_flank_components)
+        return self.__means[1:end_index]
 
     def get_stds(self) -> np.ndarray:
         """Return the standard deviations of the mixture components.
@@ -381,8 +390,8 @@ class GaussianMixtureModel:
                 Return the standard deviations of the mixture components.
 
         """
-        end_index = int(self.__num_flank_components)
-        return self.stds[1:2 + end_index]
+        end_index = 2 + int(self.__num_flank_components)
+        return self.__stds[1:end_index]
 
     def __reset(self,
         target: Union[List, np.ndarray, None] = None,
@@ -391,26 +400,26 @@ class GaussianMixtureModel:
     ) -> None:
         if checkpoint:
             num_augmented_components = checkpoint.num_augmented_components
-            self.num_augmented_components = num_augmented_components
+            self.__num_augmented_components = num_augmented_components
             self.__num_flank_components = int((num_augmented_components - 2) / 2)
-            self.weights = checkpoint.weights
-            self.means = checkpoint.means
-            self.stds = checkpoint.stds
+            self.__weights = checkpoint.weights
+            self.__means = checkpoint.means
+            self.__stds = checkpoint.stds
         else:
             if not is_1darray(target, error=True):
                 return
-            self.num_augmented_components = 2 * num_components + 2
-            self.weights = np.ones(self.num_augmented_components)
-            self.weights /= self.num_augmented_components
-            self.weights = self.weights.astype(np.float32)
+            self.__num_augmented_components = 2 * num_components + 2
+            self.__weights = np.ones(self.__num_augmented_components)
+            self.__weights /= self.__num_augmented_components
+            self.__weights = self.__weights.astype(np.float32)
             percentiles = np.percentile(target, np.linspace(99, 70, num_components))
             means = np.maximum(5, percentiles)
-            self.means = np.concatenate([
+            self.__means = np.concatenate([
                 np.zeros(2),
                 means,
                 -1 * means
             ]).astype(np.float32)
-            self.stds = np.concatenate([
+            self.__stds = np.concatenate([
                 1 * np.ones(2),
                 3 * np.ones(num_components * 2)
             ]).astype(np.float32)
@@ -418,35 +427,35 @@ class GaussianMixtureModel:
 
     def __expectation(self, target: np.ndarray) -> Expectation:
         conditional_prob = self.__compute_conditional_probability(target)
-        conditional_prob_weighted = conditional_prob * self.weights.reshape(-1, 1)
+        conditional_prob_weighted = conditional_prob * self.__weights.reshape(-1, 1)
         expectation = Expectation(
             conditional_prob_weighted / np.sum(conditional_prob_weighted, axis=0),
             conditional_prob,
-            np.log(np.matmul(self.weights, conditional_prob))
+            np.log(np.matmul(self.__weights, conditional_prob))
         )
         return expectation
 
     def __maximization(self, target: np.ndarray, posterior: np.ndarray) -> None:
         num_samples = len(target)
-        for k in range(self.num_augmented_components):
+        for k in range(self.__num_augmented_components):
             post_k = posterior[k]
-            dist_k = (target - self.means[k]) ** 2
-            self.stds[k] = np.sqrt(np.sum(post_k * dist_k) / np.sum(post_k))
+            dist_k = (target - self.__means[k]) ** 2
+            self.__stds[k] = np.sqrt(np.sum(post_k * dist_k) / np.sum(post_k))
             if k > 1:
-                self.means[k] = np.sum(target * post_k) / np.sum(post_k)
-            self.weights[k] = np.sum(post_k) / num_samples
+                self.__means[k] = np.sum(target * post_k) / np.sum(post_k)
+            self.__weights[k] = np.sum(post_k) / num_samples
 
     def __compute_conditional_probability(self, target: np.ndarray) -> np.ndarray:
         target = target.astype(np.float32)
-        means = self.means.reshape(-1, 1)
-        stds = self.stds.reshape(-1, 1)
+        means = self.__means.reshape(-1, 1)
+        stds = self.__stds.reshape(-1, 1)
         z_score = (target - means) / stds
         return 1 / (stds * np.sqrt(2 * np.pi)) * np.exp(-0.5 * z_score ** 2)
 
     def __report_statistics(self) -> str:
-        end_index = int(self.__num_flank_components) 
-        str_means = str(self.means[1:2 + end_index]).replace('\n', f'\n{"":4}')
-        str_stds = str(self.stds[1:2 + end_index]).replace('\n', f'\n{"":4}')
+        end_index = 2 + int(self.__num_flank_components) 
+        str_means = str(self.__means[1:end_index]).replace('\n', f'\n{"":4}')
+        str_stds = str(self.__stds[1:end_index]).replace('\n', f'\n{"":4}')
         message = ''.join((
             f'{"":4}num_components:\n{"":4}{self.__num_flank_components + 1}\n\n',
             f'{"":4}means:\n',

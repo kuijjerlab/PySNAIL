@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Manual &mdash; Caiman 0.0.1b documentation</title>
+  <title>Manual &mdash; Caiman 0.0.b2 documentation</title>
   
 
   
@@ -91,6 +91,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#interactive-visualization">Interactive Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fitted-gaussianmixturemodels">Fitted GaussianMixtureModels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fitted-statistics">Fitted Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sample-from-gaussianmixturemodels">Sample from GaussianMixtureModels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#predict-with-gaussianmixturemodels">Predict with GaussianMixtureModels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#posterior-probability">Posterior Probability</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
@@ -253,6 +256,54 @@
 </div>
 <p>Result:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([</span><span class="mf">0.17445941</span><span class="p">,</span> <span class="mf">1.5966247</span> <span class="p">,</span> <span class="mf">3.590845</span>  <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sample-from-gaussianmixturemodels">
+<h2>Sample from GaussianMixtureModels<a class="headerlink" href="#sample-from-gaussianmixturemodels" title="Permalink to this headline">¶</a></h2>
+<p>Please execute this after <code class="code docutils literal notranslate"><span class="pre">analysis.correct()</span></code>. The first element in the returned tuple is the sampling expression value, while the second element denote the labels.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampled</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sampled</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">array</span><span class="p">([</span> <span class="mf">0.36919074</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.10474598</span><span class="p">,</span>  <span class="mf">0.09662524</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.07132469</span><span class="p">,</span> <span class="mf">13.06010501</span><span class="p">,</span>
+         <span class="mf">8.73190427</span><span class="p">,</span>  <span class="mf">9.51180642</span><span class="p">,</span> <span class="mf">10.94915712</span><span class="p">,</span> <span class="mf">11.04356705</span><span class="p">,</span> <span class="mf">11.81309644</span><span class="p">]),</span>
+ <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="predict-with-gaussianmixturemodels">
+<h2>Predict with GaussianMixtureModels<a class="headerlink" href="#predict-with-gaussianmixturemodels" title="Permalink to this headline">¶</a></h2>
+<p>Please execute this after <code class="code docutils literal notranslate"><span class="pre">analysis.correct()</span></code>. Return the label of input data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gmm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+       <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+       <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="posterior-probability">
+<h2>Posterior Probability<a class="headerlink" href="#posterior-probability" title="Permalink to this headline">¶</a></h2>
+<p>Please execute this after <code class="code docutils literal notranslate"><span class="pre">analysis.correct()</span></code>. Return the posterior probability of each component given the input data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gmm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([[</span><span class="mf">9.7392517e-01</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span>
+        <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span>
+        <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">],</span>
+       <span class="p">[</span><span class="mf">3.9015721e-11</span><span class="p">,</span> <span class="mf">1.1948496e-01</span><span class="p">,</span> <span class="mf">3.7362605e-01</span><span class="p">,</span> <span class="mf">5.5182225e-01</span><span class="p">,</span>
+        <span class="mf">6.5891063e-01</span><span class="p">,</span> <span class="mf">7.2536421e-01</span><span class="p">,</span> <span class="mf">7.6906377e-01</span><span class="p">,</span> <span class="mf">7.9936570e-01</span><span class="p">,</span>
+        <span class="mf">8.2131582e-01</span><span class="p">,</span> <span class="mf">8.3778638e-01</span><span class="p">],</span>
+       <span class="p">[</span><span class="mf">2.6074827e-02</span><span class="p">,</span> <span class="mf">8.8051498e-01</span><span class="p">,</span> <span class="mf">6.2637395e-01</span><span class="p">,</span> <span class="mf">4.4817781e-01</span><span class="p">,</span>
+        <span class="mf">3.4108940e-01</span><span class="p">,</span> <span class="mf">2.7463582e-01</span><span class="p">,</span> <span class="mf">2.3093626e-01</span><span class="p">,</span> <span class="mf">2.0063429e-01</span><span class="p">,</span>
+        <span class="mf">1.7868416e-01</span><span class="p">,</span> <span class="mf">1.6221364e-01</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

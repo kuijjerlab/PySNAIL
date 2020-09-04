@@ -359,19 +359,22 @@ def read_series(
             raise FileNotFoundError(message)
         return None
 
-def reduce_data(target: np.ndarray) -> np.ndarray:
+def reduce_data(target: np.ndarray, axis=0) -> np.ndarray:
     """Return the reduced (the first half) data.
 
     Parameters:
         target: numpy.ndarray (required)
             Input data.
 
+        axis: int, default: 0
+            Axis to reduce the data
+
     Returns:
         numpy.ndarray
             Return the reduced (the first half) data.
 
     """
-    return np.split(target, 2)[0]
+    return np.split(target, 2, axis=axis)[0]
 
 def likelihood_ratio_test(
     log_likelihood_simplified: np.float32,

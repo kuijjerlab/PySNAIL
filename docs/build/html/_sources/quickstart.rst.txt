@@ -51,7 +51,7 @@ The complete arguments are listed as follows (one can get this information by ex
                             contains instances of GaussianMixtureModel fitted for
                             each group. Default: './caiman_output'.
     -a, --adaptive        Whether to use likelihood ratio test to determine the
-                            optimal number of components.
+                            optimal number of components. Default: unset.
     -s, --save_model      Save instances of GaussianMixtureModel fitted for each
                             group in 'gmms'. Default: unset.
     -d, --dist            Save interactive html file visualizing the sampling

@@ -44,7 +44,7 @@ Please execute this after :code:`analysis.correct()`
     :alt: Cannot link to distribution.gif
 
 Fitted GaussianMixtureModels
---------------------------------
+----------------------------
 Please execute this after :code:`analysis.correct()`. 
 
 For specific group:
@@ -93,7 +93,7 @@ Result:
 
 
 Fitted Statistics
-----------------------------------------------
+-----------------
 Get fitted means
 
 .. code-block:: python
@@ -120,3 +120,62 @@ Result:
 .. code-block:: python
 
     array([0.17445941, 1.5966247 , 3.590845  ], dtype=float32)
+
+Sample from GaussianMixtureModels
+---------------------------------
+Please execute this after :code:`analysis.correct()`. The first element in the returned tuple is the sampling expression value, while the second element denote the labels.
+
+.. code-block:: python
+
+    sampled = gmm.sample(100)
+    print(sampled)
+
+Results:
+
+.. code-block:: python
+
+    (array([ 0.36919074, -0.10474598,  0.09662524, -0.07132469, 13.06010501,
+             8.73190427,  9.51180642, 10.94915712, 11.04356705, 11.81309644]),
+     array([0, 0, 1, 1, 2, 2, 2, 2, 2, 2]))
+
+
+Predict with GaussianMixtureModels
+----------------------------------
+Please execute this after :code:`analysis.correct()`. Return the label of input data.
+
+.. code-block:: python
+
+    gmm.predict(np.linspace(0, 1000, 100))
+
+Results:
+
+.. code-block:: python
+
+    array([0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+           2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+           1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+
+Posterior Probability
+---------------------
+Please execute this after :code:`analysis.correct()`. Return the posterior probability of each component given the input data.
+
+.. code-block:: python
+    
+    gmm.predict(np.linspace(0, 1000, 10))
+
+Results:
+
+.. code-block:: python
+
+    array([[9.7392517e-01, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00,
+            0.0000000e+00, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00,
+            0.0000000e+00, 0.0000000e+00],
+           [3.9015721e-11, 1.1948496e-01, 3.7362605e-01, 5.5182225e-01,
+            6.5891063e-01, 7.2536421e-01, 7.6906377e-01, 7.9936570e-01,
+            8.2131582e-01, 8.3778638e-01],
+           [2.6074827e-02, 8.8051498e-01, 6.2637395e-01, 4.4817781e-01,
+            3.4108940e-01, 2.7463582e-01, 2.3093626e-01, 2.0063429e-01,
+            1.7868416e-01, 1.6221364e-01]], dtype=float32)

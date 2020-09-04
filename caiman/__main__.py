@@ -56,7 +56,7 @@ def main() -> None:
         action='store_true',
         default=False,
         help="""Whether to use likelihood ratio test to determine the optimal number of
-        components."""
+        components. Default: unset."""
     )
     parser.add_argument(
         '-s', '--save_model',

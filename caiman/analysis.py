@@ -223,7 +223,7 @@ class Analysis:
             f'{" Augmented" if augmented else ""}'
         ))
 
-        fitted = gmm.sample(num_genes * 2)[0]
+        fitted = gmm.sample(num_genes * 2, augmented=True)[0]
 
         if not augmented:
             x_range = (0, x_limit)
@@ -357,7 +357,7 @@ class Analysis:
         group = target.name[0]
         target = target.values
         label = self.gmms[group].predict(target)
-        selector = (label == 0) | (label == 1)
+        selector = (label == 0)
         target[selector] = 0
 
         return target
@@ -374,9 +374,9 @@ class Analysis:
         target = target.values
         gmm = self.gmms[group]
         label = gmm.predict(target)
-        selector = (label == 0) | (label == 1)
+        selector = (label == 0)
         rng = get_random_state(seed)
-        noise = rng.normal(0, gmm.stds[0], selector.sum())
+        noise = rng.normal(0, gmm.get_stds()[0], selector.sum())
         target[selector] = np.log2(target[selector] + 1)
         target[selector] += noise
         target[selector] = 2 ** target[selector] - 1
