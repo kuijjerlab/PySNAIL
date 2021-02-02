@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='caiman',
-    version='0.1.0',
+    version='0.2.0',
     description="""Count Adjustment to Improve the Modeling of Gene Association
     Networks (CAIMAN)""",
     url='https://github.com/dn070017/Caiman',

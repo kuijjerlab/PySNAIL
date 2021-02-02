@@ -203,7 +203,7 @@ class GaussianMixtureModel:
             for iteration in range(1, self.max_iterations + 1):
                 expectation = self.__expectation(target_aug)
                 self.__maximization(target_aug, expectation.posterior)
-
+                
                 log_likelihood = np.sum(self.log_likelihood(target))
                 if np.isclose(log_likelihood, iteration_log_likelihood):
                     break
@@ -444,6 +444,20 @@ class GaussianMixtureModel:
             if k > 1:
                 self.__means[k] = np.sum(target * post_k) / np.sum(post_k)
             self.__weights[k] = np.sum(post_k) / num_samples
+        for k in range(0, self.__num_flank_components):
+            index_pos = k + 2
+            index_neg = self.__num_flank_components + k + 2
+            mean_pos = self.__means[index_pos]
+            mean_neg = -1 * self.__means[index_neg]
+            mean = (mean_pos + mean_neg) / 2
+            self.__means[index_pos] = mean
+            self.__means[index_neg] = -1 * mean
+            std_pos = self.__stds[index_pos]
+            std_neg = self.__stds[index_neg]
+            std = (std_pos + std_neg) / 2
+            self.__stds[index_pos] = std
+            self.__stds[index_neg] = std
+
 
     def __compute_conditional_probability(self, target: np.ndarray) -> np.ndarray:
         target = target.astype(np.float32)
