@@ -1,7 +1,9 @@
 library(ENCODExplorer)
 
 encode_df <- get_encode_df()
-outdir <- "./datasets/ENCODE/"
+
+args <- commandArgs(trailingOnly=TRUE) 
+outdir <- args[1]
 
 dir.create(outdir, recursive=TRUE)
 setwd(outdir)

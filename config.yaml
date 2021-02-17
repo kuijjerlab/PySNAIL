@@ -1,5 +1,12 @@
+datasets_dir: 'manuscript_analysis/datasets/'
+out_dir: 'manuscript_analysis/result/'
+
 encode_tissues: [
-  heart, liver, forebrain, hindbrain, midbrain, limb, 
-  embryonic_facial_prominence, neural_tube, kidney, lung, 
-  stomach, intestine
+  heart, liver, forebrain, hindbrain, midbrain, limb, embryonic_facial_prominence,
+  neural_tube, kidney, lung, stomach, intestine
+]
+
+gtex_tissues: [
+  Testis, 'Cells - EBV-transformed lymphocytes', 'Brain - Cerebellum', 'Whole Blood',
+  Liver
 ]
