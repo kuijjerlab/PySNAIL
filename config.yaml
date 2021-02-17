@@ -1,0 +1,5 @@
+encode_tissues: [
+  heart, liver, forebrain, hindbrain, midbrain, limb, 
+  embryonic_facial_prominence, neural_tube, kidney, lung, 
+  stomach, intestine
+]
