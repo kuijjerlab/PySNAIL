@@ -30,7 +30,6 @@ def process_meta_data(sample_names, selected_tissues, dataset_dir, meta_file, ph
     # Intersect Sample Names in Meta and Count Data
     meta = pd.read_csv(meta_file, sep='\t')
     meta.index = meta.SAMPID
-    sample_names = set(sample_names).intersection(meta.index)
     meta = meta.loc[sample_names]
 
     # Get Subject ID in Meta Data
@@ -46,6 +45,8 @@ def process_meta_data(sample_names, selected_tissues, dataset_dir, meta_file, ph
 
     # Extract Sample with Selected Tissues
     meta = meta.loc[meta.SMTSD.isin(selected_tissues)]
+    sample_names = set(sample_names).intersection(meta.index)
+
     meta.to_csv(
         os.path.join(dataset_dir, f'filtered_samples_meta.tsv'),
         sep='\t', index=False

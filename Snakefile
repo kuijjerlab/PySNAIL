@@ -4,7 +4,6 @@ rule all:
     input:
         f"{config['datasets_dir']}/GTEx/filtered_samples_meta.tsv",
         f"{config['datasets_dir']}/GTEx/filtered_samples_meta_gender.tsv",
-        f"{config['datasets_dir']}/GTEx/filtered_samples_xprs_count.tsv",
         f"{config['datasets_dir']}/GTEx/filtered_samples_xprs_qsmooth.tsv",
         f"{config['datasets_dir']}/ENCODE/meta.tsv",
         f"{config['datasets_dir']}/ENCODE/xprs_qsmooth.tsv",
@@ -40,7 +39,7 @@ rule process_gtex:
         f"{config['out_dir']}/gtex_xprs_distribution.html"
     shell:
         f"python3 scripts/process_gtex.py"
-        f" --count {config['datasets_dir']}/GTEx/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct"
+        f" --xprs {config['datasets_dir']}/GTEx/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct"
         f" --sample {config['datasets_dir']}/GTEx/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt"
         f" --subject {config['datasets_dir']}/GTEx/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt"
         f" --config config.yaml"
