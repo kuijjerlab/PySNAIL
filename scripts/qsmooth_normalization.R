@@ -8,7 +8,7 @@ group <- args[2]
 prefix <- substring(count, 1, nchar(count) - 9)
 out_file_name <- paste0(prefix, 'qsmooth.tsv')
 
-count <- read.table(count, sep='\t', header=TRUE, stringsAsFactors=FALSE, row.names=1)
+count <- read.table(count, sep='\t', header=TRUE, stringsAsFactors=FALSE, row.names=1, check.names=FALSE)
 group  <- read.table(group, sep='\t', header=FALSE, stringsAsFactors=FALSE)
 
 qsmooth_model <- qsmooth(count, group[, 2])

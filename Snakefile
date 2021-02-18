@@ -5,8 +5,10 @@ rule all:
         f"{config['datasets_dir']}/GTEx/filtered_samples_meta.tsv",
         f"{config['datasets_dir']}/GTEx/filtered_samples_meta_gender.tsv",
         f"{config['datasets_dir']}/GTEx/filtered_samples_xprs_qsmooth.tsv",
+        f"{config['datasets_dir']}/GTEx/filtered_samples_xprs_caiman.tsv",
         f"{config['datasets_dir']}/ENCODE/meta.tsv",
         f"{config['datasets_dir']}/ENCODE/xprs_qsmooth.tsv",
+        f"{config['datasets_dir']}/ENCODE/xprs_caiman.tsv",
         f"{config['datasets_dir']}/ENCODE/xprs_validation.tsv",
         f"{config['out_dir']}/gtex_number_of_non_expressed_genes.html",
         f"{config['out_dir']}/gtex_xprs_distribution.html",
@@ -74,6 +76,26 @@ rule qsmooth_normalization_encode:
         f"{config['datasets_dir']}/ENCODE/xprs_count.tsv",
         f"{config['datasets_dir']}/ENCODE/meta_tissue.tsv"
     output:
-        f"{config['datasets_dir']}/ENCODE/xprs_qsmooth.tsv",
+        f"{config['datasets_dir']}/ENCODE/xprs_qsmooth.tsv"
     shell:
         f"Rscript --vanilla scripts/qsmooth_normalization.R  {config['datasets_dir']}/ENCODE/xprs_count.tsv {config['datasets_dir']}/ENCODE/meta_tissue.tsv"
+
+rule caiman_correction_gtex:
+    input:
+        f"{config['datasets_dir']}/GTEx/filtered_samples_xprs_qsmooth.tsv",
+        f"{config['datasets_dir']}/GTEx/filtered_samples_meta_tissue.tsv"
+    output:
+        f"{config['datasets_dir']}/GTEx/filtered_samples_xprs_caiman.tsv",
+    run:
+        shell(f"python3 -m caiman {config['datasets_dir']}/GTEx/filtered_samples_xprs_qsmooth.tsv --groups {config['datasets_dir']}/GTEx/filtered_samples_meta_tissue.tsv --dist --save_model --outdir {config['datasets_dir']}/GTEx/caiman/ --verbose")
+        shell(f"mv {config['datasets_dir']}/GTEx/caiman/xprs_caiman.tsv {config['datasets_dir']}/GTEx/filtered_samples_xprs_caiman.tsv")
+
+rule caiman_correction_encode:
+    input:
+        f"{config['datasets_dir']}/ENCODE/xprs_qsmooth.tsv",
+        f"{config['datasets_dir']}/ENCODE/meta_tissue.tsv"
+    output:
+        f"{config['datasets_dir']}/ENCODE/xprs_caiman.tsv"
+    run:
+        shell(f"python3 -m caiman {config['datasets_dir']}/ENCODE/xprs_qsmooth.tsv --groups {config['datasets_dir']}/ENCODE/meta_tissue.tsv --dist --save_model --outdir {config['datasets_dir']}/ENCODE/caiman/ --verbose")
+        shell(f"mv {config['datasets_dir']}/ENCODE/caiman/xprs_caiman.tsv {config['datasets_dir']}/ENCODE/xprs_caiman.tsv")

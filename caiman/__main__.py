@@ -97,7 +97,9 @@ def main() -> None:
         else:
             os.makedirs(directory)
 
+    print('\nStart storing corrected expression')
     corrected.to_csv(os.path.join(directory, 'xprs_caiman.tsv'), sep='\t')
+    print('Completed storing optional expression successfully.')
 
     if args.dist:
         dist_directory = os.path.join(directory, 'dist/')
