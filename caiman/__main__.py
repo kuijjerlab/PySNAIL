@@ -110,7 +110,7 @@ def main() -> None:
         return
 
     if args.verbose:
-        print('Storing optional files')
+        print('\nStart storing optional files')
 
     for group in analysis.dataset.groups:
         if args.dist:
@@ -119,6 +119,8 @@ def main() -> None:
             group_name = group.lower().replace(" ", "_")
             with open(os.path.join(gmms_directory, f'{group_name}.pkl'), 'wb') as file:
                 pickle.dump(analysis.gmms[group], file)
+    if args.verbose:
+        print('Completed storing optional files successfully.\nAll completed.')
 
 if __name__ == "__main__":
     main()
