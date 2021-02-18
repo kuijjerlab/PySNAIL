@@ -1,6 +1,7 @@
 # Analysis
 .datasets/
 .snakemake/
+manuscript_analysis
 
 # IDE - VSCode
 .vscode/*
