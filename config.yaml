@@ -1,5 +1,5 @@
-datasets_dir: 'manuscript_analysis/datasets/'
-out_dir: 'manuscript_analysis/result/'
+datasets_dir: 'manuscript_analysis/datasets'
+out_dir: 'manuscript_analysis/result'
 
 encode_tissues: [
   heart, liver, forebrain, hindbrain, midbrain, limb, embryonic_facial_prominence,

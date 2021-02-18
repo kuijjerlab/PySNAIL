@@ -115,7 +115,7 @@ def main():
 
     parser.add_argument(
         '-c', '--config',
-        metavar='[path]',
+        metavar='[config.yaml]',
         type=str,
         default=None,
         help='Path to the config data.',

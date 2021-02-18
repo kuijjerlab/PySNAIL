@@ -1,14 +1,20 @@
 configfile: "config.yaml"
 
 rule all:
-    input: 
-        expand("{dataset_dir}/ENCODE/{sample}/{sample}_meta.tsv", dataset_dir=config['datasets_dir'], sample=config['encode_tissues']),
+    input:
         f"{config['datasets_dir']}/GTEx/filtered_samples_meta.tsv",
         f"{config['datasets_dir']}/GTEx/filtered_samples_meta_gender.tsv",
         f"{config['datasets_dir']}/GTEx/filtered_samples_meta_tissue.tsv",
         f"{config['datasets_dir']}/GTEx/filtered_samples_xprs_count.tsv",
+        f"{config['datasets_dir']}/ENCODE/meta.tsv",
+        f"{config['datasets_dir']}/ENCODE/meta_tissue.tsv",
+        f"{config['datasets_dir']}/ENCODE/xprs_count.tsv",
+        f"{config['datasets_dir']}/ENCODE/xprs_validation.tsv",
         f"{config['out_dir']}/gtex_number_of_non_expressed_genes.html",
-        f"{config['out_dir']}/gtex_xprs_distribution.html"
+        f"{config['out_dir']}/gtex_xprs_distribution.html",
+        f"{config['out_dir']}/encode_spikeins_expression.html",
+        f"{config['out_dir']}/encode_number_of_non_expressed_genes.html",
+        f"{config['out_dir']}/encode_xprs_distribution.html"
 
 rule download_encode:
     output: expand("{dataset_dir}/ENCODE/{sample}/{sample}_meta.tsv", dataset_dir=config['datasets_dir'], sample=config['encode_tissues'])
@@ -35,8 +41,24 @@ rule process_gtex:
         f"{config['out_dir']}/gtex_xprs_distribution.html"
     shell:
         f"python3 scripts/process_gtex.py"
-        f"--count {config['datasets_dir']}/GTEx/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct"
-        f"--sample {config['datasets_dir']}/GTEx/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt"
-        f"--subject {config['datasets_dir']}/GTEx/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt"
-        f"--config config.yaml"
+        f" --count {config['datasets_dir']}/GTEx/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct"
+        f" --sample {config['datasets_dir']}/GTEx/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt"
+        f" --subject {config['datasets_dir']}/GTEx/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt"
+        f" --config config.yaml"
+
+rule process_encode:
+    input:
+        expand("{dataset_dir}/ENCODE/{sample}/{sample}_meta.tsv", dataset_dir=config['datasets_dir'], sample=config['encode_tissues'])
+    output:
+        f"{config['datasets_dir']}/ENCODE/meta.tsv",
+        f"{config['datasets_dir']}/ENCODE/meta_tissue.tsv",
+        f"{config['datasets_dir']}/ENCODE/xprs_count.tsv",
+        f"{config['datasets_dir']}/ENCODE/xprs_validation.tsv",
+        f"{config['out_dir']}/encode_spikeins_expression.html",
+        f"{config['out_dir']}/encode_number_of_non_expressed_genes.html",
+        f"{config['out_dir']}/encode_xprs_distribution.html"
+    shell:
+        f"python3 scripts/process_encode.py"
+        f" --dataset {config['datasets_dir']}/ENCODE/"
+        f" --config config.yaml"
 
