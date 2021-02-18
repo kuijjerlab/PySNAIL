@@ -1,6 +1,7 @@
 import argparse
 import os
 import pickle as pickle
+import warnings
 
 from caiman.analysis import Analysis
 
@@ -89,9 +90,14 @@ def main() -> None:
     )
     directory = os.path.realpath(args.outdir)
     if not os.path.isdir(directory):
-        directory = os.path.realpath('./')
+        if os.path.isfile(directory):
+            directory = os.path.realpath('./')
+            message = f"{directory} is a file. Set --outdir to './'."
+            warnings.warn(message, RuntimeWarning)
+        else:
+            os.makedirs(directory)
 
-    corrected.to_csv(os.path.join(directory, 'caiman_out.tsv'), sep='\t')
+    corrected.to_csv(os.path.join(directory, 'xprs_caiman.tsv'), sep='\t')
 
     if args.dist:
         dist_directory = os.path.join(directory, 'dist/')
