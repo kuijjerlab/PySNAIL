@@ -468,9 +468,7 @@ class Analysis:
     def __fit(self, target: pd.DataFrame, **kwargs):
         verbose = kwargs.pop('verbose')
         gmm = GaussianMixtureModel(**kwargs)
-        non_zeros = target.values
-        non_zeros = non_zeros[non_zeros > 0]
-        gmm.fit(non_zeros, sampling=min(len(target), 100000))
+        gmm.fit(target.values.reshape(-1), sampling=min(len(target), 100000))
         if verbose:
             log_likelihood = np.mean(gmm.log_likelihood(target.values))
             print(f'{target.name:<30}{log_likelihood:>14.5f}{gmm.get_num_components():>14}')
