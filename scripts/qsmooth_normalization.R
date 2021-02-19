@@ -12,6 +12,9 @@ out_file_name_quantile <- paste0(prefix, 'quantile.tsv')
 count <- read.table(count, sep='\t', header=TRUE, stringsAsFactors=FALSE, row.names=1, check.names=FALSE)
 group  <- read.table(group, sep='\t', header=FALSE, stringsAsFactors=FALSE)
 
+rownames(group) <- group[, 1]
+group <- group[colnames(count), ]
+
 qsmooth_model <- qsmooth(count, group[, 2])
 norm <- qsmoothData(qsmooth_model)
 rownames(norm) <- rownames(count)
