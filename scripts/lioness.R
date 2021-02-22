@@ -85,7 +85,7 @@ write.table(
 
 c_scale <- colorRampPalette(c('seagreen3', 'snow2', 'violetred2'))
 
-table <- toptable_before[toptable_before$adj.P.Val < 0.01, ]
+table <- toptable_before[toptable_before$adj.P.Val < 0.05, ]
 
 message(nrow(table) / 2, ' false discovery edges (before correction).')
 message(nrow(toptable_after[toptable_after$adj.P.Val < 0.01, ]) / 2, ' false discovery edges (after correction).')
