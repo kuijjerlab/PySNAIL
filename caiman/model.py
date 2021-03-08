@@ -205,15 +205,15 @@ class GaussianMixtureModel:
                 log_likelihood,
                 df=2 * (checkpoint.num_augmented_components - checkpoint_previous.num_augmented_components)
             )
-
-            if pvalue > 0.05:
+            if pvalue > 1e-5:
                 self.__reset(checkpoint=checkpoint_previous)
-                if self.adaptive_num_components:
-                    break
-            else:
                 break
+            else:
+                if not self.adaptive_num_components:
+                    break
 
             log_likelihood_previous = log_likelihood
+            checkpoint_previous = checkpoint
             self.__num_flank_components += 1
 
         if self.verbose:
@@ -305,12 +305,15 @@ class GaussianMixtureModel:
 
         return reduce_data(pred_label)
 
-    def posterior(self, target: np.ndarray) -> Optional[np.ndarray]:
+    def posterior(self, target: np.ndarray, is_aug=False) -> Optional[np.ndarray]:
         """Compute the posterior probability of each component given the input data.
 
         Parameters:
             target: numpy.ndarray (required)
                 Expression values for the genes.
+
+            is_aug: bool, default: False
+                Whether or not target is augmeted.
 
         Returns:
             numpy.ndarray
@@ -323,7 +326,9 @@ class GaussianMixtureModel:
             return None
 
         target = target.astype(np.float32)
-        target = augment_data(target, warn=True)
+        if not is_aug:
+            target = augment_data(target, warn=True)
+
         end_index = 2 + int(self.__num_flank_components)
 
         posterior_prob = self.__expectation(target).posterior
@@ -362,7 +367,6 @@ class GaussianMixtureModel:
         target = target.astype(np.float32)
         if not is_aug:
             target = augment_data(target, warn=True)
-
         return reduce_data(self.__expectation(target).log_likelihood)
 
     def get_num_components(self) -> int:
@@ -450,7 +454,7 @@ class GaussianMixtureModel:
                 self.__means[k] = np.sum(target * post_k) / np.sum(post_k)
             self.__weights[k] = np.sum(post_k) / num_samples
     
-        std = (self.__stds[0] + self.__stds[1]) / 2
+        std = max((self.__stds[0] + self.__stds[1]) / 2, 0.001)
         self.__stds[0] = std
         self.__stds[1] = std
 
@@ -466,7 +470,7 @@ class GaussianMixtureModel:
             self.__means[index_neg] = -1 * mean
             std_pos = self.__stds[index_pos]
             std_neg = self.__stds[index_neg]
-            std = (std_pos + std_neg) / 2
+            std = max((std_pos + std_neg) / 2, 0.001)
             self.__stds[index_pos] = std
             self.__stds[index_neg] = std
 

@@ -48,15 +48,15 @@ def process_meta_data(sample_names, selected_tissues, dataset_dir, meta_file, ph
     sample_names = set(sample_names).intersection(meta.index)
 
     meta.to_csv(
-        os.path.join(dataset_dir, f'filtered_samples_meta.tsv'),
+        os.path.join(dataset_dir, f'meta.tsv'),
         sep='\t', index=False
     )
     meta[['SAMPID', 'SMTSD']].to_csv(
-        os.path.join(dataset_dir, 'filtered_samples_meta_tissue.tsv'), 
+        os.path.join(dataset_dir, 'meta_tissue.tsv'), 
         sep='\t', index=False, header=False
     )
     meta[['SAMPID', 'GENDER']].to_csv(
-        os.path.join(dataset_dir, 'filtered_samples_meta_gender.tsv'),
+        os.path.join(dataset_dir, 'meta_gender.tsv'),
         sep='\t', index=False, header=False
     )
     return meta, sample_names
@@ -76,7 +76,7 @@ def process_count_data(sample_names, dataset_dir, count_file):
         count.append(chunk)
     
     count = pd.concat(count)
-    count.to_csv(os.path.join(dataset_dir, 'filtered_samples_xprs_count.tsv'), sep='\t')
+    count.to_csv(os.path.join(dataset_dir, 'xprs_count.tsv'), sep='\t')
 
     return count
 
