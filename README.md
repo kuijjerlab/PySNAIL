@@ -1,12 +1,12 @@
 # Caiman
-Count Adjustment to Improve the Modeling of Gene Association Networks (Caiman) is a package aims at correcting the normalized expression for lowly expressed genes that increases false discovery rate in co-expression analysis.
+Count Adjustment to Improve the Modeling of Gene Association Networks (Caiman) is a package aims at correcting the normalized expression for lowly expressed genes that increases false positive associations in co-expression analysis.
 
 ## Introduction
-Caiman is a Python software pacakge developed by [Kuijjer's Lab](https://www.kuijjerlab.org/) that specifically designed to correct the RNA-Seq expression normalized by quantile based normalization methods (e.g. [smooth quantile normalization](https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028)). Inspired by the concept proposed by [MIXnorm](https://academic.oup.com/bioinformatics/article/36/11/3401/5781955), Caiman uses a modified Gaussian mixture model to approximate the probability of genes being non-expressed in the cell (the observed expression value should be close to zero due to non-specific binding). 
+Caiman is a Python software pacakge developed by [Kuijjer's Lab](https://www.kuijjerlab.org/) that specifically designed to correct the RNA-Seq expression normalized by quantile based normalization methods (e.g. [smooth quantile normalization](https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028)). Caiman uses a modified Gaussian mixture model to fit the expression distribution of all samples within each group, and which then makes use of the posterior probability of the mixture model to identify those genes that might yield false-positive associations to other genes. 
 
 ## Method
-Caiman starts by log₂-transform the normalized expression to approximate Gaussian distribution. Thereafter, augment the processed expression by concatenating with the negative transformed expression. The augmented expression distribution is therefore symmetric with respect to 0. A Gaussian mixture model is later used with the centered component fixed with mean equals to 0. The genes with high posterior probability from the centered component are believed to be non-expressed in the cell. For those genes, Caiman either replaces the normalized expression with zero or add some random noise based on the standard deviation of the centered component to reduce the false discovery rate in identifying co-expressed genes. 
-
+Caiman starts by log₂-transform the normalized expression to approximate Gaussian distribution. Thereafter, augment the processed expression by concatenating with the negative transformed expression. The augmented expression distribution is therefore symmetric with respect to 0. A Gaussian mixture model is later used with the center component fixed with mean equals to 0. The genes with high posterior probability from the center component are believed to be non-expressed in the cell. For those genes, Caiman replaces the normalized expression with zero to reduce the false discovery rate in identifying co-expressed genes. 
+![method](./docs/source/_static/method.png)
 
 # Usage
 ## Installation
@@ -16,12 +16,22 @@ It is highly recommended using [conda](https://docs.conda.io/projects/conda/en/l
 $ conda create -n caiman python=3.7.7
 $ conda activate caiman
 ```
+
 ### Install Package
-Download the source code from `https://github.com/dn070017/Caiman.git` and install the package using `pip`:
+Download the source code from `git@github.com:kuijjerlab/CAIMAN.git` and install the package using `pip`:
 ```bash
-$ git clone https://github.com/dn070017/Caiman.git
+$ git clone git@github.com:kuijjerlab/CAIMAN.git
 $ cd Caiman
 $ pip install -e .
+```
+To reproduce analysis in the manuscript:
+```bash
+$ conda activate caiman
+$ conda config --add channels bokeh
+$ conda config --add channels defaults
+$ conda config --add channels bioconda
+$ conda config --add channels conda-forge
+$ conda install --file analysis_requirement.txt
 ```
 
 ### Example Dataset
@@ -85,7 +95,14 @@ optional arguments:
   -v, --verbose         Enable verbose message when fitting. Default: unset.
 
 ```
- 
+
+## Reproduce Analysis in the Manuscript
+To reproduce analysis in the manuscript:
+```bash
+$ snakemake --cores [n]
+```
+The result can be found in the directory `manuscript_analysis`. Note that it took a while to download and preprocess the datasets.
+
 ## Application Programming Interface
 Caiman also provides application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.
 ### Correct Expression

@@ -1,0 +1,17 @@
+tqdm
+beautifulsoup4
+seaborn
+scikit-learn
+bioconductor-biomart
+bioconductor-encodexplorer
+bioconductor-preprocesscore
+bioconductor-qsmooth
+bioconductor-limma
+bioconductor-lionessr
+bioconductor-summarizedexperiment
+r-fields
+r-plotrix
+r-scales
+snakemake
+r-igraph
+bokeh

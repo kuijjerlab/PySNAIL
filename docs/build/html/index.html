@@ -84,6 +84,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 </ul>
@@ -153,7 +154,7 @@
             
   <div class="section" id="caiman">
 <h1>Caiman<a class="headerlink" href="#caiman" title="Permalink to this headline">¶</a></h1>
-<p>Count Adjustment to Improve the Modeling of Gene Association Networks (Caiman) is a package aims at correcting the normalized expression for lowly expressed genes that increases false discovery rate in co-expression analysis.</p>
+<p>Count Adjustment to Improve the Modeling of Gene Association Networks (Caiman) is a package aims at correcting the normalized expression for lowly expressed genes that increases false positive associations in co-expression analysis.</p>
 <div class="section" id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
@@ -165,6 +166,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="manual.html#correct-expression">Correct Expression</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manual.html#information-of-input-data">Information of Input Data</a></li>
@@ -191,11 +193,14 @@
 </div>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>Caiman is a Python software pacakge developed by <a class="reference external" href="https://www.kuijjerlab.org/">Kuijjer’s Lab</a> that specifically designed to correct the RNA-Seq expression normalized by quantile based normalization methods (e.g. <a class="reference external" href="https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028">smooth quantile normalization</a>). Inspired by the concept proposed by <a class="reference external" href="https://academic.oup.com/bioinformatics/article/36/11/3401/5781955">MIXnorm</a>, Caiman uses a modified Gaussian mixture model to approximate the probability of genes being non-expressed in the cell (the observed expression value should be close to zero due to non-specific binding).</p>
+<p>Caiman is a Python software pacakge developed by <a class="reference external" href="https://www.kuijjerlab.org/">Kuijjer’s Lab</a> that specifically designed to correct the RNA-Seq expression normalized by quantile based normalization methods (e.g. <a class="reference external" href="https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028">smooth quantile normalization</a>). Inspired by the concept proposed by <a class="reference external" href="https://academic.oup.com/bioinformatics/article/36/11/3401/5781955">MIXnorm</a>, Caiman uses a modified Gaussian mixture model to fit the expression distribution of all samples within each group, and which then makes use of the posterior probability of the mixture model to identify those genes that might yield false-positive associations to other genes.</p>
 </div>
 <div class="section" id="method">
 <h2>Method<a class="headerlink" href="#method" title="Permalink to this headline">¶</a></h2>
-<p>Caiman starts by log₂-transform the normalized expression to approximate Gaussian distribution. Thereafter, augment the processed expression by concatenating with the negative transformed expression. The augmented expression distribution is therefore symmetric with respect to 0. A Gaussian mixture model is later used with the centered component fixed with mean equals to 0. The genes with high posterior probability from the centered component are believed to be non-expressed in the cell. For those genes, Caiman either replaces the normalized expression with zero or add some random noise based on the standard deviation of the centered component to reduce the false discovery rate in identifying co-expressed genes.</p>
+<p>Caiman starts by log₂-transform the normalized expression to approximate Gaussian distribution. Thereafter, augment the processed expression by concatenating with the negative transformed expression. The augmented expression distribution is therefore symmetric with respect to 0. A Gaussian mixture model is later used with the center component fixed with mean equals to 0. The genes with high posterior probability from the center component are believed to be non-expressed in the cell. For those genes, Caiman replaces the normalized expression with zero to reduce the false discovery rate in identifying co-expressed genes.</p>
+<div class="figure align-default">
+<img alt="Cannot link to method.png" src="_images/method.png" />
+</div>
 </div>
 <div class="section" id="issues">
 <h2>Issues<a class="headerlink" href="#issues" title="Permalink to this headline">¶</a></h2>

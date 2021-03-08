@@ -3,7 +3,7 @@
 Manual
 ======
 
-Caiman also provides application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.
+Caiman provides application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.
 
 Correct Expression
 ------------------

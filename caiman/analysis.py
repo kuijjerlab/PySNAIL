@@ -1,4 +1,8 @@
+
+import logging
 import os
+import time
+import tracemalloc
 from typing import Dict, Optional, Tuple, Union
 import warnings
 
@@ -12,7 +16,6 @@ import pandas as pd
 from caiman.dataset import Dataset
 from caiman.model import GaussianMixtureModel
 from caiman.utils import augment_data, get_random_state
-
 
 class Analysis:
     """Analysis
@@ -68,7 +71,8 @@ class Analysis:
         adaptive_num_components: bool = False,
         max_iterations: int = 10,
         num_flank_components: int = 2,
-        verbose: bool = False
+        verbose: bool = False,
+        monitor: bool = False
     ) -> Optional[pd.core.frame.DataFrame]:
         """Correct the normalized expression in analysis.dataset.
 
@@ -110,12 +114,31 @@ class Analysis:
             verbose: bool, default: False
                 Enable verbose output.
 
+            monitor: bool, default: False
+                Monitor the memory and computational time usage. (The result is stored
+                to ./tmp/correction.log). The result contains 6 columns separated by
+                tab:
+                    1. timestamp
+                    2. event
+                    3. elapsed time
+                    4. CPU time
+                    5. peak memory usage (Mb)
+                    6. sample size
+
         Returns:
             Optional[pd.core.frame.DataFrame]
                 If inplace set to True, return None. If inplace set to False, return the
                 corrected expression.
 
         """
+        if monitor:
+            os.makedirs('./tmp', exist_ok=True)
+            logging.basicConfig(
+                filename='./tmp/correction.log',
+                encoding='utf-8',
+                level=logging.DEBUG
+            )
+
         if method not in {'filter', 'noise', 'none'}:
             method = 'filter'
             message = ''.join((
@@ -132,10 +155,13 @@ class Analysis:
             ))
             warnings.warn(message, RuntimeWarning)
         elif self.gmms is None or fit:
+            cpu_time_start = time.process_time()
+            time_start = time.time()
+            tracemalloc.start()
             if verbose:
                 message = ''.join((
                     'Start fitting:\n',
-                    f'{"Groups":30}{"Log-likelihood":<14}'
+                    f'{"Groups":30}{"Log-likelihood":>14}{"Components":>14}'
                 ))
                 print(message)
             kwargs = {
@@ -148,12 +174,29 @@ class Analysis:
             self.gmms = group_df.apply(self.__fit, **kwargs)
             if verbose:
                 print('Completed fitting successfully.\n')
+            if monitor:
+                message = '\t'.join((
+                    time.ctime(),
+                    'fitting',
+                    f'{time.process_time() - cpu_time_start:.3f}',
+                    f'{time.time() - time_start:.3f}',
+                    f'{tracemalloc.get_traced_memory()[1] * 9.53 * 1e-7:.3f}',
+                    f'{self.dataset.xprs.shape[0]}'
+                ))
+                logging.debug(message)
+
+        if verbose:
+            print('Start correction')
 
         if method == 'filter':
             correct_function = self.__correct_with_filter
         elif method == 'noise':
             correct_function = self.__correct_with_noise
 
+        cpu_time_start = time.process_time()
+        time_start = time.time()
+        tracemalloc.stop()
+        tracemalloc.start()
         if method in {'filter', 'noise'}:
             corrected = self.dataset.xprs.apply(
                 correct_function,
@@ -161,8 +204,23 @@ class Analysis:
                 result_type='broadcast',
                 args=(inplace)
             )
-        else:
+        elif not inplace:
             corrected = self.dataset.xprs.copy()
+        
+        if verbose:
+            print('Completed correction successfully.')
+
+        if monitor:
+            message = '\t'.join((
+                time.ctime(),
+                'correct',
+                f'{time.process_time() - cpu_time_start:.3f}',
+                f'{time.time() - time_start:.3f}',
+                f'{tracemalloc.get_traced_memory()[1] * 9.53 * 1e-7:>.3f}',
+                f'{self.dataset.xprs.shape[0]}'
+            ))
+            logging.debug(message)
+        tracemalloc.stop()
 
         if inplace:
             return None
@@ -215,6 +273,16 @@ class Analysis:
 
         target = self.dataset.get_xprs(group)
         gmm = self.gmms[group]
+        
+        if gmm.get_num_components() == 1:
+            message = ''.join((
+                f'{group}: The distribution is best fitted with centered component only. '
+                'CAIMAN did not perform any correction in this case. Ignore creating ',
+                'distribution figure.'
+            ))
+            warnings.warn(message, RuntimeWarning)
+            return
+
         num_genes = self.dataset.num_genes
 
         title = ''.join((
@@ -347,6 +415,14 @@ class Analysis:
         else:
             return self.gmms[group]
 
+    def __check_should_correct(
+        self,
+        gmm: GaussianMixtureModel
+    ) -> bool:
+        if gmm.get_num_components() == 1:
+            return False
+        return True
+
     def __correct_with_filter(
         self,
         target: pd.core.series.Series,
@@ -356,6 +432,8 @@ class Analysis:
             target = target.copy()
         group = target.name[0]
         target = target.values
+        if not self.__check_should_correct(self.gmms[group]):
+            return target
         label = self.gmms[group].predict(target)
         selector = (label == 0)
         target[selector] = 0
@@ -373,6 +451,8 @@ class Analysis:
         group = target.name[0]
         target = target.values
         gmm = self.gmms[group]
+        if not self.__check_should_correct(gmm):
+            return target
         label = gmm.predict(target)
         selector = (label == 0)
         rng = get_random_state(seed)
@@ -388,8 +468,8 @@ class Analysis:
     def __fit(self, target: pd.DataFrame, **kwargs):
         verbose = kwargs.pop('verbose')
         gmm = GaussianMixtureModel(**kwargs)
-        gmm.fit(target.values, sampling=min(len(target), 100000))
+        gmm.fit(target.values.reshape(-1), sampling=min(len(target), 100000))
         if verbose:
             log_likelihood = np.mean(gmm.log_likelihood(target.values))
-            print(f'{target.name:<30}{log_likelihood:>14.5f}')
+            print(f'{target.name:<30}{log_likelihood:>14.5f}{gmm.get_num_components():>14}')
         return gmm

@@ -90,6 +90,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 </ul>
@@ -169,12 +170,22 @@ $ conda activate caiman
 </div>
 <div class="section" id="install-package">
 <h2>Install Package<a class="headerlink" href="#install-package" title="Permalink to this headline">¶</a></h2>
-<p>Download the source code from <code class="code docutils literal notranslate"><span class="pre">https://github.com/dn070017/Caiman.git</span></code> and install the package using <code class="code docutils literal notranslate"><span class="pre">pip</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/dn070017/Caiman.git
+<p>Download the source code from <code class="code docutils literal notranslate"><span class="pre">git&#64;github.com:kuijjerlab/CAIMAN.git</span></code> and install the package using <code class="code docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:kuijjerlab/CAIMAN.git
 $ <span class="nb">cd</span> Caiman
 $ pip install -e .
 </pre></div>
 </div>
+<p>To reproduce analysis in the manuscript:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>$ conda activate caiman
+$ conda config –add channels bokeh
+$ conda config –add channels defaults
+$ conda config –add channels bioconda
+$ conda config –add channels conda-forge
+$ conda install –file analysis_requirement.txt</p>
+</div></blockquote>
 </div>
 <div class="section" id="example-dataset">
 <h2>Example Dataset<a class="headerlink" href="#example-dataset" title="Permalink to this headline">¶</a></h2>

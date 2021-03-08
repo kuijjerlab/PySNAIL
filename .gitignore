@@ -1,5 +1,21 @@
-.vscode
+# Analysis
+.datasets/
+.snakemake/
+manuscript_analysis
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Python Packages
 __pycache__
 caiman/__pycache__
 *.egg-info/
 
+# System Files
+.DS_Store
+Thumbs.db

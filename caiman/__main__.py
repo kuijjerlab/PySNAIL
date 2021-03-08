@@ -1,6 +1,7 @@
 import argparse
 import os
 import pickle as pickle
+import warnings
 
 from caiman.analysis import Analysis
 
@@ -89,9 +90,16 @@ def main() -> None:
     )
     directory = os.path.realpath(args.outdir)
     if not os.path.isdir(directory):
-        directory = os.path.realpath('./')
+        if os.path.isfile(directory):
+            directory = os.path.realpath('./')
+            message = f"{directory} is a file. Set --outdir to './'."
+            warnings.warn(message, RuntimeWarning)
+        else:
+            os.makedirs(directory)
 
-    corrected.to_csv(os.path.join(directory, 'caiman_out.tsv'), sep='\t')
+    print('\nStart storing corrected expression')
+    corrected.to_csv(os.path.join(directory, 'xprs_caiman.tsv'), sep='\t')
+    print('Completed storing optional expression successfully.')
 
     if args.dist:
         dist_directory = os.path.join(directory, 'dist/')
@@ -104,7 +112,7 @@ def main() -> None:
         return
 
     if args.verbose:
-        print('Storing optional files')
+        print('\nStart storing optional files')
 
     for group in analysis.dataset.groups:
         if args.dist:
@@ -113,6 +121,8 @@ def main() -> None:
             group_name = group.lower().replace(" ", "_")
             with open(os.path.join(gmms_directory, f'{group_name}.pkl'), 'wb') as file:
                 pickle.dump(analysis.gmms[group], file)
+    if args.verbose:
+        print('Completed storing optional files successfully.\nAll completed.')
 
 if __name__ == "__main__":
     main()

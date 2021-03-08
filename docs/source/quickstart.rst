@@ -58,3 +58,12 @@ The complete arguments are listed as follows (one can get this information by ex
                             distribution and the posterior probability of the
                             fitted model for each group in 'dist'. Default: unset.
     -v, --verbose         Enable verbose message when fitting. Default: unset.
+
+Reproduce Analysis in the Manuscript
+====================================
+To reproduce analysis in the manuscript:
+
+.. code-block:: bash
+    $ snakemake --cores [n]
+
+The result can be found in the directory :code:`manuscript_analysis`. Note that it took a while to download and preprocess the datasets.

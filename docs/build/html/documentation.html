@@ -196,10 +196,10 @@ not been run, attributes is None.</p>
 </dl>
 <dl class="py method">
 <dt id="caiman.analysis.Analysis.correct">
-<code class="sig-name descname">correct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'filter'</span></em>, <em class="sig-param"><span class="n">gmms</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>pandas.core.series.Series<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fit</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">adaptive_num_components</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_iterations</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">num_flank_components</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#caiman.analysis.Analysis.correct" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">correct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'filter'</span></em>, <em class="sig-param"><span class="n">gmms</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>pandas.core.series.Series<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fit</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">adaptive_num_components</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_iterations</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">num_flank_components</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">monitor</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#caiman.analysis.Analysis.correct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Correct the normalized expression in analysis.dataset.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
+<dl>
+<dt>Parameters:</dt><dd><dl>
 <dt>method: str, default: ‘filter’</dt><dd><p>The possible methods are ‘filter’, ‘noise’ and ‘none’. ‘filter’ use the
 posterior probability to replace the normalized expression with zero if
 the fitted model predict the values belong to the centered component.
@@ -228,6 +228,20 @@ positive integer.</p>
 <dt>num_flank_components: int, defualt: 2</dt><dd><p>Number of non-centered mixture components. Must be a positive integer.</p>
 </dd>
 <dt>verbose: bool, default: False</dt><dd><p>Enable verbose output.</p>
+</dd>
+<dt>monitor: bool, default: False</dt><dd><p>Monitor the memory and computational time usage. (The result is stored
+to ./tmp/correction.log). The result contains 6 columns separated by
+tab:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>timestamp</p></li>
+<li><p>event</p></li>
+<li><p>elapsed time</p></li>
+<li><p>CPU time</p></li>
+<li><p>peak memory usage (Mb)</p></li>
+<li><p>sample size</p></li>
+</ol>
+</div></blockquote>
 </dd>
 </dl>
 </dd>
@@ -492,6 +506,11 @@ updated to maximize the likelihood given the data.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="caiman.model.GaussianMixtureModel.get_num_components">
+<code class="sig-name descname">get_num_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#caiman.model.GaussianMixtureModel.get_num_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="caiman.model.GaussianMixtureModel.get_stds">
 <code class="sig-name descname">get_stds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#caiman.model.GaussianMixtureModel.get_stds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the standard deviations of the mixture components.</p>
@@ -506,16 +525,33 @@ updated to maximize the likelihood given the data.</p>
 
 <dl class="py method">
 <dt id="caiman.model.GaussianMixtureModel.log_likelihood">
-<code class="sig-name descname">log_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>numpy.ndarray<span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.log_likelihood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">log_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">is_aug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>numpy.ndarray<span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the log likelihood of the mixture components.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><dl class="simple">
+<dt>target: numpy.ndarray (required)</dt><dd><p>Expression values for the genes.</p>
+</dd>
+<dt>is_aug: bool, default: False</dt><dd><p>Whether or not target is augmeted.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>Return the log likelihood of the mixture components.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="caiman.model.GaussianMixtureModel.posterior">
-<code class="sig-name descname">posterior</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>numpy.ndarray<span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.posterior" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">posterior</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">is_aug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>numpy.ndarray<span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the posterior probability of each component given the input data.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
 <dt>target: numpy.ndarray (required)</dt><dd><p>Expression values for the genes.</p>
+</dd>
+<dt>is_aug: bool, default: False</dt><dd><p>Whether or not target is augmeted.</p>
 </dd>
 </dl>
 </dd>
