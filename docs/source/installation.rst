@@ -14,14 +14,23 @@ It is highly recommended using `conda <https://docs.conda.io/projects/conda/en/l
 
 Install Package
 ---------------
-Download the source code from :code:`https://github.com/dn070017/Caiman.git` and install the package using :code:`pip`:
+Download the source code from :code:`git@github.com:kuijjerlab/CAIMAN.git` and install the package using :code:`pip`:
 
 .. code-block:: bash
 
-    $ git clone https://github.com/dn070017/Caiman.git
+    $ git clone git@github.com:kuijjerlab/CAIMAN.git
     $ cd Caiman
     $ pip install -e .
 
+To reproduce analysis in the manuscript:
+.. code-block:: bash
+
+    $ conda activate caiman
+    $ conda config --add channels bokeh
+    $ conda config --add channels defaults
+    $ conda config --add channels bioconda
+    $ conda config --add channels conda-forge
+    $ conda install --file analysis_requirement.txt
 
 Example Dataset
 ---------------
