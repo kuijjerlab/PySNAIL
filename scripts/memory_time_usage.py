@@ -39,7 +39,7 @@ def output_figures(outdir):
 
     fig = figure(
         plot_width=800, plot_height=800,
-        title='Peak Memory (MiB)',
+        title='',
         x_axis_location="below",
         y_range=(50, 6500),
         tools="hover, save",
@@ -62,7 +62,32 @@ def output_figures(outdir):
 
     fig = figure(
         plot_width=800, plot_height=800,
-        title='CPU Time Usage (sec)',
+        title='',
+        x_axis_location="below",
+        tools="hover, save",
+        tooltips=[
+            ('Number of samples', '$x'),
+            ('Computational time (sec)', '$y'),
+        ]
+    )
+    fig.circle(fitting.sample_size, fitting.elapsed_time, color="crimson", alpha=0.5, size=20)
+    fig.circle(correct.sample_size, correct.elapsed_time, color="navy", alpha=0.5, size=20)
+    fig.line(fitting.sample_size, fitting.elapsed_time, color="crimson", alpha=0.5, line_width=5, legend_label=f'Fitting')
+    fig.line(correct.sample_size, correct.elapsed_time, color="navy", alpha=0.5, line_width=5, legend_label=f'Correction')
+    fig.legend.location = 'top_left'
+    fig.xaxis.axis_label = 'Number of samples'
+    fig.yaxis.axis_label = 'Elapsed Time (sec)'
+    fig.xaxis.axis_label_text_font_size = '20pt'
+    fig.yaxis.axis_label_text_font_size = '20pt'
+    fig.legend.label_text_font_size = '18pt'
+    fig.axis.major_label_text_font_size = '12pt'
+
+    output_file(os.path.join(outdir, 'elapsed_time.html'), title='Elapsed Time (sec)')
+    show(fig)
+
+    fig = figure(
+        plot_width=800, plot_height=800,
+        title='',
         x_axis_location="below",
         tools="hover, save",
         tooltips=[
@@ -82,7 +107,7 @@ def output_figures(outdir):
     fig.legend.label_text_font_size = '18pt'
     fig.axis.major_label_text_font_size = '12pt'
 
-    output_file(os.path.join(outdir, 'time_usage.html'), title='CPU Time Usage (sec)')
+    output_file(os.path.join(outdir, 'cpu_time_usage.html'), title='CPU Time Usage (sec)')
     show(fig)
 
 def main():

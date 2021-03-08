@@ -104,7 +104,7 @@ def main():
     xprs_before = pd.read_csv(args.before, sep='\t', index_col=0)
     xprs_after = pd.read_csv(args.after, sep='\t', index_col=0, skiprows=1)
 
-    tissue_exclusive_genes, tissue_exclusive_count = extract_tissue_exclusive_genes(xprs_ref, tissues)
+    tissue_exclusive_genes, tissue_exclusive_count = extract_tissue_exclusive_genes(config['out_dir'], args.dataset, args.y, xprs_ref, tissues)
     all_tissue_exclusive_genes = list(it.chain.from_iterable(tissue_exclusive_genes.values()))
     tissue_of_gene, sample_order = sort_xprs_samples(xprs_ref, tissues, tissue_exclusive_genes)
 

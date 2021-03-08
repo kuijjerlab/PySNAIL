@@ -16,12 +16,22 @@ It is highly recommended using [conda](https://docs.conda.io/projects/conda/en/l
 $ conda create -n caiman python=3.7.7
 $ conda activate caiman
 ```
+
 ### Install Package
 Download the source code from `https://github.com/dn070017/Caiman.git` and install the package using `pip`:
 ```bash
 $ git clone https://github.com/dn070017/Caiman.git
 $ cd Caiman
 $ pip install -e .
+```
+To reproduce analysis in the manuscript:
+```bash
+$ conda activate caiman
+$ conda config --add channels bokeh
+$ conda config --add channels defaults
+$ conda config --add channels bioconda
+$ conda config --add channels conda-forge
+$ conda install --file analysis_requirement.txt
 ```
 
 ### Example Dataset
@@ -85,7 +95,14 @@ optional arguments:
   -v, --verbose         Enable verbose message when fitting. Default: unset.
 
 ```
- 
+
+## Reproduce Analysis in the Manuscript
+To reproduce analysis in the manuscript:
+```bash
+snakemake --cores [n]
+```
+The result can be found in the directory `manuscript_analysis`. Note that it took a while to download and preprocess the datasets.
+
 ## Application Programming Interface
 Caiman also provides application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.
 ### Correct Expression

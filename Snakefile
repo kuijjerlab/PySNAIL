@@ -26,8 +26,9 @@ rule all:
             out_dir=config['out_dir'],
             data=['qsmooth', 'qsmooth_caiman']
         ),
-        f"{config['out_dir']}/time_usage.html",
-        f"{config['out_dir']}/memory_usage.html"
+        f"{config['out_dir']}/cpu_time_usage.html",
+        f"{config['out_dir']}/memory_usage.html",
+        f"{config['out_dir']}/elapsed_time.html"
 
 rule download_encode:
     output: expand("{dataset_dir}/ENCODE/{sample}/{sample}_meta.tsv", dataset_dir=config['datasets_dir'], sample=config['encode_tissues'])
@@ -256,8 +257,9 @@ rule memory_time_usage:
     input:
         f"{config['datasets_dir']}/ENCODE/xprs_validation.tsv"
     output:
-        f"{config['out_dir']}/time_usage.html",
-        f"{config['out_dir']}/memory_usage.html"
+        f"{config['out_dir']}/cpu_time_usage.html",
+        f"{config['out_dir']}/memory_usage.html",
+        f"{config['out_dir']}/elapsed_time.html"
     run:
         shell(f"rm -rf ./tmp/correction.log")
         shell(

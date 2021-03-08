@@ -183,12 +183,12 @@ def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
         #fig.xaxis.major_label_text_alpha = 0
         #fig.xaxis.major_label_text_font_size = '6px'
         #fig.axis.group_text_font_size = '32px'
-        fig.axis.group_text_font_size = '1.3vh'
+        fig.axis.group_text_font_size = '2vh'
         fig.axis.group_text_align = 'center'
 
         fig.axis.major_label_standoff = 0
         #fig.title.text_font_size = '36px'
-        fig.title.text_font_size = '1.3vh'
+        fig.title.text_font_size = '2vh'
 
         fig.rect(
             x='xname',
@@ -219,7 +219,7 @@ def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
             #major_label_text_font_size="24px",
             #label_standoff=16,
             width=int(len(figure_table.xname.unique())/5),
-            major_label_text_font_size='1.3vh',
+            major_label_text_font_size='1.5vh',
             label_standoff=int(len(figure_table.xname.unique())/15),
             border_line_color=None,
             location=(0, 0)
@@ -437,10 +437,13 @@ def compute_correlation_coefficients(data, method='spearman'):
     return corr
 
 def extract_tissue_exclusive_genes(
+    outdir,
+    dataset_name,
+    norm,
     xprs,
     tissues,
-    xprs_high_threshold=50,
-    xprs_low_threshold=5,
+    xprs_high_threshold=10,
+    xprs_low_threshold=1,
     num_high_threshold=1000,
     num_low_threshold=5
 ):
@@ -464,6 +467,12 @@ def extract_tissue_exclusive_genes(
             index[tissue_a] = list(filtered.index)
         
     gene_count = pd.Series(gene_count, index=tissues.unique())
+    gene_count.to_csv(
+        os.path.join(
+            outdir,
+            f'{dataset_name.lower()}_{norm.lower()}_number_tissue_exclusive_genes.tsv'
+        ), sep='\t', header=False
+    )
 
     return index, gene_count
 
