@@ -1,17 +1,17 @@
-# Caiman
-Count Adjustment to Improve the Modeling of Gene Association Networks (Caiman) is a package aims at correcting the normalized expression for lowly expressed genes that increases false positive associations in co-expression analysis.
+# CAIMAN
+Count Adjustment to Improve the Modeling of Gene Association Networks (CAIMAN) is an algorithm that corrects for false-positive associations, which may form between lowly expressed genes after quantile-based normalization of the data, and which may affect downstream co-expression network analysis.
 
 ## Introduction
-Caiman is a Python software pacakge developed by [Kuijjer's Lab](https://www.kuijjerlab.org/) that specifically designed to correct the RNA-Seq expression normalized by quantile based normalization methods (e.g. [smooth quantile normalization](https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028)). Caiman uses a modified Gaussian mixture model to fit the expression distribution of all samples within each group, and which then makes use of the posterior probability of the mixture model to identify those genes that might yield false-positive associations to other genes. 
+CAIMAN is an algorithm developed by the [Kuijjer Lab](https://www.kuijjerlab.org/) that is specifically designed to correct false-positive gene associations in RNA-Seq data that is normalized with quantile-based methods, such as [smooth quantile normalization](https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028. CAIMAN utilizes a Gaussian mixture model to fit the distribution of gene expression and to adaptively select a threshold to define lowly expressed genes. Thereafter, CAIMAN corrects the normalized expression for these genes by removing the variability across samples that might lead to false positive associations. The CAIMAN algorithm is available in a Python software package.
 
 ## Method
-Caiman starts by log₂-transform the normalized expression to approximate Gaussian distribution. Thereafter, augment the processed expression by concatenating with the negative transformed expression. The augmented expression distribution is therefore symmetric with respect to 0. A Gaussian mixture model is later used with the center component fixed with mean equals to 0. The genes with high posterior probability from the center component are believed to be non-expressed in the cell. For those genes, Caiman replaces the normalized expression with zero to reduce the false discovery rate in identifying co-expressed genes. 
+CAIMAN starts by log₂-transforming normalized expression levels to approximate a Gaussian distribution. These processed expression levels are then augmented by concatenating negative transformed expression levels. This makes the augmented expression distribution symmetric with respect to zero. A Gaussian mixture model is then used with the center component fixed, with a mean equal to zero. The genes with high posterior probability to the center component are believed to be non-expressed in the cell. For those genes, CAIMAN replaces the normalized expression with zero. This removes false-positive associations that may have been introduced by quantile-based normalization methods.
 ![method](./docs/source/_static/method.png)
 
 # Usage
 ## Installation
 ### Environment Setting
-It is highly recommended using [conda](https://docs.conda.io/projects/conda/en/latest/index.html) virtual environment to install this package. After installation of conda, create a virtual environment for Caiman using the following command:
+It is highly recommended to use the [conda](https://docs.conda.io/projects/conda/en/latest/index.html) virtual environment to install this package. After installation of conda, create a virtual environment for CAIMAN using the following command:
 ```bash
 $ conda create -n caiman python=3.7.7
 $ conda activate caiman
@@ -24,7 +24,7 @@ $ git clone git@github.com:kuijjerlab/CAIMAN.git
 $ cd Caiman
 $ pip install -e .
 ```
-To reproduce analysis in the manuscript:
+To reproduce the analysis we provide in the manuscript:
 ```bash
 $ conda activate caiman
 $ conda config --add channels bokeh
@@ -35,14 +35,14 @@ $ conda install --file analysis_requirement.txt
 ```
 
 ### Example Dataset
-Caiman comes with one example dataset for the users. It can be found under the following directories. The `expression.tsv` contains 10,000 randomly selected genes from [the Mouse ENCODE Project Consortium](https://www.encodeproject.org/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus). 
+The CAIMAN packages includes an example dataset for users to test the method on. This can be found under the following directories. The `expression.tsv` contains expression levels for 10,000 randomly selected genes from [the Mouse ENCODE Project Consortium](https://www.encodeproject.org/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus). 
 ```bash
 $ test/expression.tsv
 $ test/groups.tsv
 ```
 
 ## Quick Start
-After installation, Caiman can be executed directly as a Python module using the following command:
+After installation, CAIMAN can be executed directly as a Python module using the following command:
 ```
 $ python3 -m caiman test/expression.tsv --groups test/groups.tsv --dist --outdir output
 ```
@@ -76,13 +76,13 @@ optional arguments:
                         should be either 'filter' or 'noise'. Default:
                         'filter'.
   -o [path], --outdir [path]
-                        Output directory for corrected read count. The
+                        Output directory for the corrected read counts. The
                         directory consists of a data table 'caiman_out.tsv'
-                        with corrected expression. There are also two optional
+                        with the corrected expression levels. There are also two optional
                         subdirectories 'dist' and 'gmms'. The first directory
-                        contains interactive html file visualizing the
+                        contains an interactive html file visualizing the
                         sampling distribution and the posterior probability of
-                        the fitted model for each group. The second one
+                        the fitted model for each group. The second directory
                         contains instances of GaussianMixtureModel fitted for
                         each group. Default: './caiman_output'.
   -a, --adaptive        Whether to use likelihood ratio test to determine the
@@ -101,10 +101,11 @@ To reproduce analysis in the manuscript:
 ```bash
 $ snakemake --cores [n]
 ```
-The result can be found in the directory `manuscript_analysis`. Note that it took a while to download and preprocess the datasets.
+The result can be found in the directory `manuscript_analysis`. Note that it will likely take a while to download and preprocess the datasets.
 
 ## Application Programming Interface
-Caiman also provides application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.
+CAIMAN also provides an application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.
+
 ### Correct Expression
 ```python
 import os
@@ -174,7 +175,7 @@ Result:
 ```
 
 ### Fitted Statistics
-Get fitted means
+Get fitted means.
 ```python
 means = gmm.get_means()
 print(means)
@@ -183,7 +184,7 @@ Result:
 ```
 array([ 0.       , 10.543127 ,  4.2125125], dtype=float32)
 ```
-Get fitted standard deviations
+Get fitted standard deviations.
 ```
 stds = gmm.get_stds()
 print(stds)
@@ -194,7 +195,7 @@ array([0.17445941, 1.5966247 , 3.590845  ], dtype=float32)
 ```
 
 ### Sample from GaussianMixtureModels
-Please execute this after `analysis.correct()`. The first element in the returned tuple is the sampling expression value, while the second element denote the labels.
+Please execute this after `analysis.correct()`. The first element in the returned tuple is the sampling expression value, while the second element denotes the labels.
 ```python
 sampled = gmm.sample(100)
 print(sampled)
@@ -237,5 +238,5 @@ array([[9.7392517e-01, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00,
         3.4108940e-01, 2.7463582e-01, 2.3093626e-01, 2.0063429e-01,
         1.7868416e-01, 1.6221364e-01]], dtype=float32)
 ```
-For more detailed description, please refer the the documentation of Caiman.
+For a more detailed description, please refer the the documentation of CAIMAN.
 
