@@ -39,7 +39,7 @@ rule download_gtex:
         f"{config['datasets_dir']}/GTEx/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_reads.gct",
         f"{config['datasets_dir']}/GTEx/GTEx_Analysis_v8_Annotations_SampleAttributesDS.txt",
         f"{config['datasets_dir']}/GTEx/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt"
-    shell: f"bash scripts/download_gtex.sh {config['datasets_dir']}/GTEx"
+    shell: f"bash scripts/download_gtex.sh {config['datasets_dir']}"
 
 rule process_gtex:
     input:

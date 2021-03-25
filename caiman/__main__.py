@@ -44,13 +44,13 @@ def main() -> None:
         metavar='[path]',
         type=str,
         default='./caiman_output',
-        help="""Output directory for corrected read count. The directory consists of a
-        data table 'caiman_out.tsv' with corrected expression. There are also two 
-        optional subdirectories 'dist' and 'gmms'. The first directory contains 
-        interactive html file visualizing the sampling distribution and the posterior 
-        probability of the fitted model for each group. The second one contains 
-        instances of GaussianMixtureModel fitted for each group. Default: 
-        './caiman_output'."""
+        help="""Output directory for the CAIMAN corrected expression. The directory 
+        consists of a data table 'caiman_out.tsv' with the corrected expression levels.
+        There are also two optional subdirectories 'dist' and 'gmms'. The first directory
+        contains an interactive html file visualizing the sampling distribution and the
+        posterior probability of the fitted model for each group. The second directory
+        contains instances of GaussianMixtureModel fitted for each group. 
+        Default: './caiman_output'."""
     )
     parser.add_argument(
         '-a', '--adaptive',

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Documentation &mdash; Caiman 0.0.b2 documentation</title>
+  <title>Documentation &mdash; Caiman 0.2.0 documentation</title>
   
 
   
@@ -84,6 +84,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-caiman.analysis">caiman.analysis</a></li>
@@ -196,7 +197,7 @@ not been run, attributes is None.</p>
 </dl>
 <dl class="py method">
 <dt id="caiman.analysis.Analysis.correct">
-<code class="sig-name descname">correct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'filter'</span></em>, <em class="sig-param"><span class="n">gmms</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>pandas.core.series.Series<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fit</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">adaptive_num_components</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_iterations</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">num_flank_components</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">monitor</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#caiman.analysis.Analysis.correct" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">correct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'filter'</span></em>, <em class="sig-param"><span class="n">gmms</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>pandas.core.series.Series<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fit</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">adaptive_num_components</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_iterations</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">num_flank_components</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">monitor</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#caiman.analysis.Analysis.correct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Correct the normalized expression in analysis.dataset.</p>
 <dl>
 <dt>Parameters:</dt><dd><dl>
@@ -212,12 +213,6 @@ the expression values.</p>
 </dd>
 <dt>fit: bool, default: False</dt><dd><p>Force to fit the gaussian mixture model given the expression in
 analysis.dataset.</p>
-</dd>
-<dt>inplace: bool, default: False</dt><dd><p>If set to True, replace the expression in analysis.dataset with the
-corrected expression and return None. If set to False, return the
-corrected expression and the expression in analysis.dataset remains
-unmodified. Mainly used in pipeline development, strongly recommend to
-turn off in correction analysis.</p>
 </dd>
 <dt>adaptive_num_components: bool, default: False</dt><dd><p>Enable using likelihood ratio test to determine the optimal number of
 components.</p>
@@ -246,8 +241,7 @@ tab:</p>
 </dl>
 </dd>
 <dt>Returns:</dt><dd><dl class="simple">
-<dt>Optional[pd.core.frame.DataFrame]</dt><dd><p>If inplace set to True, return None. If inplace set to False, return the
-corrected expression.</p>
+<dt>pd.core.frame.DataFrame</dt><dd><p>Return the corrected expression.</p>
 </dd>
 </dl>
 </dd>
@@ -890,7 +884,7 @@ headers and must be separated by tab.</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Ping-Han Hsieh
+        &copy; Copyright 2021, Ping-Han Hsieh
 
     </p>
   </div>

@@ -5,7 +5,7 @@
 
 Caiman
 ======
-Count Adjustment to Improve the Modeling of Gene Association Networks (Caiman) is a package aims at correcting the normalized expression for lowly expressed genes that increases false positive associations in co-expression analysis.
+Count Adjustment to Improve the Modeling of Gene Association Networks (CAIMAN) is an algorithm that corrects for false-positive associations, which may form between lowly expressed genes after quantile-based normalization of the data, and which may affect downstream co-expression network analysis.
 
 Table of Contents
 -----------------
@@ -21,11 +21,11 @@ Table of Contents
 
 Introduction
 ------------
-Caiman is a Python software pacakge developed by `Kuijjer's Lab <https://www.kuijjerlab.org/>`_ that specifically designed to correct the RNA-Seq expression normalized by quantile based normalization methods (e.g. `smooth quantile normalization <https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028>`_). Inspired by the concept proposed by `MIXnorm <https://academic.oup.com/bioinformatics/article/36/11/3401/5781955>`_, Caiman uses a modified Gaussian mixture model to fit the expression distribution of all samples within each group, and which then makes use of the posterior probability of the mixture model to identify those genes that might yield false-positive associations to other genes. 
+CAIMAN is an algorithm developed by the `Kuijjer's Lab <https://www.kuijjerlab.org/>`_ that is specifically designed to correct false-positive gene associations in RNA-Seq data that is normalized with quantile-based methods, such as `smooth quantile normalization <https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028>`_. CAIMAN utilizes a Gaussian mixture model to fit the distribution of gene expression and to adaptively select a threshold to define lowly expressed genes. Thereafter, CAIMAN corrects the normalized expression for these genes by removing the variability across samples that might lead to false positive associations. The CAIMAN algorithm is available in a Python software package.
 
 Method
 ------
-Caiman starts by log₂-transform the normalized expression to approximate Gaussian distribution. Thereafter, augment the processed expression by concatenating with the negative transformed expression. The augmented expression distribution is therefore symmetric with respect to 0. A Gaussian mixture model is later used with the center component fixed with mean equals to 0. The genes with high posterior probability from the center component are believed to be non-expressed in the cell. For those genes, Caiman replaces the normalized expression with zero to reduce the false discovery rate in identifying co-expressed genes.
+CAIMAN starts by log₂-transforming normalized expression levels to approximate a Gaussian distribution. These processed expression levels are then augmented by concatenating negative transformed expression levels. This makes the augmented expression distribution symmetric with respect to zero. A Gaussian mixture model is then used with the center component fixed, with a mean equal to zero. The genes with high posterior probability to the center component are believed to be non-expressed in the cell. For those genes, CAIMAN replaces the normalized expression with zero (with :code:`-m filter`) or positive Gaussian noise with standard deviation of center components (with :code:`-m noise`). This removes false-positive associations that may have been introduced by quantile-based normalization methods. For an overview on how CAIMAN works, see the following figures:
 
 .. figure:: _static/method.png
    :alt: Cannot link to method.png

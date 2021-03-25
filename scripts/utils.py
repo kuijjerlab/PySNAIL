@@ -15,7 +15,7 @@ def bokeh_area_under_curve(
     file_label,
     corrs,
     before_label='qsmooth',
-    after_label='caiman',
+    after_label='qsmooth+CAIMAN',
     method='ROC'
 ):
     corr_truth = corrs[0].copy()
@@ -107,7 +107,7 @@ def bokeh_area_under_curve(
         color="navy", alpha=0.5, line_width=5, legend_label=after_label
     )
     fig.legend.location = 'bottom_left'
-    fig.xaxis.axis_label = 'Threshold on Validation'
+    fig.xaxis.axis_label = 'Threshold applied to the validation dataset'
     fig.yaxis.axis_label = f'AU{method.upper()}'
     fig.xaxis.axis_label_text_font_size = '20pt'
     fig.yaxis.axis_label_text_font_size = '20pt'
@@ -183,12 +183,12 @@ def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
         #fig.xaxis.major_label_text_alpha = 0
         #fig.xaxis.major_label_text_font_size = '6px'
         #fig.axis.group_text_font_size = '32px'
-        fig.axis.group_text_font_size = '2vh'
+        fig.axis.group_text_font_size = '2.2vh'
         fig.axis.group_text_align = 'center'
 
         fig.axis.major_label_standoff = 0
         #fig.title.text_font_size = '36px'
-        fig.title.text_font_size = '2vh'
+        fig.title.text_font_size = '2.5vh'
 
         fig.rect(
             x='xname',
@@ -219,8 +219,9 @@ def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
             #major_label_text_font_size="24px",
             #label_standoff=16,
             width=int(len(figure_table.xname.unique())/5),
-            major_label_text_font_size='1.5vh',
-            label_standoff=int(len(figure_table.xname.unique())/15),
+            major_label_text_font_size='2vh',
+            label_standoff=int(len(figure_table.xname.unique())/10),
+            title_standoff=int(len(figure_table.xname.unique())/10),
             border_line_color=None,
             location=(0, 0)
         )

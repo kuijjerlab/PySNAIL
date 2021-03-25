@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Caiman &mdash; Caiman 0.0.b2 documentation</title>
+  <title>Caiman &mdash; Caiman 0.2.0 documentation</title>
   
 
   
@@ -154,7 +154,7 @@
             
   <div class="section" id="caiman">
 <h1>Caiman<a class="headerlink" href="#caiman" title="Permalink to this headline">¶</a></h1>
-<p>Count Adjustment to Improve the Modeling of Gene Association Networks (Caiman) is a package aims at correcting the normalized expression for lowly expressed genes that increases false positive associations in co-expression analysis.</p>
+<p>Count Adjustment to Improve the Modeling of Gene Association Networks (CAIMAN) is an algorithm that corrects for false-positive associations, which may form between lowly expressed genes after quantile-based normalization of the data, and which may affect downstream co-expression network analysis.</p>
 <div class="section" id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
@@ -193,11 +193,11 @@
 </div>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>Caiman is a Python software pacakge developed by <a class="reference external" href="https://www.kuijjerlab.org/">Kuijjer’s Lab</a> that specifically designed to correct the RNA-Seq expression normalized by quantile based normalization methods (e.g. <a class="reference external" href="https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028">smooth quantile normalization</a>). Inspired by the concept proposed by <a class="reference external" href="https://academic.oup.com/bioinformatics/article/36/11/3401/5781955">MIXnorm</a>, Caiman uses a modified Gaussian mixture model to fit the expression distribution of all samples within each group, and which then makes use of the posterior probability of the mixture model to identify those genes that might yield false-positive associations to other genes.</p>
+<p>CAIMAN is an algorithm developed by the <a class="reference external" href="https://www.kuijjerlab.org/">Kuijjer’s Lab</a> that is specifically designed to correct false-positive gene associations in RNA-Seq data that is normalized with quantile-based methods, such as <a class="reference external" href="https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028">smooth quantile normalization</a>. CAIMAN utilizes a Gaussian mixture model to fit the distribution of gene expression and to adaptively select a threshold to define lowly expressed genes. Thereafter, CAIMAN corrects the normalized expression for these genes by removing the variability across samples that might lead to false positive associations. The CAIMAN algorithm is available in a Python software package.</p>
 </div>
 <div class="section" id="method">
 <h2>Method<a class="headerlink" href="#method" title="Permalink to this headline">¶</a></h2>
-<p>Caiman starts by log₂-transform the normalized expression to approximate Gaussian distribution. Thereafter, augment the processed expression by concatenating with the negative transformed expression. The augmented expression distribution is therefore symmetric with respect to 0. A Gaussian mixture model is later used with the center component fixed with mean equals to 0. The genes with high posterior probability from the center component are believed to be non-expressed in the cell. For those genes, Caiman replaces the normalized expression with zero to reduce the false discovery rate in identifying co-expressed genes.</p>
+<p>CAIMAN starts by log₂-transforming normalized expression levels to approximate a Gaussian distribution. These processed expression levels are then augmented by concatenating negative transformed expression levels. This makes the augmented expression distribution symmetric with respect to zero. A Gaussian mixture model is then used with the center component fixed, with a mean equal to zero. The genes with high posterior probability to the center component are believed to be non-expressed in the cell. For those genes, CAIMAN replaces the normalized expression with zero (with <code class="code docutils literal notranslate"><span class="pre">-m</span> <span class="pre">filter</span></code>) or positive Gaussian noise with standard deviation of center components (with <code class="code docutils literal notranslate"><span class="pre">-m</span> <span class="pre">noise</span></code>). This removes false-positive associations that may have been introduced by quantile-based normalization methods. For an overview on how CAIMAN works, see the following figures:</p>
 <div class="figure align-default">
 <img alt="Cannot link to method.png" src="_images/method.png" />
 </div>
@@ -227,7 +227,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Ping-Han Hsieh
+        &copy; Copyright 2021, Ping-Han Hsieh
 
     </p>
   </div>

@@ -3,7 +3,7 @@
 Manual
 ======
 
-Caiman provides application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.
+CAIMAN also provides an application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.
 
 Correct Expression
 ------------------
@@ -94,7 +94,7 @@ Result:
 
 Fitted Statistics
 -----------------
-Get fitted means
+Get fitted means.
 
 .. code-block:: python
 
@@ -108,7 +108,7 @@ Result:
     array([ 0.       , 10.543127 ,  4.2125125], dtype=float32)
 
 
-Get fitted standard deviations
+Get fitted standard deviations.
 
 .. code-block:: python
 
@@ -123,7 +123,7 @@ Result:
 
 Sample from GaussianMixtureModels
 ---------------------------------
-Please execute this after :code:`analysis.correct()`. The first element in the returned tuple is the sampling expression value, while the second element denote the labels.
+Please execute this after :code:`analysis.correct()`. The first element in the returned tuple is the sampling expression value, while the second element denotes the labels.
 
 .. code-block:: python
 

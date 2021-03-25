@@ -83,7 +83,7 @@ write.table(
     sep='\t', quote=FALSE, row.names=TRUE, col.names=NA
 )
 
-c_scale <- colorRampPalette(c('seagreen3', 'snow2', 'violetred2'))
+c_scale <- colorRampPalette(c('dodgerblue', 'snow2', 'violetred2'))
 
 table <- toptable_before[toptable_before$adj.P.Val < 0.05, ]
 
@@ -103,7 +103,7 @@ lab.locs <- radian.rescale(x=1:vcount(g), direction=-1, start=0)
 pdf(paste0(out_file, ".pdf"), width=6, height=5) 
 par(mar=c(1,2,1,5))
 plot(g, layout=layout.circle(g), vertex.size=15, vertex.label.cex=0.45, vertex.label.color="black", vertex.label.font=2, edge.width=1)
-image.plot(legend.only=T, zlim=c(-1 * max_range, max_range), col=c_scale(50), horizontal=F, legend.shrink=0.4, legend.width=0.8, legend.mar=5.5, legend.cex=0.8, legend.lab='LogFC', axis.args=list(cex.axis=0.6, tck=-0.6))
+image.plot(legend.only=T, zlim=c(-1, 1), col=c_scale(50), horizontal=F, legend.shrink=0.75, legend.width=0.9, legend.mar=5.5, legend.cex=1.0, legend.lab='LogFC', axis.args=list(cex.axis=0.6, tck=-0.6))
 dev.off() 
 
 z <- cbind(edges, toptable_after[rownames(table), 'logFC'])
@@ -119,5 +119,5 @@ lab.locs <- radian.rescale(x=1:vcount(g), direction=-1, start=0)
 pdf(paste0(out_file, "_caiman.pdf"),  width=6, height=5) 
 par(mar=c(1,2,1,5))
 plot(g, layout=layout.circle(g), vertex.size=15, vertex.label.cex=0.45, vertex.label.color="black", vertex.label.font=2, edge.width=1)
-image.plot(legend.only=T, zlim=c(-1 * max_range, max_range), col=c_scale(50), horizontal=F, legend.shrink=0.4, legend.width=0.8, legend.mar=5.5, legend.cex=0.8, legend.lab='LogFC', axis.args=list(cex.axis=0.6, tck=-0.6))
+image.plot(legend.only=T, zlim=c(-1, 1), col=c_scale(50), horizontal=F, legend.shrink=0.75, legend.width=0.9, legend.mar=5.5, legend.cex=1.0, legend.lab='LogFC', axis.args=list(cex.axis=0.6, tck=-0.6))
 dev.off() 

@@ -5,7 +5,7 @@ Installation
 
 Environment Setting
 -------------------
-It is highly recommended using `conda <https://docs.conda.io/projects/conda/en/latest/index.html>`_ virtual environment to install this package. After installation of conda, create a virtual environment for Caiman using the following command:
+It is highly recommended to use the `conda <https://docs.conda.io/projects/conda/en/latest/index.html>`_ virtual environment to install this package. After installation of conda, create a virtual environment for CAIMAN using the following command:
 
 .. code-block:: bash
 
@@ -22,7 +22,8 @@ Download the source code from :code:`git@github.com:kuijjerlab/CAIMAN.git` and i
     $ cd Caiman
     $ pip install -e .
 
-To reproduce analysis in the manuscript:
+To reproduce the analysis we provide in the manuscript:
+
 .. code-block:: bash
 
     $ conda activate caiman
@@ -34,7 +35,7 @@ To reproduce analysis in the manuscript:
 
 Example Dataset
 ---------------
-Caiman comes with one example dataset for the users. It can be found under the :code:`test` directories. The `expression.tsv` contains 10,000 randomly selected genes from `the Mouse ENCODE Project Consortium <https://www.encodeproject.org/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus>`_. :
+The CAIMAN packages includes an example dataset for users to test the method on. This can be found under the :code:`test` directories. The `expression.tsv` contains 10,000 randomly selected genes from `the Mouse ENCODE Project Consortium <https://www.encodeproject.org/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus>`_. The :code:`groups.tsv` contains the tissue information for each sample.
 
 .. code-block:: bash
 

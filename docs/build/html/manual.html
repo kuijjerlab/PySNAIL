@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Manual &mdash; Caiman 0.0.b2 documentation</title>
+  <title>Manual &mdash; Caiman 0.2.0 documentation</title>
   
 
   
@@ -165,7 +165,7 @@
             
   <div class="section" id="manual">
 <span id="id1"></span><h1>Manual<a class="headerlink" href="#manual" title="Permalink to this headline">¶</a></h1>
-<p>Caiman provides application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.</p>
+<p>CAIMAN also provides an application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.</p>
 <div class="section" id="correct-expression">
 <h2>Correct Expression<a class="headerlink" href="#correct-expression" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -241,7 +241,7 @@
 </div>
 <div class="section" id="fitted-statistics">
 <h2>Fitted Statistics<a class="headerlink" href="#fitted-statistics" title="Permalink to this headline">¶</a></h2>
-<p>Get fitted means</p>
+<p>Get fitted means.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">means</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">get_means</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
 </pre></div>
@@ -250,7 +250,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([</span> <span class="mf">0.</span>       <span class="p">,</span> <span class="mf">10.543127</span> <span class="p">,</span>  <span class="mf">4.2125125</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Get fitted standard deviations</p>
+<p>Get fitted standard deviations.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">stds</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">get_stds</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">stds</span><span class="p">)</span>
 </pre></div>
@@ -262,7 +262,7 @@
 </div>
 <div class="section" id="sample-from-gaussianmixturemodels">
 <h2>Sample from GaussianMixtureModels<a class="headerlink" href="#sample-from-gaussianmixturemodels" title="Permalink to this headline">¶</a></h2>
-<p>Please execute this after <code class="code docutils literal notranslate"><span class="pre">analysis.correct()</span></code>. The first element in the returned tuple is the sampling expression value, while the second element denote the labels.</p>
+<p>Please execute this after <code class="code docutils literal notranslate"><span class="pre">analysis.correct()</span></code>. The first element in the returned tuple is the sampling expression value, while the second element denotes the labels.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampled</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">sampled</span><span class="p">)</span>
 </pre></div>
@@ -331,7 +331,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Ping-Han Hsieh
+        &copy; Copyright 2021, Ping-Han Hsieh
 
     </p>
   </div>

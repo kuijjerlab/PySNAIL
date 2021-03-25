@@ -3,17 +3,17 @@
 Quick Start
 ===========
 
-After installation, Caiman can be executed directly as a Python module using the following command:
+After installation, CAIMAN can be executed directly as a Python module using the following command:
 
 .. code-block:: bash
 
-    $ python3 -m caiman test/qsmooth.tsv --groups test/groups.tsv --dist --outdir output
+    $ caiman test/qsmooth.tsv --groups test/groups.tsv --dist --outdir output
 
-The complete arguments are listed as follows (one can get this information by executing :code:`python3 -m caiman --help`)
+The complete arguments are listed as follows (one can get this information by executing :code:`caiman --help`)
 
 .. code-block:: bash
 
-    usage: __main__.py [-h] [-g [path]] [-m {'filter', 'noise'}] [-o [path]] [-a]
+    usage: caiman [-h] [-g [path]] [-m {'filter', 'noise'}] [-o [path]] [-a]
                     [-s] [-d] [-v]
                     xprs
 
@@ -41,13 +41,16 @@ The complete arguments are listed as follows (one can get this information by ex
                             should be either 'filter' or 'noise'. Default:
                             'filter'.
     -o [path], --outdir [path]
-                            Output directory for corrected read count. The
+                            The Output directory for the corrected read counts. The
                             directory consists of a data table 'caiman_out.tsv'
                             with corrected expression. There are also two optional
-                            subdirectories 'dist' and 'gmms'. The first directory
-                            contains interactive html file visualizing the
+                            with the corrected expression levels. There are also two 
+                            optional subdirectories 'dist' and 'gmms'. The first 
+                            directory contains interactive html file visualizing the
+                            contains an interactive html file visualizing the
                             sampling distribution and the posterior probability of
                             the fitted model for each group. The second one
+                            the fitted model for each group. The second directory
                             contains instances of GaussianMixtureModel fitted for
                             each group. Default: './caiman_output'.
     -a, --adaptive        Whether to use likelihood ratio test to determine the
@@ -64,6 +67,7 @@ Reproduce Analysis in the Manuscript
 To reproduce analysis in the manuscript:
 
 .. code-block:: bash
+
     $ snakemake --cores [n]
 
-The result can be found in the directory :code:`manuscript_analysis`. Note that it took a while to download and preprocess the datasets.
+The result can be found in the directory :code:`manuscript_analysis`. Note that it will likely take a while to download and preprocess the datasets.

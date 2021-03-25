@@ -67,7 +67,6 @@ class Analysis:
         method: str = 'filter',
         gmms: Optional[pd.core.series.Series] = None,
         fit: bool = True,
-        inplace: bool = False,
         adaptive_num_components: bool = False,
         max_iterations: int = 10,
         num_flank_components: int = 2,
@@ -92,13 +91,6 @@ class Analysis:
             fit: bool, default: False
                 Force to fit the gaussian mixture model given the expression in
                 analysis.dataset.
-
-            inplace: bool, default: False
-                If set to True, replace the expression in analysis.dataset with the
-                corrected expression and return None. If set to False, return the
-                corrected expression and the expression in analysis.dataset remains
-                unmodified. Mainly used in pipeline development, strongly recommend to
-                turn off in correction analysis.
 
             adaptive_num_components: bool, default: False
                 Enable using likelihood ratio test to determine the optimal number of
@@ -126,9 +118,8 @@ class Analysis:
                     6. sample size
 
         Returns:
-            Optional[pd.core.frame.DataFrame]
-                If inplace set to True, return None. If inplace set to False, return the
-                corrected expression.
+            pd.core.frame.DataFrame
+                Return the corrected expression.
 
         """
         if monitor:
@@ -202,9 +193,8 @@ class Analysis:
                 correct_function,
                 axis=1,
                 result_type='broadcast',
-                args=(inplace)
             )
-        elif not inplace:
+        else:
             corrected = self.dataset.xprs.copy()
         
         if verbose:
@@ -222,10 +212,7 @@ class Analysis:
             logging.debug(message)
         tracemalloc.stop()
 
-        if inplace:
-            return None
-        else:
-            return corrected.transpose()
+        return corrected.transpose()
 
     def distplot(
         self,

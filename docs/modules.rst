@@ -1,4 +1,4 @@
-CaiMAN
+CAIMAN
 ======
 
 .. toctree::
