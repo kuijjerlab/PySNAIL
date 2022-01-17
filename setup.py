@@ -1,15 +1,15 @@
 from setuptools import setup
 
 setup(
-    name='caiman',
-    version='0.2.0',
+    name='CAIMAN Qsmooth',
+    version='0.3.0',
     description="""Count Adjustment to Improve the Modeling of Gene Association
-    Networks (CAIMAN)""",
+    Networks with Qsmooth (CAIMAN-Qsmooth)""",
     url='https://github.com/dn070017/Caiman',
     author='Ping-Han Hsieh',
     author_email='dn070017@gmail.com',
     license='MIT',
-    packages=['caiman'],
+    packages=['caiman_qsmooth'],
     install_requires=[
         'bokeh>=2.2.0',
         'numpy>=1.19.1',
