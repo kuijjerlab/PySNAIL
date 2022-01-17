@@ -23,6 +23,13 @@ before_file <- args[2]
 after_file <- args[3]
 out_file <- args[4]
 
+#ref_file <- 'manuscript_analysis_20220110/datasets/ENCODE/lioness_input_ref_qsmooth.tsv'
+#before_file <- 'manuscript_analysis_updated/datasets/ENCODE/lioness_input_before_qsmooth.tsv'
+#after_file <- 'manuscript_analysis_updated/datasets/ENCODE/lioness_input_after_qsmooth.tsv'
+#out_file <- 'manuscript_analysis_20220110/results/encode_lioness_qsmooth'
+
+#args <- c(ref_file, before_file, after_file, out_file)
+
 xprs <- list()
 cormat <- list()
 for(index in seq(3)){
@@ -38,7 +45,8 @@ for(index in seq(3)){
             attributes = c('ensembl_gene_id', 'uniprot_gn_symbol'),
             filters = 'ensembl_gene_id', 
             values = rownames(xprs[[index]]), 
-            mart = ensembl
+            mart = ensembl,
+            useCache = FALSE
         )
         annotation <- annotation[annotation$uniprot_gn_symbol != '' & !duplicated(annotation$uniprot_gn_symbol), ]
     }
@@ -79,16 +87,16 @@ write.table(
 
 write.table(
     toptable_after, 
-    paste0(out_file, "_caiman_limma.tsv"),
+    paste0(out_file, "_round_limma.tsv"),
     sep='\t', quote=FALSE, row.names=TRUE, col.names=NA
 )
 
 c_scale <- colorRampPalette(c('dodgerblue', 'snow2', 'violetred2'))
 
-table <- toptable_before[toptable_before$adj.P.Val < 0.05, ]
+table <- toptable_before[toptable_before$adj.P.Val < 0.001, ]
 
 message(nrow(table) / 2, ' false discovery edges (before correction).')
-message(nrow(toptable_after[toptable_after$adj.P.Val < 0.01, ]) / 2, ' false discovery edges (after correction).')
+message(nrow(toptable_after[toptable_after$adj.P.Val < 0.001, ]) / 2, ' false discovery edges (after correction).')
 
 edges <- t(matrix(unlist(c(strsplit(row.names(table), "_"))),2))
 z <- cbind(edges, table$logFC)
@@ -116,7 +124,7 @@ V(g)$color <- "white"
 
 lab.locs <- radian.rescale(x=1:vcount(g), direction=-1, start=0)
 
-pdf(paste0(out_file, "_caiman.pdf"),  width=6, height=5) 
+pdf(paste0(out_file, "_round.pdf"),  width=6, height=5) 
 par(mar=c(1,2,1,5))
 plot(g, layout=layout.circle(g), vertex.size=15, vertex.label.cex=0.45, vertex.label.color="black", vertex.label.font=2, edge.width=1)
 image.plot(legend.only=T, zlim=c(-1, 1), col=c_scale(50), horizontal=F, legend.shrink=0.75, legend.width=0.9, legend.mar=5.5, legend.cex=1.0, legend.lab='LogFC', axis.args=list(cex.axis=0.6, tck=-0.6))

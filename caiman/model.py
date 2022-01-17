@@ -1,3 +1,4 @@
+#%%
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional, Tuple, Union
@@ -30,7 +31,7 @@ class Expectation:
     """
     posterior: np.ndarray
     conditional: np.ndarray
-    log_likelihood: np.ndarray
+    likelihood: np.ndarray
 
 
 class GaussianMixtureModel:
@@ -93,6 +94,7 @@ class GaussianMixtureModel:
         self.store_checkpoints: bool = store_checkpoints
         self.is_fitted: bool = False
         self.adaptive_num_components: bool = adaptive_num_components
+        self.epsilon = 1e-4
         self.__num_augmented_components: int = 0
         self.__num_flank_components: int = num_flank_components
         self.__means: np.ndarray = np.array([])
@@ -184,35 +186,44 @@ class GaussianMixtureModel:
         rng = get_random_state(seed)
 
         target_rand = rng.choice(target, sampling_size, replace=False)
-        target_aug = augment_data(target_rand, warn=True)
+        target_aug = np.concatenate([target_rand, -1 * target_rand])
+        #target_aug = augment_data(target_rand, warn=True)
+        #sns.distplot(target_aug)
 
         if self.verbose:
             message = ''.join((
                 f'\nFitting Log\n{"component":>13}',
-                f'{"iteration":>13}{"log-likelihood":>17}'
+                f'{"iteration":>13}{"log-likelihood":>17}{"BIC":>17}'
             ))
             print(message)
 
         self.__reset(target_aug, 0)
-        checkpoint_previous, log_likelihood_previous = self.__expectation_maximization(target_aug)
+        checkpoint_previous, log_likelihood_previous, zero_mean_warning = self.__expectation_maximization(target_aug)
+        bic_previous = self.__compute_bic(sampling_size, checkpoint_previous, log_likelihood_previous)      
 
         while True:
             self.__reset(target_aug, self.__num_flank_components)
-            checkpoint, log_likelihood = self.__expectation_maximization(target_aug)
+            checkpoint, log_likelihood, zero_mean_warning = self.__expectation_maximization(target_aug)
 
-            pvalue = likelihood_ratio_test(
-                log_likelihood_previous,
-                log_likelihood,
-                df=2 * (checkpoint.num_augmented_components - checkpoint_previous.num_augmented_components)
-            )
-            if pvalue > 1e-5:
+            bic = self.__compute_bic(sampling_size, checkpoint, log_likelihood)
+            if bic_previous < bic:
                 self.__reset(checkpoint=checkpoint_previous)
+                if self.verbose:
+                    print('\nBIC does not improve using more components, use '
+                    f'{int(self.__num_augmented_components / 2)} components')
+                break
+            elif zero_mean_warning:
+                self.__reset(checkpoint=checkpoint_previous)
+                if self.verbose:
+                    print('\nMean deviation is not large enough (>0.25), use '
+                    f'{int(self.__num_augmented_components / 2)} component(s)')
                 break
             else:
                 if not self.adaptive_num_components:
                     break
-
-            log_likelihood_previous = log_likelihood
+            if not self.adaptive_num_components:
+                break
+            bic_previous = bic
             checkpoint_previous = checkpoint
             self.__num_flank_components += 1
 
@@ -305,15 +316,12 @@ class GaussianMixtureModel:
 
         return reduce_data(pred_label)
 
-    def posterior(self, target: np.ndarray, is_aug=False) -> Optional[np.ndarray]:
+    def posterior(self, target: np.ndarray) -> Optional[np.ndarray]:
         """Compute the posterior probability of each component given the input data.
 
         Parameters:
             target: numpy.ndarray (required)
                 Expression values for the genes.
-
-            is_aug: bool, default: False
-                Whether or not target is augmeted.
 
         Returns:
             numpy.ndarray
@@ -326,23 +334,23 @@ class GaussianMixtureModel:
             return None
 
         target = target.astype(np.float32)
-        if not is_aug:
-            target = augment_data(target, warn=True)
-
-        end_index = 2 + int(self.__num_flank_components)
+        end_index = int(self.__num_augmented_components / 2) + 1
 
         posterior_prob = self.__expectation(target).posterior
         centered_prob = (posterior_prob[0] + posterior_prob[1]).reshape(1, -1)
-        flank_prob_pos = posterior_prob[2:end_index]
-        flank_prob_neg = posterior_prob[end_index:]
+        #centered_prob = posterior_prob[0].reshape(1, -1)
+        results = [centered_prob]
+        if end_index >= 3:
+            flank_prob_pos = posterior_prob[2:end_index]
+            flank_prob_neg = posterior_prob[end_index:]
+            flank_prob = flank_prob_pos
+            flank_prob = flank_prob.reshape(int(self.__num_flank_components), -1)
+            results.append(flank_prob)
 
-        flank_prob = (flank_prob_pos + flank_prob_neg)
-        flank_prob = flank_prob.reshape(int(self.__num_flank_components), -1)
+        return np.concatenate(results)
 
-        return reduce_data(np.concatenate([centered_prob, flank_prob]), axis=1)
-
-    def log_likelihood(self, target: np.ndarray, is_aug=False) -> Optional[np.ndarray]:
-        """Return the log likelihood of the mixture components.
+    def likelihood(self, target: np.ndarray, is_aug=False) -> Optional[np.ndarray]:
+        """Return the maximized log-likelihood of the mixture components.
 
         Parameters:
             target: numpy.ndarray (required)
@@ -353,7 +361,7 @@ class GaussianMixtureModel:
 
         Returns:
             numpy.ndarray
-                Return the log likelihood of the mixture components.
+                Return the log-likelihood of the mixture components.
 
         """
         if not self.__check_is_fitted():
@@ -367,7 +375,9 @@ class GaussianMixtureModel:
         target = target.astype(np.float32)
         if not is_aug:
             target = augment_data(target, warn=True)
-        return reduce_data(self.__expectation(target).log_likelihood)
+
+        likelihood = np.sum(self.__expectation(target).likelihood, axis=0)
+        return likelihood
 
     def get_num_components(self) -> int:
         return int(self.__num_augmented_components / 2)
@@ -394,6 +404,146 @@ class GaussianMixtureModel:
         end_index = 2 + int(self.__num_flank_components)
         return self.__stds[1:end_index]
 
+    def qvalue(self, target: np.ndarray, is_aug=False) -> Optional[np.ndarray]:
+        centered_mean = 0
+        centered_std = self.__stds[1]
+        z_scores = (target - centered_mean) / centered_std
+        p_vals = scipy.stats.norm.sf(abs(z_scores)) * len(target)
+        ranked_p_values = scipy.stats.rankdata(p_vals)
+        fdr = p_vals * len(p_vals) / ranked_p_values
+        fdr[fdr > 1] = 1
+        return fdr
+        #return scipy.stats.norm.sf(abs(z_scores))
+
+    def __check_is_fitted(self) -> str:
+        if self.is_fitted:
+            return True
+        else:
+            message = ''.join((
+                'The model has not been fitted to any dataset. ',
+                'Please run model.fit() before this operation.'
+            ))
+            warnings.warn(message, RuntimeWarning)
+            return False
+
+    def __compute_bic(self, num_samples, checkpoint, avg_log_likelihood):
+        return 2 * (checkpoint.num_augmented_components - 2) * np.log(num_samples) - 2 * avg_log_likelihood * num_samples
+
+    def __compute_conditional_density(self, target: np.ndarray) -> np.ndarray:
+        target = target.astype(np.float32)
+        means = self.__means.reshape(-1, 1)
+        stds = self.__stds.reshape(-1, 1)
+        z_score = (target - means) / stds
+        return 1 / (stds * np.sqrt(2 * np.pi)) * np.exp(-0.5 * z_score ** 2) 
+
+    def __expectation(self, target: np.ndarray) -> Expectation:
+        conditional_density = self.__compute_conditional_density(target)
+        likelihood = conditional_density * self.__weights.reshape(-1, 1)
+        posterior_probability = likelihood / (np.sum(likelihood, axis=0) + self.epsilon)
+        #print('(EXPECTATION) LIKELIHOOD:\n', likelihood)
+        #print('(EXPECTATION) POSTERIOR:\n', posterior_probability)
+        #print('(EXPECTATION) WEIGHT:\n', self.__weights)
+        expectation = Expectation(
+            posterior_probability,
+            conditional_density,
+            likelihood
+        )
+        return expectation
+    
+    def __expectation_maximization(self, target_aug) -> Tuple[CheckPoint, float]:
+        bic_previous = np.inf
+        sampling_size = len(target_aug)
+        patience = 5
+        best_bic = np.inf
+        for iteration in range(1, self.max_iterations + 1):
+            expectation = self.__expectation(target_aug)
+            zero_mean_warning = self.__maximization(target_aug, expectation.posterior)
+            average_log_likelihood = np.sum(1 / sampling_size * np.log(self.likelihood(target_aug, is_aug=True) + self.epsilon))
+            checkpoint = CheckPoint(
+                self.__num_augmented_components,
+                iteration,
+                np.copy(self.__weights),
+                np.copy(self.__means),
+                np.copy(self.__stds)
+            )
+            if self.store_checkpoints:
+                self.__checkpoints.append(checkpoint)
+            
+            bic = self.__compute_bic(sampling_size, checkpoint, average_log_likelihood)
+            
+            if bic > best_bic:
+                patience -= 1
+            else:
+                best_bic = bic
+                patience = 5
+
+            if np.isclose(bic_previous, bic) or patience == 0:
+                break
+
+            bic_previous = bic
+
+            if self.verbose:
+                message = ''.join((
+                    f'{int(self.__num_augmented_components / 2):>13}',
+                    f'{iteration:>13}',
+                    #f'{average_log_likelihood:>17.5f}',
+                    #f'{bic:>17.2E}'
+                    f'{bic:>20.2f}'
+                ))
+                print(message)
+
+        return checkpoint, average_log_likelihood, zero_mean_warning
+
+    def __maximization(self, target: np.ndarray, posterior: np.ndarray) -> None:
+        num_samples = len(target)
+        zero_mean_warning = False
+        for k in range(self.__num_augmented_components):
+            post_k = posterior[k]
+            dist_k = (target - self.__means[k]) ** 2
+            sum_post_k = np.sum(post_k) + self.epsilon
+            self.__stds[k] = np.sqrt(np.sum(post_k * dist_k) / sum_post_k)
+            if k > 1:
+                self.__means[k] = np.sum(target * post_k) / sum_post_k
+            self.__weights[k] = sum_post_k / num_samples
+    
+        #std = max((self.__stds[0] + self.__stds[1]) / 2, self.epsilon)
+        #self.__stds[0] = std
+        #self.__stds[1] = std
+    
+        for k in range(0, self.__num_flank_components):
+            index_pos = k + 2
+            index_neg = self.__num_flank_components + k + 2
+            if index_pos >= len(self.__means) or index_neg >= len(self.__means):
+                break
+            mean_pos =  1 * self.__means[index_pos]
+            mean_neg = -1 * self.__means[index_neg]
+            mean = (mean_pos + mean_neg) / 2
+            if np.isclose(mean, 0, atol=0.25):
+                zero_mean_warning = True
+            self.__means[index_pos] = mean
+            self.__means[index_neg] = -1 * mean
+            std_pos = self.__stds[index_pos]
+            std_neg = self.__stds[index_neg]
+            std = max((std_pos + std_neg) / 2, self.epsilon)
+            if k >= 1:
+                self.__stds[index_pos] = std
+                self.__stds[index_neg] = std
+            
+        return zero_mean_warning
+
+    def __report_statistics(self) -> str:
+        end_index = 2 + int(self.__num_flank_components) 
+        str_means = str(self.__means[1:end_index]).replace('\n', f'\n{"":4}')
+        str_stds = str(self.__stds[1:end_index]).replace('\n', f'\n{"":4}')
+        message = ''.join((
+            f'{"":4}num_components:\n{"":4}{self.__num_flank_components + 1}\n\n',
+            f'{"":4}means:\n',
+            f'{"":4}{str_means}\n\n',
+            f'{"":4}standard deviations:\n',
+            f'{"":4}{str_stds}\n\n'
+        ))
+        return message
+
     def __reset(
         self,
         target: Union[List, np.ndarray, None] = None,
@@ -412,7 +562,7 @@ class GaussianMixtureModel:
         if num_flanking_components == 0:
             self.__num_augmented_components = 2
             self.__means = np.zeros(2)
-            self.__stds = np.ones(2)
+            self.__stds = np.concatenate([0.01 * np.ones(1), 1 * np.ones(1)])
             self.__weights = 0.5 * np.ones(2)
         else:
             if not is_1darray(target, error=True):
@@ -428,110 +578,11 @@ class GaussianMixtureModel:
                 means,
                 -1 * means
             ]).astype(np.float32)
+            #print(self.__means)
             self.__stds = np.concatenate([
-                1 * np.ones(2),
+                0.01 * np.ones(1),
+                1 * np.ones(1),
                 3 * np.ones(num_flanking_components * 2)
             ]).astype(np.float32)
         return
-
-    def __expectation(self, target: np.ndarray) -> Expectation:
-        conditional_prob = self.__compute_conditional_probability(target)
-        conditional_prob_weighted = conditional_prob * self.__weights.reshape(-1, 1)
-        expectation = Expectation(
-            conditional_prob_weighted / np.sum(conditional_prob_weighted, axis=0),
-            conditional_prob,
-            np.log(np.matmul(self.__weights, conditional_prob))
-        )
-        return expectation
-
-    def __maximization(self, target: np.ndarray, posterior: np.ndarray) -> None:
-        num_samples = len(target)
-        for k in range(self.__num_augmented_components):
-            post_k = posterior[k]
-            dist_k = (target - self.__means[k]) ** 2
-            self.__stds[k] = np.sqrt(np.sum(post_k * dist_k) / np.sum(post_k))
-            if k > 1:
-                self.__means[k] = np.sum(target * post_k) / np.sum(post_k)
-            self.__weights[k] = np.sum(post_k) / num_samples
-    
-        std = max((self.__stds[0] + self.__stds[1]) / 2, 0.001)
-        self.__stds[0] = std
-        self.__stds[1] = std
-
-        for k in range(0, self.__num_flank_components):
-            index_pos = k + 2
-            index_neg = self.__num_flank_components + k + 2
-            if index_pos >= len(self.__means) or index_neg >= len(self.__means):
-                break
-            mean_pos = self.__means[index_pos]
-            mean_neg = -1 * self.__means[index_neg]
-            mean = (mean_pos + mean_neg) / 2
-            self.__means[index_pos] = mean
-            self.__means[index_neg] = -1 * mean
-            std_pos = self.__stds[index_pos]
-            std_neg = self.__stds[index_neg]
-            std = max((std_pos + std_neg) / 2, 0.001)
-            self.__stds[index_pos] = std
-            self.__stds[index_neg] = std
-
-    def __expectation_maximization(self, target_aug) -> Tuple[CheckPoint, float]:
-        log_likelihood_iteration = -1 * np.inf
-        for iteration in range(1, self.max_iterations + 1):
-            expectation = self.__expectation(target_aug)
-            self.__maximization(target_aug, expectation.posterior)
-            log_likelihood = np.sum(self.log_likelihood(target_aug, is_aug=True))
-            checkpoint = CheckPoint(
-                self.__num_augmented_components,
-                iteration,
-                np.copy(self.__weights),
-                np.copy(self.__means),
-                np.copy(self.__stds)
-            )
-            if self.store_checkpoints:
-                self.__checkpoints.append(checkpoint)
-
-            if self.verbose:
-                message = ''.join((
-                    f'{self.__num_flank_components + 1:>13}',
-                    f'{iteration:>13}',
-                    f'{log_likelihood / len(target_aug):>17.5f}'
-                ))
-                print(message)
-
-            if np.isclose(log_likelihood, log_likelihood_iteration):
-                break
-
-            log_likelihood_iteration = log_likelihood
-
-        return checkpoint, log_likelihood
-
-    def __compute_conditional_probability(self, target: np.ndarray) -> np.ndarray:
-        target = target.astype(np.float32)
-        means = self.__means.reshape(-1, 1)
-        stds = self.__stds.reshape(-1, 1)
-        z_score = (target - means) / stds
-        return 1 / (stds * np.sqrt(2 * np.pi)) * np.exp(-0.5 * z_score ** 2)
-
-    def __report_statistics(self) -> str:
-        end_index = 2 + int(self.__num_flank_components) 
-        str_means = str(self.__means[1:end_index]).replace('\n', f'\n{"":4}')
-        str_stds = str(self.__stds[1:end_index]).replace('\n', f'\n{"":4}')
-        message = ''.join((
-            f'{"":4}num_components:\n{"":4}{self.__num_flank_components + 1}\n\n',
-            f'{"":4}means:\n',
-            f'{"":4}{str_means}\n\n',
-            f'{"":4}standard deviations:\n',
-            f'{"":4}{str_stds}\n\n'
-        ))
-        return message
-
-    def __check_is_fitted(self) -> str:
-        if self.is_fitted:
-            return True
-        else:
-            message = ''.join((
-                'The model has not been fitted to any dataset. ',
-                'Please run model.fit() before this operation.'
-            ))
-            warnings.warn(message, RuntimeWarning)
-            return False
+# %%

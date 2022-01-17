@@ -118,7 +118,7 @@ def main():
 
     bokeh_correlation_heatmap(xprs_ref, tissue_of_gene, args.dataset, args.x, config['out_dir'])
     bokeh_correlation_heatmap(xprs_before, tissue_of_gene, args.dataset, args.y, config['out_dir'])
-    bokeh_correlation_heatmap(xprs_after, tissue_of_gene, args.dataset, f'{args.y}_caiman', config['out_dir'])
+    bokeh_correlation_heatmap(xprs_after, tissue_of_gene, args.dataset, f'{args.y}_round', config['out_dir'])
 
     corr_ref = compute_correlation_coefficients(xprs_ref)
     corr_before = compute_correlation_coefficients(xprs_before)

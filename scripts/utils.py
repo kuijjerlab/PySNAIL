@@ -15,9 +15,9 @@ def bokeh_area_under_curve(
     file_label,
     corrs,
     before_label='qsmooth',
-    after_label='qsmooth+CAIMAN',
     method='ROC'
 ):
+    after_label = f'{before_label} adjusted'
     corr_truth = corrs[0].copy()
     corr_before = corrs[1].copy()
     corr_after = corrs[2].copy()
@@ -125,7 +125,8 @@ def bokeh_area_under_curve(
 
 def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
     for corr in ['pearson', 'spearman']:
-        figure_table = table.T.corr(method=corr).stack()
+        denoise_table = table #+ np.random.normal(0, 1e-1, table.shape)
+        figure_table = denoise_table.T.corr(method=corr).stack()
         figure_table.index.names = ['0', '1']
         figure_table = figure_table.reset_index()
         figure_table.columns = ['xname', 'yname', 'target']
@@ -429,8 +430,9 @@ def bokeh_xprs_distribution(dataset_name, outdir, xprs, groups):
     return
 
 def compute_correlation_coefficients(data, method='spearman'):
-    corr = data.T.corr(method=method)
-    index = np.triu(np.ones(corr.shape)).astype(np.bool)
+    denoise_data = data #+ np.random.normal(0, 1e-1, data.shape)
+    corr = denoise_data.T.corr(method=method).fillna(0)
+    index = np.triu(np.ones(corr.shape)).astype(bool)
     index[np.diag_indices_from(index)] = False
     corr = corr.where(index).stack()
     corr.columns = ['gene_a', 'gene_b', method]

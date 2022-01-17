@@ -14,4 +14,5 @@ r-plotrix
 r-scales
 snakemake
 r-igraph
+r-normexpression
 bokeh

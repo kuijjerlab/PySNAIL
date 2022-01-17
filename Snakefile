@@ -7,14 +7,15 @@ rule all:
             dataset=['GTEx', 'ENCODE'],
             data=[
                 'meta', 'meta_tissue',
-                'xprs_qsmooth', 'xprs_qsmooth_caiman',
-                'xprs_quantile', 'xprs_quantile_caiman'
+                'xprs_qsmooth', 'xprs_qsmooth_round',
+                'xprs_quantile', 'xprs_quantile_round',
+                'xprs_deseq', 'xprs_uq', 'xprs_tmm'
             ]
         ),
         expand("{out_dir}/{dataset}_spearman_heatmap_{data}.html",
             out_dir=config['out_dir'],
             dataset=['gtex', 'encode'],
-            data=['qsmooth', 'qsmooth_caiman', 'quantile', 'quantile_caiman']
+            data=['qsmooth', 'qsmooth_round', 'quantile', 'quantile_round']
         ),
         expand("{out_dir}/{dataset}_{data}_{metrics}.html",
             out_dir=config['out_dir'],
@@ -24,11 +25,11 @@ rule all:
         ),
         expand("{out_dir}/encode_lioness_{data}.pdf",
             out_dir=config['out_dir'],
-            data=['qsmooth', 'qsmooth_caiman']
+            data=['qsmooth', 'qsmooth_round']
         ),
-        f"{config['out_dir']}/cpu_time_usage.html",
-        f"{config['out_dir']}/memory_usage.html",
-        f"{config['out_dir']}/elapsed_time.html"
+        #f"{config['out_dir']}/cpu_time_usage.html",
+        #f"{config['out_dir']}/memory_usage.html",
+        #f"{config['out_dir']}/elapsed_time.html"
 
 rule download_encode:
     output: expand("{dataset_dir}/ENCODE/{sample}/{sample}_meta.tsv", dataset_dir=config['datasets_dir'], sample=config['encode_tissues'])
@@ -101,7 +102,59 @@ rule qsmooth_normalization:
             f" {config['datasets_dir']}/ENCODE/meta_tissue.tsv"
         )
 
-rule caiman_correction:
+rule deseq_normalization:
+    input:
+        expand("{dataset_dir}/{dataset}/{data}.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['GTEx', 'ENCODE'],
+            data=['xprs_count']
+        ),
+    output:
+        expand("{dataset_dir}/{dataset}/{data}.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['GTEx', 'ENCODE'],
+            data=['xprs_uq', 'xprs_tmm', 'xprs_deseq']
+        ),
+    run:
+        shell(
+            f"Rscript --vanilla"
+            f" scripts/other_normalization.R"
+            f" {config['datasets_dir']}/GTEx/xprs_count.tsv"
+        ),
+        shell(
+            f"Rscript --vanilla"
+            f" scripts/other_normalization.R"
+            f" {config['datasets_dir']}/ENCODE/xprs_count.tsv"
+        )
+
+rule round_correction:
+    input:
+        expand("{dataset_dir}/{dataset}/{data}.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['GTEx', 'ENCODE'],
+            data=['xprs_qsmooth', 'xprs_quantile']
+        ),
+    output:
+        expand("{dataset_dir}/{dataset}/{data}.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['GTEx', 'ENCODE'],
+            data=['xprs_qsmooth_round', 'xprs_quantile_round']
+        ),
+    run:
+        shell(
+            f"python3 scripts/round_correction.py  {config['datasets_dir']}/GTEx/xprs_qsmooth.tsv {config['datasets_dir']}/GTEx/xprs_qsmooth_round.tsv",
+        ),
+        shell(
+            f"python3 scripts/round_correction.py {config['datasets_dir']}/GTEx/xprs_quantile.tsv {config['datasets_dir']}/GTEx/xprs_quantile_round.tsv"
+        ),
+        shell(
+            f"python3 scripts/round_correction.py {config['datasets_dir']}/ENCODE/xprs_qsmooth.tsv {config['datasets_dir']}/ENCODE/xprs_qsmooth_round.tsv",
+        ),
+        shell(
+            f"python3 scripts/round_correction.py {config['datasets_dir']}/ENCODE/xprs_quantile.tsv {config['datasets_dir']}/ENCODE/xprs_quantile_round.tsv",
+        ),
+
+"""rule caiman_correction:
     input:
         expand("{dataset_dir}/{dataset}/{data}.tsv", 
             dataset_dir=config['datasets_dir'],
@@ -158,7 +211,7 @@ rule caiman_correction:
         shell(
             f"mv {config['datasets_dir']}/ENCODE/caiman/quantile/xprs_caiman.tsv"
             f" {config['datasets_dir']}/ENCODE/xprs_quantile_caiman.tsv"
-        ),
+        ),"""
 
 rule evaluation:
     input: 
@@ -167,8 +220,8 @@ rule evaluation:
             dataset=['GTEx', 'ENCODE'],
             data=[
                 'meta_tissue',
-                'xprs_qsmooth', 'xprs_qsmooth_caiman',
-                'xprs_quantile', 'xprs_quantile_caiman',
+                'xprs_qsmooth', 'xprs_qsmooth_round',
+                'xprs_quantile', 'xprs_quantile_round',
             ]
         ),
         f"{config['datasets_dir']}/GTEx/xprs_count.tsv",
@@ -183,7 +236,7 @@ rule evaluation:
         expand("{out_dir}/{dataset}_spearman_heatmap_{data}.html",
             out_dir=config['out_dir'],
             dataset=['gtex', 'encode'],
-            data=['qsmooth', 'qsmooth_caiman', 'quantile', 'quantile_caiman']
+            data=['qsmooth', 'qsmooth_round', 'quantile', 'quantile_round']
         ),
         expand("{dataset_dir}/ENCODE/{data}.tsv", 
             dataset_dir=config['datasets_dir'],
@@ -200,7 +253,7 @@ rule evaluation:
             f" -t {config['datasets_dir']}/ENCODE/meta_tissue.tsv"
             f" -d ENCODE -x validation -y qsmooth"
             f" -b {config['datasets_dir']}/ENCODE/xprs_qsmooth.tsv"
-            f" -a {config['datasets_dir']}/ENCODE/xprs_qsmooth_caiman.tsv"
+            f" -a {config['datasets_dir']}/ENCODE/xprs_qsmooth_round.tsv"
             f" -c config.yaml"
         ),
         shell(
@@ -209,7 +262,7 @@ rule evaluation:
             f" -t {config['datasets_dir']}/ENCODE/meta_tissue.tsv"
             f" -d ENCODE -x validation -y quantile"
             f" -b {config['datasets_dir']}/ENCODE/xprs_quantile.tsv"
-            f" -a {config['datasets_dir']}/ENCODE/xprs_quantile_caiman.tsv"
+            f" -a {config['datasets_dir']}/ENCODE/xprs_quantile_round.tsv"
             f" -c config.yaml"
         ),
         shell(
@@ -218,7 +271,7 @@ rule evaluation:
             f" -t {config['datasets_dir']}/GTEx/meta_tissue.tsv"
             f" -d GTEx -x count -y qsmooth"
             f" -b {config['datasets_dir']}/GTEx/xprs_qsmooth.tsv"
-            f" -a {config['datasets_dir']}/GTEx/xprs_qsmooth_caiman.tsv"
+            f" -a {config['datasets_dir']}/GTEx/xprs_qsmooth_round.tsv"
             f" -c config.yaml"
         ),
         shell(
@@ -227,7 +280,7 @@ rule evaluation:
             f" -t {config['datasets_dir']}/GTEx/meta_tissue.tsv"
             f" -d GTEx -x count -y quantile"
             f" -b {config['datasets_dir']}/GTEx/xprs_quantile.tsv"
-            f" -a {config['datasets_dir']}/GTEx/xprs_quantile_caiman.tsv"
+            f" -a {config['datasets_dir']}/GTEx/xprs_quantile_round.tsv"
             f" -c config.yaml"
         )
 
@@ -244,7 +297,7 @@ rule lioness:
     output:
         expand("{out_dir}/encode_lioness_{data}.pdf",
             out_dir=config['out_dir'],
-            data=['qsmooth', 'qsmooth_caiman']
+            data=['qsmooth', 'qsmooth_round']
         )
     shell:
         f"Rscript --vanilla scripts/lioness.R"
@@ -253,7 +306,7 @@ rule lioness:
         f" {config['datasets_dir']}/ENCODE/lioness_input_after_qsmooth.tsv"
         f" {config['out_dir']}/encode_lioness_qsmooth"
 
-rule memory_time_usage:
+"""rule memory_time_usage:
     input:
         f"{config['datasets_dir']}/ENCODE/xprs_validation.tsv"
     output:
@@ -266,4 +319,4 @@ rule memory_time_usage:
             f"python3 scripts/memory_time_usage.py" 
             f" -x ./manuscript_analysis/datasets/ENCODE/xprs_validation.tsv"
             f" -c config.yaml"
-        )
+        )"""
