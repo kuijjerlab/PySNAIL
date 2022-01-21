@@ -1,11 +1,16 @@
 from copy import deepcopy
 import os
-from typing import Any, Optional, Union
+from typing import Any, List, Optional, Union
 import warnings
 
 import numpy as np
 import pandas as pd
 from scipy import stats
+
+from bokeh.models import ColorBar, ColumnDataSource, LabelSet
+from bokeh.models import LinearColorMapper, FactorRange
+from bokeh.palettes import Magma
+from bokeh.plotting import figure, output_file, show
 
 def augment_data(
     target: np.ndarray, 
@@ -417,3 +422,178 @@ def get_random_state(seed: Optional[int] = None) -> np.random.mtrand.RandomState
         return np.random.RandomState(seed)
     else:
         return np.random.default_rng()
+
+def bokeh_affected_barplot(
+    dataset,
+    qstat,
+    outdir: str = './output'
+) -> None:
+    directory = os.path.realpath(outdir)
+    os.makedirs(directory, exist_ok=True)
+    
+    figure_table = qstat.num_affected_genes / dataset.num_genes * 100
+    figure_table.index.names = ['0', '1']
+    figure_table = figure_table.reset_index()
+    figure_table.columns = ['sample_group', 'sample', '%']
+
+    y_data = list(zip(figure_table['sample_group'], figure_table['sample']))
+    y_uniq = list(set(y_data))
+    x_data = figure_table['%']
+
+    data_source = ColumnDataSource(
+        data=dict(
+            sample=y_data,
+            percentage=x_data
+        )
+    )
+
+    fig = figure(
+        title='',
+        x_range=(0.0, 100.0),
+        y_range=FactorRange(*y_uniq),
+        width=960,
+        height=len(figure_table['sample'].unique()) * 30,
+        tooltips=[
+            ('sample', '@sample'),
+            ('affected genes (%)', '@percentage'),
+        ]
+    )
+    fig.hbar(
+        y="sample",
+        right='percentage',
+        height=0.4,
+        source=data_source
+    )
+    fig.xaxis.axis_label = "Affected Genes (%)"
+    fig.axis.major_label_text_font_size = '1.0vh'
+    fig.axis.major_label_standoff = 0
+    fig.yaxis.group_text_font_size = '2.0vh'
+    fig.yaxis.group_text_align = 'center'
+    fig.yaxis.separator_line_alpha = 0
+
+    title = 'Affected Genes (%) for Each Sample'
+
+    file_name = os.path.join(
+        outdir,
+        f'{title.lower().replace(" ", "_")}.html'
+    )
+    
+    output_file(file_name, title=title)
+
+def bokeh_affected_heatmap(
+    dataset,
+    qstat,
+    samples: Optional[List[str]] = None,
+    genes: Optional[List[str]] = None,
+    outdir: str = './output'
+) -> None:
+    directory = os.path.realpath(outdir)
+    os.makedirs(directory, exist_ok=True)
+
+    groups = dataset.get_groups()
+
+    figure_table = qstat.affected_genes_each_sample.copy()
+    figure_table.columns = qstat.affected_genes_each_sample.columns.droplevel('Group')
+    figure_table = figure_table.loc[genes]
+    figure_table = figure_table[samples]
+    figure_table = figure_table.stack()
+
+    figure_table.index.names = ['0', '1']
+    figure_table = figure_table.reset_index()
+    figure_table.columns = ['gene', 'sample', 'affected']
+    figure_table['affected'] = figure_table['affected'].astype(int)
+
+    figure_table.loc[:, 'sample_group'] = groups[figure_table['sample']].values
+    figure_table.loc[:, 'color'] = '#000000'
+    figure_table.loc[figure_table['affected'] == 1.0, 'color'] = '#FFFFFF'
+
+    x_data = list(zip(figure_table['sample_group'], figure_table['sample']))
+    x_uniq = list(set(x_data))
+    y_data = figure_table['gene']
+    y_uniq = list(set(x_data))
+
+    mapper = LinearColorMapper(palette=list(Magma[256])[256:128:-1], low=0, high=1)
+
+    data_source = ColumnDataSource(
+        data=dict(
+            sample=x_data,
+            gene=y_data,
+            affected=figure_table.affected
+        )
+    )
+
+    fig = figure(
+        title='',
+        x_axis_location="below",
+        tools="hover, save",
+        x_range=FactorRange(*x_uniq),
+        y_range=FactorRange(*y_uniq),
+        tooltips=[
+            ('sample', '@sample'),
+            ('gene', '@gene'),
+            ('affected', '@affected')
+        ])
+
+    plot_width = len(figure_table['sample'].unique()) * 10
+    plot_height = len(figure_table['gene'].unique()) * 10
+    fig.plot_width = plot_width
+    fig.plot_height = plot_height
+    fig.grid.grid_line_color = None
+    fig.axis.axis_line_color = None
+    fig.axis.major_tick_line_color = None
+    fig.axis.major_label_text_font_size = '0.05vh'
+    fig.axis.major_label_standoff = 0
+    fig.axis.major_label_text_alpha = 0
+    fig.xaxis.major_label_orientation = np.pi / 2
+    fig.axis.group_text_font_size = '2.2vh'
+    fig.axis.group_text_align = 'center'
+
+    fig.axis.major_label_standoff = 0.25
+    fig.title.text_font_size = '2.5vh'
+
+    fig.rect(
+        x='gene',
+        y='sample',
+        width=1.0,
+        height=1.0,
+        source=data_source,
+        line_color=None,
+        fill_color={'field': 'affected', 'transform': mapper},
+        hover_line_color='black'
+    )
+
+    labels = LabelSet(
+        x='gene',
+        y='sample',
+        text='affected',
+        text_align='center',
+        text_font_size='8px',
+        text_color='color',
+        x_offset=0,
+        y_offset=-5,
+        source=data_source,
+        render_mode='canvas'
+    )
+
+    color_bar = ColorBar(
+        color_mapper=mapper,
+        #major_label_text_font_size="24px",
+        #label_standoff=16,
+        width=int(len(figure_table['sample'].unique())/5),
+        major_label_text_font_size='2vh',
+        label_standoff=int(len(figure_table['sample'].unique())/10),
+        title_standoff=int(len(figure_table['sample'].unique())/10),
+        border_line_color=None,
+        location=(0, 0)
+    )
+
+    fig.add_layout(labels)
+    fig.add_layout(color_bar, 'right')
+    
+    title = 'Affected Genes for Each Sample'
+
+    file_name = os.path.join(
+        outdir,
+        f'{title.lower().replace(" ", "_")}.html'
+    )
+    output_file(file_name, title=title)

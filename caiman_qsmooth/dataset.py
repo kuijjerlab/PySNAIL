@@ -1,14 +1,30 @@
+from dataclasses import dataclass
 from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
+import warnings
 
-from caiman_qsmooth.utils import have_same_index, is_file, read_series
+from .utils import have_same_index, is_file, read_series
+
+@dataclass(frozen=True)
+class Qstat:
+    """Qstat
+    Data structure for some relevant statistics for qsmooth normalization.
+    """
+    affected_genes_each_sample: pd.core.frame.DataFrame
+    num_affected_genes: pd.core.series.Series
+    num_affected_samples: int
+    smoothWeights: np.ndarray
+    Qhat: np.ndarray
+    SST: np.ndarray
+    SSB: np.ndarray
+    objectNorm: np.ndarray
 
 class Dataset:
     """Dataset
 
-    Dataset for expression data used in Caiman.
+    Dataset for expression data used in CAIMAN-Qsmooth normalization.
 
     Parameters:
         xprs: Union[str, pandas.core.frame.DataFrame], required
@@ -51,8 +67,8 @@ class Dataset:
         groups: Union[str, pd.core.series.Series, None] = None,
         **kargs
     ) -> None:
-        self.xprs: pd.DataFrame
-        self.groups: pd.Series
+        self.xprs: pd.core.frame.DataFrame
+        self.groups: pd.core.series.Series
         self.num_genes: int
         self.num_samples: int
         self.num_groups: int
@@ -76,6 +92,11 @@ class Dataset:
         ):
             groups = groups.loc[self.xprs.index]
         else:
+            message  = ''.join(
+                'Argument groups is not provided, create Dataset object without ',
+                'group information.'
+            )
+            warnings.warn(message, RuntimeWarning)
             groups = pd.Series('NA', index=self.xprs.index)
 
         self.xprs.index = pd.MultiIndex.from_arrays([
@@ -88,7 +109,7 @@ class Dataset:
         self.num_samples, self.num_genes = self.xprs.shape
 
     def __repr__(self) -> str:
-        return '<caiman.dataset.Dataset>'
+        return '<caiman_qsmooth.dataset.Dataset>'
 
     def __str__(self) -> str:
         str_groups = str(self.groups).replace('\n', f'\n{"":4}')
@@ -107,7 +128,7 @@ class Dataset:
         self,
         group: Optional[str] = None,
         copy: bool = True
-    ) -> pd.DataFrame:
+    ) -> pd.core.frame.DataFrame:
         """Get the expression table of the given group
 
         Parameters:
@@ -120,7 +141,7 @@ class Dataset:
                 the reference of the original expression dataframe (False)
 
         Returns:
-            pd.Dataframe
+            pd.core.frame.Dataframe
                 Expression dataframe of the given group.
 
         """
@@ -134,7 +155,7 @@ class Dataset:
         else:
             return self.xprs.loc[index].transpose()
 
-    def get_groups(self) -> pd.Series:
+    def get_groups(self) -> pd.core.series.Series:
         value = self.xprs.index.get_level_values('Group')
         index = self.xprs.index.get_level_values('Sample')
         return pd.Series(value, index=index)

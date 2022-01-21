@@ -1,10 +1,16 @@
+#%%
 import argparse
 import os
-import pickle as pickle
+import pickle
 import warnings
 
-from caiman.analysis import Analysis
+from caiman_qsmooth import Dataset
+from caiman_qsmooth import qsmooth
+from caiman_qsmooth import bokeh_affected_barplot
+from datetime import timedelta
+from time import time
 
+#%%
 def main() -> None:
     description = """Count Adjustment to Improve the Modeling of Gene Association
     Networks (CAIMAN) - Development"""
@@ -33,96 +39,59 @@ def main() -> None:
     )
     parser.add_argument(
         '-m', '--method',
-        metavar="{'filter', 'noise'}",
+        metavar="{'mean', 'median', 'auto'}",
         type=str,
-        default='filter',
-        help="""Method used to adjust the normalized read count, should be either
-        'filter' or 'noise'. Default: 'filter'."""
+        default='median',
+        help="""Method used compute the aggregate statistics for quantile with same
+        value in each group, should be either 'mean', 'median' or 'auto'. If set to 
+        'auto', the algorithm is going to use median aggregation if the proportion of 
+        the affected samples is larger or equal to [--threshold] (default: 0.25). 
+        Default: 'median'."""
+    )
+    parser.add_argument(
+        '-t', '--threshold',
+        metavar="[threshold]",
+        type=float,
+        default=0.25,
+        help="""Threshold of the proportion of samples being affected if mean 
+        aggregation is being used. The algorithm is going to use median aggregation 
+        if the proportion of the affected samples is larger or equal to this threshold 
+        when [--method] is set to 'auto'. This argument is ignored if method is 
+        specified with 'mean' or 'median'.
+        Defulat: 0.25""" 
     )
     parser.add_argument(
         '-o', '--outdir',
         metavar='[path]',
         type=str,
-        default='./caiman_output',
-        help="""Output directory for the CAIMAN corrected expression. The directory 
-        consists of a data table 'caiman_out.tsv' with the corrected expression levels.
-        There are also two optional subdirectories 'dist' and 'gmms'. The first directory
-        contains an interactive html file visualizing the sampling distribution and the
-        posterior probability of the fitted model for each group. The second directory
-        contains instances of GaussianMixtureModel fitted for each group. 
-        Default: './caiman_output'."""
+        default='./output',
+        help="""Output directory for the corrected qsmooth expression and some
+        informative statistics. The directory consists of a data table 'xprs_norm.tsv' 
+        with the corrected expression levels.  
+        Default: './output'."""
     )
-    parser.add_argument(
-        '-a', '--adaptive',
-        action='store_true',
-        default=False,
-        help="""Whether to use likelihood ratio test to determine the optimal number of
-        components. Default: unset."""
-    )
-    parser.add_argument(
-        '-s', '--save_model',
-        action='store_true',
-        default=False,
-        help="""Save instances of GaussianMixtureModel fitted for each group in 'gmms'.
-        Default: unset."""
-    )
-    parser.add_argument(
-        '-d', '--dist',
-        action='store_true',
-        default=False,
-        help="""Save interactive html file visualizing the sampling distribution and the
-        posterior probability of the fitted model for each group in 'dist'. Default: 
-        unset."""
-    )
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        default=False,
-        help='Enable verbose message when fitting. Default: unset.'
-    )
-
+    
+    start_time = time()
     args = parser.parse_args()
-    analysis = Analysis(args.xprs, args.groups, **{'index_col': 0, 'sep': '\t'})
-    corrected = analysis.correct(
-        method=args.method,
-        adaptive_num_components=args.adaptive,
-        verbose=args.verbose,
-    )
+
+    dataset = Dataset(args.xprs, args.groups, **{'index_col': 0, 'sep': '\t'})
+    xprs_norm, qstat = qsmooth(dataset, aggregation=args.method, threshold=args.threshold)
+
     directory = os.path.realpath(args.outdir)
     if not os.path.isdir(directory):
         if os.path.isfile(directory):
-            directory = os.path.realpath('./')
-            message = f"{directory} is a file. Set --outdir to './'."
+            message = f"{directory} is a file. Set --outdir to './output'."
+            directory = os.path.realpath('./output')
             warnings.warn(message, RuntimeWarning)
-        else:
-            os.makedirs(directory)
 
-    print('\nStart storing corrected expression')
-    corrected.to_csv(os.path.join(directory, 'xprs_caiman.tsv'), sep='\t')
-    print('Completed storing optional expression successfully.')
+        os.makedirs(directory, exist_ok=True)
 
-    if args.dist:
-        dist_directory = os.path.join(directory, 'dist/')
-        os.makedirs(dist_directory, exist_ok=True)
-    if args.save_model:
-        gmms_directory = os.path.join(directory, 'gmms/')
-        os.makedirs(gmms_directory, exist_ok=True)
-
-    if not args.dist and not args.save_model:
-        return
-
-    if args.verbose:
-        print('\nStart storing optional files')
-
-    for group in analysis.dataset.groups:
-        if args.dist:
-            analysis.distplot(group, outdir=dist_directory)
-        if args.save_model:
-            group_name = group.lower().replace(" ", "_")
-            with open(os.path.join(gmms_directory, f'{group_name}.pkl'), 'wb') as file:
-                pickle.dump(analysis.gmms[group], file)
-    if args.verbose:
-        print('Completed storing optional files successfully.\nAll completed.')
-
+    xprs_norm.to_csv(os.path.join(directory, 'xprs_norm.tsv'), sep='\t')
+    with open(os.path.join(directory, 'xprs_qstat.pkl'), 'wb') as handle:
+        pickle.dump(qstat, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    
+    bokeh_affected_barplot(dataset, qstat, directory)
+    print(f'Normalization is completed. Time elapse: {str(timedelta(seconds=time() - start_time))}')
+    
 if __name__ == "__main__":
     main()
