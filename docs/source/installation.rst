@@ -35,9 +35,9 @@ To reproduce the analysis we provide in the manuscript:
 
 Example Dataset
 ---------------
-The CAIMAN packages includes an example dataset for users to test the method on. This can be found under the :code:`test` directories. The `expression.tsv` contains 10,000 randomly selected genes from `the Mouse ENCODE Project Consortium <https://www.encodeproject.org/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus>`_. The :code:`groups.tsv` contains the tissue information for each sample.
+The CAIMAN packages includes an example dataset for users to test the method on. This can be found under the :code:`sample_data` directories. The `expression.tsv` contains 10,000 randomly selected genes from `the Mouse ENCODE Project Consortium <https://www.encodeproject.org/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus>`_. The :code:`groups.tsv` contains the tissue information for each sample.
 
 .. code-block:: bash
 
-    $ test/expression.tsv
-    $ test/groups.tsv
+    $ sample_data/expression.tsv
+    $ sample_data/groups.tsv

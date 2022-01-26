@@ -3,34 +3,26 @@
 Documentation
 =============
 
-caiman.analysis
----------------
+caiman_qsmooth.dataset
+----------------------
 
-.. automodule:: caiman.analysis
+.. automodule:: caiman_qsmooth.dataset
    :members:
    :undoc-members:
    :show-inheritance:
 
-caiman.dataset
---------------
+caiman_qsmooth.qsmooth
+----------------------
 
-.. automodule:: caiman.dataset
+.. automodule:: caiman_qsmooth.qsmooth
    :members:
    :undoc-members:
    :show-inheritance:
 
-caiman.model
-------------
+caiman_qsmooth.utils
+--------------------
 
-.. automodule:: caiman.model
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-caiman.utils
-------------
-
-.. automodule:: caiman.utils
+.. automodule:: caiman_qsmooth.utils
    :members:
    :undoc-members:
    :show-inheritance:

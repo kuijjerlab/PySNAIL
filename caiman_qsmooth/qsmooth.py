@@ -46,11 +46,44 @@ def compute_qstat(
   groups: Optional[Union[str, pd.DataFrame]] = None,
   window: float = 0.05
 ) -> Qstat:
+    """Compute relevant statistics for qsmooth normalization.
 
+    Parameters:
+        dataset: Union[str, Dataset]
+            CAIMAN-Qsmooth Dataset with provided expression and group information. If
+            string is provided, it will be treated as the path to the expression data 
+            used for creating the dataset. The dataset will be created automatically.
+
+        groups: str, optional
+            If string is provided, it will be treated as the path to the group
+            information used for creating the dataset. This argument is ignored if 
+            dataset get a created Dataset object.
+
+        window: float, default: 0.05
+            Window size for smoothen weight (range from 0.01 to 0.25).
+
+      Returns:
+          Qstat
+            Statistics for qsmooth normalization, including 'number of affected genes 
+            for each sample', 'number of affected samples', 'smoothen weights', 
+            'mean value for each quantile across samples', 'total sum of squares', 
+            'explained sum of squares' and 'normalized value corresponding to each 
+            quantile'.
+
+    """
     if type(dataset) != Dataset:
-      dataset = Dataset(dataset, groups)
+      dataset = Dataset(dataset, groups, **{"index_col": 0, "sep": '\t'})
     elif type(dataset) == Dataset and groups is not None:
       message = "Dataset has been created, ignore argument 'groups'"
+      warnings.warn(message, RuntimeWarning)
+    
+    if window < 0.01:
+      window = 0.01
+      message = "Argument window needs to be larger than 0.01, set to 0.01."
+      warnings.warn(message, RuntimeWarning)
+    if window > 0.25:
+      window = 0.25
+      message = "Argument window needs to be smaller than 0.25, set to 0.25."
       warnings.warn(message, RuntimeWarning)
 
     xprs = dataset.get_xprs()
@@ -150,12 +183,41 @@ def qsmooth(
   aggregation='median',
   threshold=0.25
 ) -> Tuple[pd.core.frame.DataFrame, Qstat]:
+    """Perform qsmooth normalization.
+
+    Parameters:
+        dataset: Union[str, Dataset]
+            CAIMAN-Qsmooth Dataset with provided expression and group information. If
+            string is provided, it will be treated as the path to the expression data 
+            used for creating the dataset. The dataset will be created automatically.
+
+        groups: str, optional
+            If string is provided, it will be treated as the path to the group
+            information used for creating the dataset. This argument is ignored if 
+            dataset get a created Dataset object.
+
+        aggregation: str, default: 'median'
+            Aggregation method used to aggregate the mean value of each quantile when
+            the original value are the same. Should be one of 'mean', 'median' or
+            'auto'. When set to 'auto', the threshold argument will be used.
+
+        threshold: float, default: 0.25
+            Threshold of the proportion of affected samples used to detect whether or 
+            not the method should use 'median' aggregation instead of 'mean'. This 
+            argumnet is ignored when aggregation is not set to 'auto'.
+
+    Returns:
+        Tuple[pd.core.frame.DataFrame, Qstat]
+            The first element in the tuple is the normalized expression, the second 
+            element is the relevant statistics for qsmooth algorithms (Qstat object).
+
+    """
     if aggregation.lower() in ['mean', 'median', 'auto']:
       message = f"Aggregation is set to {aggregation}, ignored argument 'threshold'."
       warnings.warn(message, RuntimeWarning)
 
     if type(dataset) != Dataset:
-      dataset = Dataset(dataset, groups)
+      dataset = Dataset(dataset, groups, **{"index_col": 0, "sep": '\t'})
     elif type(dataset) == Dataset and groups is not None:
       message = "Dataset has been created, ignore argument 'groups'"
       warnings.warn(message, RuntimeWarning)
@@ -163,7 +225,7 @@ def qsmooth(
     qstat = compute_qstat(dataset)
 
     if aggregation.lower() == 'auto':
-      use_median = qstat.get('num_affected_samples') / dataset.num_samples >= threshold
+      use_median = qstat.num_affected_samples / dataset.num_samples >= threshold
       if use_median:
         aggregation = 'median'
       else:

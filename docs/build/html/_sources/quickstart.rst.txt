@@ -7,63 +7,61 @@ After installation, CAIMAN can be executed directly as a Python module using the
 
 .. code-block:: bash
 
-    $ caiman test/qsmooth.tsv --groups test/groups.tsv --dist --outdir output
+    $ caiman_qsmooth sample_data/qsmooth.tsv --groups sample_data/groups.tsv --outdir output
 
 The complete arguments are listed as follows (one can get this information by executing :code:`caiman --help`)
 
 .. code-block:: bash
 
-    usage: caiman [-h] [-g [path]] [-m {'filter', 'noise'}] [-o [path]] [-a]
-                    [-s] [-d] [-v]
-                    xprs
+    caiman_qsmooth -h
+    usage: caiman_qsmooth [-h] [-g [path]] [-m {'mean', 'median', 'auto'}]
+        [-t [threshold]] [-o [path]] xprs
+
+    Count Adjustment to Improve the Modeling of Gene Association Networks-Qsmooth (CAIMAN-Qsmooth)
 
     positional arguments:
-    xprs                  Path to the expression data. The file should be
-                            formatted as follows: the rows should represent genes
-                            (the first row must be the sample names), and the
-                            columns should represent samples (the first column
-                            must be the gene names). The columns must be separated
-                            with <tab>.
+        xprs            Path to the expression data. The file should be
+                        formatted as follows: the rows should represent genes
+                        (the first row must be the sample names), and the
+                        columns should represent samples (the first column
+                        must be the gene names). The columns must be separated
+                        with <tab>.
 
     optional arguments:
-    -h, --help            show this help message and exit
-    -g [path], --groups [path]
-                            Path to the group information for each sample. The
-                            file should have two columns without any header. The
-                            first column should be the sample names, corresponds
-                            to the columns in xprs. The second column should be
-                            the group information for each sample. The two columns
-                            must be separated by <tab>. If this argument is not
-                            provided, the algorithm will treat all samples as one
-                            group.
-    -m {'filter', 'noise'}, --method {'filter', 'noise'}
-                            Method used to adjust the normalized read count,
-                            should be either 'filter' or 'noise'. Default:
-                            'filter'.
-    -o [path], --outdir [path]
-                            The Output directory for the corrected read counts. The
-                            directory consists of a data table 'caiman_out.tsv'
-                            with corrected expression. There are also two optional
-                            with the corrected expression levels. There are also two 
-                            optional subdirectories 'dist' and 'gmms'. The first 
-                            directory contains interactive html file visualizing the
-                            contains an interactive html file visualizing the
-                            sampling distribution and the posterior probability of
-                            the fitted model for each group. The second one
-                            the fitted model for each group. The second directory
-                            contains instances of GaussianMixtureModel fitted for
-                            each group. Default: './caiman_output'.
-    -a, --adaptive        Whether to use likelihood ratio test to determine the
-                            optimal number of components. Default: unset.
-    -s, --save_model      Save instances of GaussianMixtureModel fitted for each
-                            group in 'gmms'. Default: unset.
-    -d, --dist            Save interactive html file visualizing the sampling
-                            distribution and the posterior probability of the
-                            fitted model for each group in 'dist'. Default: unset.
-    -v, --verbose         Enable verbose message when fitting. Default: unset.
+        -h, --help      show this help message and exit
+        -g [path], --groups [path]
+                        Path to the group information for each sample. The
+                        file should have two columns without any header. The
+                        first column should be the sample names, corresponds
+                        to the columns in xprs. The second column should be
+                        the group information for each sample. The two columns
+                        must be separated by <tab>. If this argument is not
+                        provided, the algorithm will treat all samples as one
+                        group.
+        -m {'mean', 'median', 'auto'}, --method {'mean', 'median', 'auto'}
+                        Method used compute the aggregate statistics for
+                        quantile with same value in each group, should be
+                        either 'mean', 'median' or 'auto'. If set to 'auto',
+                        the algorithm is going to use median aggregation if
+                        the proportion of the affected samples is larger or
+                        equal to [--threshold] (default: 0.25). Default:
+                        'median'.
+        -t [threshold], --threshold [threshold]
+                        Threshold of the proportion of samples being affected
+                        if mean aggregation is being used. The algorithm is
+                        going to use median aggregation if the proportion of
+                        the affected samples is larger or equal to this
+                        threshold when [--method] is set to 'auto'. This
+                        argument is ignored if method is specified with 'mean'
+                        or 'median'. Defulat: 0.25
+        -o [path], --outdir [path]
+                        Output directory for the corrected qsmooth expression
+                        and some informative statistics. The directory
+                        consists of a data table 'xprs_norm.tsv' with the
+                        corrected expression levels. Default: './output'.
 
 Reproduce Analysis in the Manuscript
-====================================
+------------------------------------
 To reproduce analysis in the manuscript:
 
 .. code-block:: bash

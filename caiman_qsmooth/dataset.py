@@ -11,6 +11,32 @@ from .utils import have_same_index, is_file, read_series
 class Qstat:
     """Qstat
     Data structure for some relevant statistics for qsmooth normalization.
+
+    Attributes:
+        affected_genes_each_sample: pd.core.frame.DataFrame
+            Number of affected genes for each sample.
+            
+        num_affected_genes: pd.core.series.Series
+            Number of affected genes for each sample.
+
+        num_affected_samples: int
+            Number of affected samples.
+
+        smoothWeights: np.ndarray
+            Smoothen weights.
+
+        Qhat: np.ndarray
+            Mean value for each quantile across samples.
+        
+        SST: np.ndarray
+            Total sum of squares.
+        
+        SSB: np.ndarray
+            Explained sum of squares.
+        
+        objectNorm: np.ndarray
+            Normalized value corresponding to each quantile.
+
     """
     affected_genes_each_sample: pd.core.frame.DataFrame
     num_affected_genes: pd.core.series.Series
@@ -92,10 +118,10 @@ class Dataset:
         ):
             groups = groups.loc[self.xprs.index]
         else:
-            message  = ''.join(
+            message  = ''.join((
                 'Argument groups is not provided, create Dataset object without ',
                 'group information.'
-            )
+            ))
             warnings.warn(message, RuntimeWarning)
             groups = pd.Series('NA', index=self.xprs.index)
 

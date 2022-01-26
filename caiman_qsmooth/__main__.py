@@ -13,7 +13,7 @@ from time import time
 #%%
 def main() -> None:
     description = """Count Adjustment to Improve the Modeling of Gene Association
-    Networks (CAIMAN) - Development"""
+    Networks-Qsmooth (CAIMAN-Qsmooth)"""
 
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument(

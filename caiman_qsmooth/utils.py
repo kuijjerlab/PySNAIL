@@ -10,7 +10,7 @@ from scipy import stats
 from bokeh.models import ColorBar, ColumnDataSource, LabelSet
 from bokeh.models import LinearColorMapper, FactorRange
 from bokeh.palettes import Magma
-from bokeh.plotting import figure, output_file, show
+from bokeh.plotting import figure, output_file, save
 
 def augment_data(
     target: np.ndarray, 
@@ -428,6 +428,23 @@ def bokeh_affected_barplot(
     qstat,
     outdir: str = './output'
 ) -> None:
+    """Make figure summarized the affected genes for each samples. The file will be 
+    written to [outdir]/affected_genes_(%)_for_each_sample.html.
+
+    Parameters:
+        dataset: Dataset
+            CAIMAN-Qsmooth Dataset with provided expression and group information.
+
+        qstat: Qstat
+            Statistics for qsmooth normalization.
+
+        outdir: str, optional
+            Output directory (default: ./output)
+
+    Returns:
+        None
+
+    """
     directory = os.path.realpath(outdir)
     os.makedirs(directory, exist_ok=True)
     
@@ -474,11 +491,12 @@ def bokeh_affected_barplot(
     title = 'Affected Genes (%) for Each Sample'
 
     file_name = os.path.join(
-        outdir,
+        directory,
         f'{title.lower().replace(" ", "_")}.html'
     )
     
     output_file(file_name, title=title)
+    save(fig)
 
 def bokeh_affected_heatmap(
     dataset,
@@ -487,6 +505,32 @@ def bokeh_affected_heatmap(
     genes: Optional[List[str]] = None,
     outdir: str = './output'
 ) -> None:
+    """Make figure about the affected genes for each samples (small samples and genes
+    are recommended, the interactive figure can only deal with small amount of data). 
+    The file will be written to [outdir]/affected_genes_for_each_sample.html.
+
+    Parameters:
+        dataset: Dataset
+            CAIMAN-Qsmooth Dataset with provided expression and group information.
+
+        qstat: Qstat
+            Statistics for qsmooth normalization.
+
+        samples: List[str]
+            Filter for the samples (only samples in this argument will be analyzed). If
+            None is provided, all samples will be used.
+
+        genes: List[str]
+            Filter for the genes (only genes in this argument will be analyzed). If None
+            is provided, all genes will be used.
+        
+        outdir: str, optional
+            Output directory (default: ./output)
+
+    Returns:
+        None.
+
+    """
     directory = os.path.realpath(outdir)
     os.makedirs(directory, exist_ok=True)
 
@@ -494,8 +538,10 @@ def bokeh_affected_heatmap(
 
     figure_table = qstat.affected_genes_each_sample.copy()
     figure_table.columns = qstat.affected_genes_each_sample.columns.droplevel('Group')
-    figure_table = figure_table.loc[genes]
-    figure_table = figure_table[samples]
+    if genes is not None:
+        figure_table = figure_table.loc[genes]
+    if samples is not None:
+        figure_table = figure_table[samples]
     figure_table = figure_table.stack()
 
     figure_table.index.names = ['0', '1']
@@ -507,10 +553,10 @@ def bokeh_affected_heatmap(
     figure_table.loc[:, 'color'] = '#000000'
     figure_table.loc[figure_table['affected'] == 1.0, 'color'] = '#FFFFFF'
 
-    x_data = list(zip(figure_table['sample_group'], figure_table['sample']))
+    x_data = list(figure_table['sample'])
     x_uniq = list(set(x_data))
     y_data = figure_table['gene']
-    y_uniq = list(set(x_data))
+    y_uniq = list(set(y_data))
 
     mapper = LinearColorMapper(palette=list(Magma[256])[256:128:-1], low=0, high=1)
 
@@ -538,18 +584,17 @@ def bokeh_affected_heatmap(
     plot_height = len(figure_table['gene'].unique()) * 10
     fig.plot_width = plot_width
     fig.plot_height = plot_height
-    fig.grid.grid_line_color = None
-    fig.axis.axis_line_color = None
-    fig.axis.major_tick_line_color = None
-    fig.axis.major_label_text_font_size = '0.05vh'
-    fig.axis.major_label_standoff = 0
-    fig.axis.major_label_text_alpha = 0
-    fig.xaxis.major_label_orientation = np.pi / 2
-    fig.axis.group_text_font_size = '2.2vh'
-    fig.axis.group_text_align = 'center'
+    #fig.grid.grid_line_color = None
+    #fig.axis.axis_line_color = None
+    #fig.axis.major_tick_line_color = None
+    #fig.axis.major_label_text_font_size = '0.05vh'
+    #fig.axis.major_label_standoff = 0
+    #fig.axis.major_label_text_alpha = 0
+    fig.xaxis.major_label_orientation = "vertical"
+    #fig.axis.group_text_font_size = '2.2vh'
+    #fig.axis.group_text_align = 'center'
 
-    fig.axis.major_label_standoff = 0.25
-    fig.title.text_font_size = '2.5vh'
+    #fig.axis.major_label_standoff = 0.25
 
     fig.rect(
         x='gene',
@@ -577,8 +622,6 @@ def bokeh_affected_heatmap(
 
     color_bar = ColorBar(
         color_mapper=mapper,
-        #major_label_text_font_size="24px",
-        #label_standoff=16,
         width=int(len(figure_table['sample'].unique())/5),
         major_label_text_font_size='2vh',
         label_standoff=int(len(figure_table['sample'].unique())/10),
@@ -593,7 +636,8 @@ def bokeh_affected_heatmap(
     title = 'Affected Genes for Each Sample'
 
     file_name = os.path.join(
-        outdir,
+        directory,
         f'{title.lower().replace(" ", "_")}.html'
     )
     output_file(file_name, title=title)
+    save(fig)

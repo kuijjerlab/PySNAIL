@@ -24,7 +24,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'caiman = caiman.__main__:main'
+            'caiman_qsmooth = caiman_qsmooth.__main__:main'
         ],
     },
     zip_safe=False,

@@ -84,7 +84,6 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 </ul>
@@ -154,7 +153,7 @@
             
   <div class="section" id="caiman">
 <h1>Caiman<a class="headerlink" href="#caiman" title="Permalink to this headline">¶</a></h1>
-<p>Count Adjustment to Improve the Modeling of Gene Association Networks (CAIMAN) is an algorithm that corrects for false-positive associations, which may form between lowly expressed genes after quantile-based normalization of the data, and which may affect downstream co-expression network analysis.</p>
+<p>Count Adjustment to Improve the Modeling of Gene Association Networks-Smooth Quantile Normalization (CAIMAN-Qsmooth) is a method that corrects for false-positive associations, which may form between lowly expressed genes after smooth quantile normalization of the data, and which may affect downstream co-expression network analysis.</p>
 <div class="section" id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
@@ -165,24 +164,21 @@
 <li class="toctree-l2"><a class="reference internal" href="installation.html#example-dataset">Example Dataset</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="manual.html#correct-expression">Correct Expression</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manual.html#information-of-input-data">Information of Input Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manual.html#interactive-visualization">Interactive Visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manual.html#fitted-gaussianmixturemodels">Fitted GaussianMixtureModels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manual.html#fitted-statistics">Fitted Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manual.html#sample-from-gaussianmixturemodels">Sample from GaussianMixtureModels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manual.html#predict-with-gaussianmixturemodels">Predict with GaussianMixtureModels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manual.html#posterior-probability">Posterior Probability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manual.html#statistics-of-qsmooth">Statistics of Qsmooth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manual.html#diagnosis-of-qsmooth">Diagnosis of Qsmooth</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-caiman.analysis">caiman.analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-caiman.dataset">caiman.dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-caiman.model">caiman.model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-caiman.utils">caiman.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-caiman_qsmooth.dataset">caiman_qsmooth.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-caiman_qsmooth.qsmooth">caiman_qsmooth.qsmooth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-caiman_qsmooth.utils">caiman_qsmooth.utils</a></li>
 </ul>
 </li>
 </ul>
@@ -193,14 +189,7 @@
 </div>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>CAIMAN is an algorithm developed by the <a class="reference external" href="https://www.kuijjerlab.org/">Kuijjer’s Lab</a> that is specifically designed to correct false-positive gene associations in RNA-Seq data that is normalized with quantile-based methods, such as <a class="reference external" href="https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028">smooth quantile normalization</a>. CAIMAN utilizes a Gaussian mixture model to fit the distribution of gene expression and to adaptively select a threshold to define lowly expressed genes. Thereafter, CAIMAN corrects the normalized expression for these genes by removing the variability across samples that might lead to false positive associations. The CAIMAN algorithm is available in a Python software package.</p>
-</div>
-<div class="section" id="method">
-<h2>Method<a class="headerlink" href="#method" title="Permalink to this headline">¶</a></h2>
-<p>CAIMAN starts by log₂-transforming normalized expression levels to approximate a Gaussian distribution. These processed expression levels are then augmented by concatenating negative transformed expression levels. This makes the augmented expression distribution symmetric with respect to zero. A Gaussian mixture model is then used with the center component fixed, with a mean equal to zero. The genes with high posterior probability to the center component are believed to be non-expressed in the cell. For those genes, CAIMAN replaces the normalized expression with zero (with <code class="code docutils literal notranslate"><span class="pre">-m</span> <span class="pre">filter</span></code>) or positive Gaussian noise with standard deviation of center components (with <code class="code docutils literal notranslate"><span class="pre">-m</span> <span class="pre">noise</span></code>). This removes false-positive associations that may have been introduced by quantile-based normalization methods. For an overview on how CAIMAN works, see the following figures:</p>
-<div class="figure align-default">
-<img alt="Cannot link to method.png" src="_images/method.png" />
-</div>
+<p>CAIMAN-Qsmooth is an algorithm developed by the <a class="reference external" href="https://www.kuijjerlab.org/">Kuijjer’s Lab</a> that is specifically designed to correct false-positive gene associations in RNA-Seq data that is normalized with <a class="reference external" href="https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028">smooth quantile normalization</a>. CAIMAN-Qsmooth computes the number of affected genes for each samples and use different aggregation function to summarize the normalized value of quantiles when dealing with identical values. CAIMAN-Qsmooth also provides a function that detect whether the false-positive will occur after qsmooth normalization. The implementation is available in a Python software package.</p>
 </div>
 <div class="section" id="issues">
 <h2>Issues<a class="headerlink" href="#issues" title="Permalink to this headline">¶</a></h2>

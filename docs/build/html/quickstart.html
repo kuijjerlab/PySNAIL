@@ -84,8 +84,10 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 </ul>
@@ -156,68 +158,66 @@
   <div class="section" id="quick-start">
 <span id="quickstart"></span><h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
 <p>After installation, CAIMAN can be executed directly as a Python module using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ caiman test/qsmooth.tsv --groups test/groups.tsv --dist --outdir output
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ caiman_qsmooth sample_data/qsmooth.tsv --groups sample_data/groups.tsv --outdir output
 </pre></div>
 </div>
 <p>The complete arguments are listed as follows (one can get this information by executing <code class="code docutils literal notranslate"><span class="pre">caiman</span> <span class="pre">--help</span></code>)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage: caiman <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-g <span class="o">[</span>path<span class="o">]]</span> <span class="o">[</span>-m <span class="o">{</span><span class="s1">&#39;filter&#39;</span>, <span class="s1">&#39;noise&#39;</span><span class="o">}]</span> <span class="o">[</span>-o <span class="o">[</span>path<span class="o">]]</span> <span class="o">[</span>-a<span class="o">]</span>
-                <span class="o">[</span>-s<span class="o">]</span> <span class="o">[</span>-d<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span>
-                xprs
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>caiman_qsmooth -h
+usage: caiman_qsmooth <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-g <span class="o">[</span>path<span class="o">]]</span> <span class="o">[</span>-m <span class="o">{</span><span class="s1">&#39;mean&#39;</span>, <span class="s1">&#39;median&#39;</span>, <span class="s1">&#39;auto&#39;</span><span class="o">}]</span>
+    <span class="o">[</span>-t <span class="o">[</span>threshold<span class="o">]]</span> <span class="o">[</span>-o <span class="o">[</span>path<span class="o">]]</span> xprs
+
+Count Adjustment to Improve the Modeling of Gene Association Networks-Qsmooth <span class="o">(</span>CAIMAN-Qsmooth<span class="o">)</span>
 
 positional arguments:
-xprs                  Path to the expression data. The file should be
-                        formatted as follows: the rows should represent genes
-                        <span class="o">(</span>the first row must be the sample names<span class="o">)</span>, and the
-                        columns should represent samples <span class="o">(</span>the first column
-                        must be the gene names<span class="o">)</span>. The columns must be separated
-                        with &lt;tab&gt;.
+    xprs            Path to the expression data. The file should be
+                    formatted as follows: the rows should represent genes
+                    <span class="o">(</span>the first row must be the sample names<span class="o">)</span>, and the
+                    columns should represent samples <span class="o">(</span>the first column
+                    must be the gene names<span class="o">)</span>. The columns must be separated
+                    with &lt;tab&gt;.
 
 optional arguments:
--h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
--g <span class="o">[</span>path<span class="o">]</span>, --groups <span class="o">[</span>path<span class="o">]</span>
-                        Path to the group information <span class="k">for</span> each sample. The
-                        file should have two columns without any header. The
-                        first column should be the sample names, corresponds
-                        to the columns in xprs. The second column should be
-                        the group information <span class="k">for</span> each sample. The two columns
-                        must be separated by &lt;tab&gt;. If this argument is not
-                        provided, the algorithm will treat all samples as one
-                        group.
--m <span class="o">{</span><span class="s1">&#39;filter&#39;</span>, <span class="s1">&#39;noise&#39;</span><span class="o">}</span>, --method <span class="o">{</span><span class="s1">&#39;filter&#39;</span>, <span class="s1">&#39;noise&#39;</span><span class="o">}</span>
-                        Method used to adjust the normalized <span class="nb">read</span> count,
-                        should be either <span class="s1">&#39;filter&#39;</span> or <span class="s1">&#39;noise&#39;</span>. Default:
-                        <span class="s1">&#39;filter&#39;</span>.
--o <span class="o">[</span>path<span class="o">]</span>, --outdir <span class="o">[</span>path<span class="o">]</span>
-                        The Output directory <span class="k">for</span> the corrected <span class="nb">read</span> counts. The
-                        directory consists of a data table <span class="s1">&#39;caiman_out.tsv&#39;</span>
-                        with corrected expression. There are also two optional
-                        with the corrected expression levels. There are also two
-                        optional subdirectories <span class="s1">&#39;dist&#39;</span> and <span class="s1">&#39;gmms&#39;</span>. The first
-                        directory contains interactive html file visualizing the
-                        contains an interactive html file visualizing the
-                        sampling distribution and the posterior probability of
-                        the fitted model <span class="k">for</span> each group. The second one
-                        the fitted model <span class="k">for</span> each group. The second directory
-                        contains instances of GaussianMixtureModel fitted <span class="k">for</span>
-                        each group. Default: <span class="s1">&#39;./caiman_output&#39;</span>.
--a, --adaptive        Whether to use likelihood ratio <span class="nb">test</span> to determine the
-                        optimal number of components. Default: unset.
--s, --save_model      Save instances of GaussianMixtureModel fitted <span class="k">for</span> each
-                        group in <span class="s1">&#39;gmms&#39;</span>. Default: unset.
--d, --dist            Save interactive html file visualizing the sampling
-                        distribution and the posterior probability of the
-                        fitted model <span class="k">for</span> each group in <span class="s1">&#39;dist&#39;</span>. Default: unset.
--v, --verbose         Enable verbose message when fitting. Default: unset.
+    -h, --help      show this <span class="nb">help</span> message and <span class="nb">exit</span>
+    -g <span class="o">[</span>path<span class="o">]</span>, --groups <span class="o">[</span>path<span class="o">]</span>
+                    Path to the group information <span class="k">for</span> each sample. The
+                    file should have two columns without any header. The
+                    first column should be the sample names, corresponds
+                    to the columns in xprs. The second column should be
+                    the group information <span class="k">for</span> each sample. The two columns
+                    must be separated by &lt;tab&gt;. If this argument is not
+                    provided, the algorithm will treat all samples as one
+                    group.
+    -m <span class="o">{</span><span class="s1">&#39;mean&#39;</span>, <span class="s1">&#39;median&#39;</span>, <span class="s1">&#39;auto&#39;</span><span class="o">}</span>, --method <span class="o">{</span><span class="s1">&#39;mean&#39;</span>, <span class="s1">&#39;median&#39;</span>, <span class="s1">&#39;auto&#39;</span><span class="o">}</span>
+                    Method used compute the aggregate statistics <span class="k">for</span>
+                    quantile with same value in each group, should be
+                    either <span class="s1">&#39;mean&#39;</span>, <span class="s1">&#39;median&#39;</span> or <span class="s1">&#39;auto&#39;</span>. If <span class="nb">set</span> to <span class="s1">&#39;auto&#39;</span>,
+                    the algorithm is going to use median aggregation <span class="k">if</span>
+                    the proportion of the affected samples is larger or
+                    equal to <span class="o">[</span>--threshold<span class="o">]</span> <span class="o">(</span>default: <span class="m">0</span>.25<span class="o">)</span>. Default:
+                    <span class="s1">&#39;median&#39;</span>.
+    -t <span class="o">[</span>threshold<span class="o">]</span>, --threshold <span class="o">[</span>threshold<span class="o">]</span>
+                    Threshold of the proportion of samples being affected
+                    <span class="k">if</span> mean aggregation is being used. The algorithm is
+                    going to use median aggregation <span class="k">if</span> the proportion of
+                    the affected samples is larger or equal to this
+                    threshold when <span class="o">[</span>--method<span class="o">]</span> is <span class="nb">set</span> to <span class="s1">&#39;auto&#39;</span>. This
+                    argument is ignored <span class="k">if</span> method is specified with <span class="s1">&#39;mean&#39;</span>
+                    or <span class="s1">&#39;median&#39;</span>. Defulat: <span class="m">0</span>.25
+    -o <span class="o">[</span>path<span class="o">]</span>, --outdir <span class="o">[</span>path<span class="o">]</span>
+                    Output directory <span class="k">for</span> the corrected qsmooth expression
+                    and some informative statistics. The directory
+                    consists of a data table <span class="s1">&#39;xprs_norm.tsv&#39;</span> with the
+                    corrected expression levels. Default: <span class="s1">&#39;./output&#39;</span>.
 </pre></div>
 </div>
-</div>
 <div class="section" id="reproduce-analysis-in-the-manuscript">
-<h1>Reproduce Analysis in the Manuscript<a class="headerlink" href="#reproduce-analysis-in-the-manuscript" title="Permalink to this headline">¶</a></h1>
+<h2>Reproduce Analysis in the Manuscript<a class="headerlink" href="#reproduce-analysis-in-the-manuscript" title="Permalink to this headline">¶</a></h2>
 <p>To reproduce analysis in the manuscript:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ snakemake --cores <span class="o">[</span>n<span class="o">]</span>
 </pre></div>
 </div>
 <p>The result can be found in the directory <code class="code docutils literal notranslate"><span class="pre">manuscript_analysis</span></code>. Note that it will likely take a while to download and preprocess the datasets.</p>
+</div>
 </div>
 
 
