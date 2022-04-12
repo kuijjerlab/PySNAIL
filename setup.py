@@ -1,20 +1,21 @@
 from setuptools import setup
 
 setup(
-    name='caiman',
-    version='0.2.0',
-    description="""Count Adjustment to Improve the Modeling of Gene Association
-    Networks (CAIMAN)""",
+    name='PySNAIL',
+    version='0.3.0',
+    description="""Python Implementation for Smooth-quantile Normalization Adaptation for Inference of co-expression Links (PySNAIL)""",
     url='https://github.com/dn070017/Caiman',
     author='Ping-Han Hsieh',
     author_email='dn070017@gmail.com',
     license='MIT',
-    packages=['caiman'],
+    packages=['pysnail'],
     install_requires=[
         'bokeh>=2.2.0',
         'numpy>=1.19.1',
         'pandas>=1.1.1',
+        'pandarallel>=1.5.4',
         'scipy>=1.5.2',
+        'tqdm>=4.62.3'
     ],
     classifiers=[
         "Programming Language :: Python :: 3.7",
@@ -24,7 +25,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'caiman = caiman.__main__:main'
+            'pysnail = pysnail.__main__:main'
         ],
     },
     zip_safe=False,
