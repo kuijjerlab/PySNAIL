@@ -13,7 +13,9 @@ setup(
         'bokeh>=2.2.0',
         'numpy>=1.19.1',
         'pandas>=1.1.1',
+        'pandarallel>=1.5.4',
         'scipy>=1.5.2',
+        'tqdm>=4.62.3'
     ],
     classifiers=[
         "Programming Language :: Python :: 3.7",
