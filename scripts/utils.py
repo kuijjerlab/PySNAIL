@@ -7,105 +7,111 @@ import pandas as pd
 from bokeh.models import ColorBar, ColumnDataSource, HoverTool, LabelSet, Legend
 from bokeh.models import LinearColorMapper, FactorRange
 from bokeh.palettes import Magma, d3
-from bokeh.plotting import figure, output_file, show
+from bokeh.plotting import figure, output_file, save
 from sklearn.metrics import roc_curve, auc, precision_recall_curve
 
 def bokeh_area_under_curve(
     outdir,
     file_label,
     corrs,
-    before_label='qsmooth',
-    method='ROC'
+    legend_labels=['Validation', 'Qsmooth', 'SNAIL'],
+    colors=['white', 'blueviolet', 'crimson'],
+    method='ROC',
+    for_main_text=True
 ):
-    after_label = f'{before_label} adjusted'
-    corr_truth = corrs[0].copy()
-    corr_before = corrs[1].copy()
-    corr_after = corrs[2].copy()
 
     if method.lower() == 'roc':
         auc_fn = roc_curve
+        metric_x_label = 'FPR'
+        metric_y_label = 'TPR'
     else:
         auc_fn = precision_recall_curve
+        metric_x_label = 'Recall'
+        metric_y_label = 'Precision'
 
-    auc_before = []
-    auc_after = []
-    rmse_before = rmse(corr_truth, corr_before) 
-    rmse_after = rmse(corr_after, corr_after)
-    num_ground_truth = []
-    for threshold in np.linspace(0.2, 0.8, 50):
-        corr_truth_binary = corr_truth.copy()
-        num_ground_truth.append([
-            threshold,
-            (np.abs(corr_truth_binary) >= threshold).sum(),
-            (np.abs(corr_truth_binary) < threshold).sum()
-        ])
-        corr_truth_binary[np.abs(corr_truth_binary) >= threshold] = 1
-        corr_truth_binary[np.abs(corr_truth_binary) < threshold] = 0
-        metric_a, metric_b, _ = auc_fn(
-            corr_truth_binary.values, 
-            np.abs(corr_before.values)
-        )
-        table_before = pd.DataFrame({
-            'metric_a': metric_a,
-            'metric_b': metric_b,
-            'class': before_label
-        })
-
-        metric_a, metric_b, _  = auc_fn(
-            corr_truth_binary.values,
-            np.abs(corr_after.values)
-        )
-        table_after = pd.DataFrame({
-            'metric_a': metric_a,
-            'metric_b': metric_b,
-            'class': after_label
-        })
-        
-        if method.lower() == 'roc':
-            auc_before.append([
-                threshold,
-                auc(table_before.metric_a.values, table_before.metric_b.values)
-            ])
-            auc_after.append([
-                threshold,
-                auc(table_after.metric_a.values, table_after.metric_b.values)
-            ])
-        if method.lower() == 'prc':
-            auc_before.append([
-                threshold,
-                auc(table_before.metric_b.values, table_before.metric_a.values)
-            ])
-            auc_after.append([
-                threshold,
-                auc(table_after.metric_b.values, table_after.metric_a.values)
-            ])
-
-    auc_before = pd.DataFrame(auc_before, columns=['threshold', 'auc'])
-    auc_after = pd.DataFrame(auc_after, columns=['threshold', 'auc'])
-
-    table_roc = pd.concat([table_before, table_after])
+    if for_main_text:
+        title = ''
+    else:
+        title = file_label
 
     fig = figure(
         plot_width=800, plot_height=800,
-        #title='Receiver Operator Curve',
-        title='',
+        title=title,
         x_axis_location="below",
-        tools="hover, save",
+        tools=["pan", "wheel_zoom", "box_zoom", "reset", "hover", "save"],
         tooltips=[
-            ('FPR', '$x'),
-            ('TPR', '$y'),
+            (metric_x_label, '$x'),
+            (metric_y_label, '$y'),
+            ('Normalization', '@label')
         ]
     )
-    fig.line(
-        auc_before.threshold.values,
-        auc_before.auc.values,
-        color="crimson", alpha=0.5, line_width=5, legend_label=before_label
-    )
-    fig.line(
-        auc_after.threshold.values,
-        auc_after.auc.values,
-        color="navy", alpha=0.5, line_width=5, legend_label=after_label
-    )
+    
+    corr_truth = corrs[0]
+    auc_results = {}
+    for corr, label, color in zip(corrs[1:], legend_labels[1:], colors[1:]):
+        auc_list = list()
+        num_edges = list()
+        for threshold in np.linspace(0.2, 0.8, 50):
+            corr_truth_binarized = corr_truth.copy()
+            corr_truth_binarized[np.abs(corr_truth_binarized) >= threshold] = 1
+            corr_truth_binarized[np.abs(corr_truth_binarized) < threshold] = 0
+
+            metric_a, metric_b, _ = auc_fn(
+                corr_truth_binarized.values, 
+                np.abs(corr.values)
+            )
+            num_edges.append([
+                threshold,
+                (np.abs(corr_truth_binarized) >= threshold).sum(),
+                (np.abs(corr_truth_binarized) < threshold).sum()
+            ])
+            if method.lower() == 'roc':
+                metric_a_label = metric_x_label
+                metric_b_label = metric_y_label
+            else:
+                metric_a_label = metric_y_label
+                metric_b_label = metric_x_label
+            
+            table = pd.DataFrame({
+                metric_a_label: metric_a,
+                metric_b_label: metric_b,
+                'method': label
+            })
+            if method.lower() == 'roc':
+                auc_list.append([
+                    threshold,
+                    auc(table[metric_a_label].values, table[metric_b_label].values),
+                    label
+                ])
+            else:
+                auc_list.append([
+                    threshold,
+                    auc(table[metric_b_label].values, table[metric_a_label].values),
+                    label
+                ])
+        auc_df = pd.DataFrame(auc_list, columns=['threshold', 'auc', 'label'])
+        if for_main_text:
+            legend_label = label
+        else:
+            legend_label = f'{label} ({compute_rmse(corr_truth, corr):>.2f})'
+        
+        data_source = ColumnDataSource(
+            data=dict(
+                threshold=auc_df.threshold.values,
+                auc=auc_df.auc.values,
+                label=auc_df.label
+            )
+        )
+
+        fig.line(
+            x='threshold',
+            y='auc',
+            color=color, alpha=0.5, line_width=5,
+            legend_label=legend_label,
+            source=data_source,
+        )
+        auc_results[label] = auc_df
+
     fig.legend.location = 'bottom_left'
     fig.xaxis.axis_label = 'Threshold applied to the validation dataset'
     fig.yaxis.axis_label = f'AU{method.upper()}'
@@ -113,20 +119,26 @@ def bokeh_area_under_curve(
     fig.yaxis.axis_label_text_font_size = '20pt'
     fig.legend.label_text_font_size = '18pt'
     fig.axis.major_label_text_font_size = '12pt'
+    fig.title.text_font_size = '20pt'
+    fig.legend.click_policy="hide"
 
-    output_file(
-        os.path.join(outdir, f'{file_label.lower()}_{before_label.lower()}_au{method.lower()}.html'),
-        title=f'AU{method.upper()}'
+    outfile = os.path.join(
+        outdir,
+        f'{file_label.lower().replace(" ", "_")}_comparison_au{method.lower()}.html'
     )
-    show(fig)
+    output_file(outfile, title=f'AU{method.upper()}')
+    save(fig)
 
-    columns = ['Threshold', 'Number of Postives', 'Number of Negatives']
-    return pd.DataFrame(num_ground_truth, columns=columns)
+    columns = [
+        'Threshold',
+        'Number of Postive Associations',
+        'Number of Negative Associations'
+    ]
+    return pd.DataFrame(num_edges, columns=columns)
 
 def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
     for corr in ['pearson', 'spearman']:
-        denoise_table = table #+ np.random.normal(0, 1e-1, table.shape)
-        figure_table = denoise_table.T.corr(method=corr).stack()
+        figure_table = table.T.corr(method=corr).stack()
         figure_table.index.names = ['0', '1']
         figure_table = figure_table.reset_index()
         figure_table.columns = ['xname', 'yname', 'target']
@@ -139,8 +151,8 @@ def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
 
         x_data = [(data.group_x, data.xname) for i, data in figure_table.iterrows()]
         x_uniq = [(data.group_y, data.yname) for i, data in figure_table.loc[figure_table.xname == figure_table.xname[0]].iterrows()]
-        
         y_data = [(data.group_y, data.yname) for i, data in figure_table.iterrows()]
+        num_genes = len(x_uniq)
 
         mapper = LinearColorMapper(palette=list(Magma[256])[256:128:-1], low=0, high=1)
 
@@ -158,38 +170,34 @@ def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
         )
 
         fig = figure(
-            #title=title,
             title='',
             x_axis_location="below",
-            tools="hover, save",
-            x_range=FactorRange(*x_uniq),
-            y_range=FactorRange(*x_uniq),
+            tools=['hover', 'save'],
+            x_range=FactorRange(factors=x_uniq),
+            y_range=FactorRange(factors=x_uniq),
             tooltips=[
-                ('gene A', '@xname'),
-                ('gene B', '@yname'),
-                (corr, '@target')
-            ])
+                ('Gene X', '@xname'),
+                ('Gene Y', '@yname'),
+                (corr.capitalize(), '@target')
+            ]
+        )
 
-        plot_width = len(figure_table.xname.unique()) * 10
-        plot_height = len(figure_table.yname.unique()) * 10
-        fig.plot_width = plot_width
-        fig.plot_height = plot_height
+        figsize = max(num_genes * 3 + int(num_genes / 24), 1024)
+        font_size_large = max(int(num_genes / 12), 28)
+        font_size_medium = max(int(num_genes / 24), 14)
+
+        fig.plot_width = figsize
+        fig.plot_height = figsize
         fig.grid.grid_line_color = None
         fig.axis.axis_line_color = None
         fig.axis.major_tick_line_color = None
-        fig.axis.major_label_text_font_size = '0.05vh'
-        fig.axis.major_label_standoff = 0
+        fig.axis.major_label_text_font_size = f'{font_size_medium}px'  #'0.05vh'
+        fig.axis.major_label_standoff = font_size_medium
         fig.axis.major_label_text_alpha = 0
         fig.xaxis.major_label_orientation = np.pi / 2
-        #fig.xaxis.major_label_text_alpha = 0
-        #fig.xaxis.major_label_text_font_size = '6px'
-        #fig.axis.group_text_font_size = '32px'
-        fig.axis.group_text_font_size = '2.2vh'
+        fig.axis.group_text_font_size = f'{font_size_large}px' #'2.2vh'
         fig.axis.group_text_align = 'center'
-
-        fig.axis.major_label_standoff = 0
-        #fig.title.text_font_size = '36px'
-        fig.title.text_font_size = '2.5vh'
+        fig.title.text_font_size = f'{font_size_large}px' #'2.5vh'
 
         fig.rect(
             x='xname',
@@ -202,32 +210,15 @@ def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
             hover_line_color='black'
         )
 
-        labels = LabelSet(
-            x='xname',
-            y='yname',
-            text='target',
-            text_align='center',
-            text_font_size='8px',
-            text_color='color',
-            x_offset=0,
-            y_offset=-5,
-            source=data_source,
-            render_mode='canvas'
-        )
-
         color_bar = ColorBar(
             color_mapper=mapper,
-            #major_label_text_font_size="24px",
-            #label_standoff=16,
-            width=int(len(figure_table.xname.unique())/5),
-            major_label_text_font_size='2vh',
-            label_standoff=int(len(figure_table.xname.unique())/10),
-            title_standoff=int(len(figure_table.xname.unique())/10),
+            width=int(font_size_large),
+            major_label_text_font_size= f'{font_size_large}px',
+            label_standoff=int(font_size_large),
             border_line_color=None,
             location=(0, 0)
         )
 
-        fig.add_layout(labels)
         fig.add_layout(color_bar, 'right')
 
         file_name = os.path.join(
@@ -236,7 +227,7 @@ def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
         )
         output_file(file_name, title=title)
 
-        show(fig)
+        save(fig)
 
     return
 
@@ -304,6 +295,7 @@ def bokeh_num_nonexpressed_genes(dataset_name, outdir, xprs, groups):
     fig.segment(x0=upper.index, y0=lower['count'], x1=upper.index, y1=q1['count'], line_color="black")
 
     fill_color = tissue_colors_df.loc[q2.index].values.reshape(-1)
+    fill_color = list(map(lambda x: tuple(int(x.lstrip('#')[i:i+2], 16) for i in (0, 2, 4)), list(fill_color)))
 
     fig.rect(x=q2.index, y=(q3['count'] + q2['count']) / 2, width=0.7, height=(q3['count'] - q2['count']), fill_color=fill_color, line_color="black")
     fig.rect(x=q2.index, y=(q1['count'] + q2['count']) / 2, width=0.7, height=(q2['count'] - q1['count']), fill_color=fill_color, line_color="black")
@@ -321,7 +313,7 @@ def bokeh_num_nonexpressed_genes(dataset_name, outdir, xprs, groups):
         os.path.join(outdir, f'{dataset_name.lower()}_number_of_non_expressed_genes.html'),
         title=f'{dataset_name} Boxplot of Number of Non-Expressed Genes'
     )
-    show(fig)
+    save(fig)
 
     return
 
@@ -380,7 +372,7 @@ def bokeh_spikein_lineplot(outdir, spikeins, title):
         title=title
     )
 
-    show(fig)
+    save(fig)
 
 def bokeh_xprs_distribution(dataset_name, outdir, xprs, groups):
     """
@@ -425,13 +417,12 @@ def bokeh_xprs_distribution(dataset_name, outdir, xprs, groups):
         os.path.join(outdir, f'{dataset_name.lower()}_xprs_distribution.html'),
         title=f'{dataset_name} Expression Distribution'
     )
-    show(fig)
+    save(fig)
     
     return
 
 def compute_correlation_coefficients(data, method='spearman'):
-    denoise_data = data #+ np.random.normal(0, 1e-1, data.shape)
-    corr = denoise_data.T.corr(method=method).fillna(0)
+    corr = data.T.corr(method=method).fillna(0)
     index = np.triu(np.ones(corr.shape)).astype(bool)
     index[np.diag_indices_from(index)] = False
     corr = corr.where(index).stack()
@@ -479,7 +470,7 @@ def extract_tissue_exclusive_genes(
 
     return index, gene_count
 
-def rmse(true, pred):
+def compute_rmse(true, pred):
     return np.sqrt(((true - pred) ** 2).mean())
 
 def sort_xprs_samples(xprs, tissues, tissue_exclusive_genes):

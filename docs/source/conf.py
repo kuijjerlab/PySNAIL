@@ -17,12 +17,12 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Caiman'
-copyright = '2021, Ping-Han Hsieh'
+project = 'PySNAIL'
+copyright = '2022, Ping-Han Hsieh'
 author = 'Ping-Han Hsieh'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.0'
+release = '0.3.0'
 
 
 # -- General configuration ---------------------------------------------------

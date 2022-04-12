@@ -1,0 +1,11 @@
+bioconductor-biomart
+bioconductor-encodexplorer
+bioconductor-limma
+bioconductor-preprocesscore
+libopenblas==0.3.3
+r-fields
+r-igraph
+r-normexpression
+r-plotrix
+r-scales
+python==3.7.7

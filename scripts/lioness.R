@@ -1,4 +1,3 @@
-library(lionessR)
 library(stats)
 library(SummarizedExperiment)
 library(limma)
@@ -17,18 +16,53 @@ radian.rescale <- function(x, start=0, direction=1) {
    c.rotate(scales::rescale(x, c(0, 2 * pi), range(x)))
 }
 
+lioness <- function(x, f=netFun){
+    nrsamples <- ncol(x)
+    samples <- colnames(x)
+
+    # this applies netFun and extracts the aggregate network
+    net <- f(x)
+    agg <- c(net)
+
+    # prepare the lioness output
+    lionessOutput <- matrix(NA, nrow(net)*ncol(net), nrsamples+2)
+    colnames(lionessOutput) <- c("reg", "tar", samples)
+    lionessOutput[,1] <- rep(row.names(net), ncol(net))
+    lionessOutput[,2] <- rep(colnames(net), each=nrow(net))
+    lionessOutput <- as.data.frame(lionessOutput, stringsAsFactors=FALSE)
+    lionessOutput[,3:ncol(lionessOutput)] <- vapply(lionessOutput[, 3:ncol(lionessOutput)], 
+                                                    as.numeric, 
+                                                    vector('numeric', nrow(lionessOutput)))
+
+    # run function f and the LIONESS equation
+    for(i in seq_len(nrsamples)){
+        ss <- c(f(x[,-i])) # apply netFun on all samples minus one
+        lionessOutput[,i+2] <- nrsamples*(agg-ss)+ss # apply LIONESS equation
+    }
+
+    edges <- paste(lionessOutput[, 1], lionessOutput[, 2], sep = "_")
+    nodes <- colnames(x)
+    
+    rowData <- S4Vectors::DataFrame(row.names = edges, reg = lionessOutput[, 1], tar = lionessOutput[, 2])
+    colData <- S4Vectors::DataFrame(row.names = nodes, sample = nodes)
+
+    se <- SummarizedExperiment::SummarizedExperiment(
+        assays = list(lioness = as.matrix(lionessOutput[, 3:ncol(lionessOutput)])),
+        colData = colData, rowData = rowData
+    )
+
+    return(se)  
+}
+
 args <- commandArgs(trailingOnly=TRUE) 
 ref_file <- args[1]
 before_file <- args[2]
 after_file <- args[3]
-out_file <- args[4]
+out_file_before <- args[4]
+out_file_after <- args[5]
 
-#ref_file <- 'manuscript_analysis_20220110/datasets/ENCODE/lioness_input_ref_qsmooth.tsv'
-#before_file <- 'manuscript_analysis_updated/datasets/ENCODE/lioness_input_before_qsmooth.tsv'
-#after_file <- 'manuscript_analysis_updated/datasets/ENCODE/lioness_input_after_qsmooth.tsv'
-#out_file <- 'manuscript_analysis_20220110/results/encode_lioness_qsmooth'
-
-#args <- c(ref_file, before_file, after_file, out_file)
+sink(paste0(out_file_after, "_logging.txt")) 
+sink(stdout(), type = "message")
 
 xprs <- list()
 cormat <- list()
@@ -81,13 +115,13 @@ toptable_after <- topTable(fit2e, number=nrow(cormat[[3]]), adjust="fdr")
 
 write.table(
     toptable_before, 
-    paste0(out_file, "_limma.tsv"),
+    paste0(out_file_before, "_limma.tsv"),
     sep='\t', quote=FALSE, row.names=TRUE, col.names=NA
 )
 
 write.table(
     toptable_after, 
-    paste0(out_file, "_round_limma.tsv"),
+    paste0(out_file_after, "_round_limma.tsv"),
     sep='\t', quote=FALSE, row.names=TRUE, col.names=NA
 )
 
@@ -97,6 +131,7 @@ table <- toptable_before[toptable_before$adj.P.Val < 0.001, ]
 
 message(nrow(table) / 2, ' false discovery edges (before correction).')
 message(nrow(toptable_after[toptable_after$adj.P.Val < 0.001, ]) / 2, ' false discovery edges (after correction).')
+sink()
 
 edges <- t(matrix(unlist(c(strsplit(row.names(table), "_"))),2))
 z <- cbind(edges, table$logFC)
@@ -108,7 +143,7 @@ V(g)$color <- "white"
 
 lab.locs <- radian.rescale(x=1:vcount(g), direction=-1, start=0)
 
-pdf(paste0(out_file, ".pdf"), width=6, height=5) 
+pdf(paste0(out_file_before, ".pdf"), width=6, height=5) 
 par(mar=c(1,2,1,5))
 plot(g, layout=layout.circle(g), vertex.size=15, vertex.label.cex=0.45, vertex.label.color="black", vertex.label.font=2, edge.width=1)
 image.plot(legend.only=T, zlim=c(-1, 1), col=c_scale(50), horizontal=F, legend.shrink=0.75, legend.width=0.9, legend.mar=5.5, legend.cex=1.0, legend.lab='LogFC', axis.args=list(cex.axis=0.6, tck=-0.6))
@@ -124,7 +159,7 @@ V(g)$color <- "white"
 
 lab.locs <- radian.rescale(x=1:vcount(g), direction=-1, start=0)
 
-pdf(paste0(out_file, "_round.pdf"),  width=6, height=5) 
+pdf(paste0(out_file_after, ".pdf"),  width=6, height=5) 
 par(mar=c(1,2,1,5))
 plot(g, layout=layout.circle(g), vertex.size=15, vertex.label.cex=0.45, vertex.label.color="black", vertex.label.font=2, edge.width=1)
 image.plot(legend.only=T, zlim=c(-1, 1), col=c_scale(50), horizontal=F, legend.shrink=0.75, legend.width=0.9, legend.mar=5.5, legend.cex=1.0, legend.lab='LogFC', axis.args=list(cex.axis=0.6, tck=-0.6))

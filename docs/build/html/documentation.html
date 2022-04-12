@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Documentation &mdash; Caiman 0.2.0 documentation</title>
+  <title>Documentation &mdash; PySNAIL 0.3.0 documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Caiman
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PySNAIL
           
 
           
@@ -84,13 +84,11 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-caiman.analysis">caiman.analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-caiman.dataset">caiman.dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-caiman.model">caiman.model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-caiman.utils">caiman.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysnail.dataset">pysnail.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysnail.qsmooth">pysnail.qsmooth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysnail.utils">pysnail.utils</a></li>
 </ul>
 </li>
 </ul>
@@ -108,7 +106,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Caiman</a>
+          <a href="index.html">PySNAIL</a>
         
       </nav>
 
@@ -160,13 +158,13 @@
             
   <div class="section" id="documentation">
 <span id="id1"></span><h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-caiman.analysis">
-<span id="caiman-analysis"></span><h2>caiman.analysis<a class="headerlink" href="#module-caiman.analysis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pysnail.dataset">
+<span id="pysnail-dataset"></span><h2>pysnail.dataset<a class="headerlink" href="#module-pysnail.dataset" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="caiman.analysis.Analysis">
-<em class="property">class </em><code class="sig-prename descclassname">caiman.analysis.</code><code class="sig-name descname">Analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xprs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.series.Series<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caiman.analysis.Analysis" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Dataset">
+<em class="property">class </em><code class="sig-prename descclassname">pysnail.dataset.</code><code class="sig-name descname">Dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xprs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.series.Series<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysnail.dataset.Dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Correction analysis for Caiman.</p>
+<p>Dataset for expression data used in CAIMAN-Qsmooth normalization.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
 <dt>xprs: Union[str, pandas.core.frame.DataFrame], required</dt><dd><p>Path to the expression data or the expression dataframe. The data file
@@ -186,145 +184,9 @@ with &lt;tab&gt;. If provided with series, the index should be the sample names.
 </dl>
 </dd>
 <dt>Attributes:</dt><dd><dl class="simple">
-<dt>gmms: pandas.core.series.Series</dt><dd><p>The instances of GaussianMixtureModel fitted for each group. The index is
-the group names and the value is the fitted model. If analysis.correct() has
-not been run, attributes is None.</p>
-</dd>
-<dt>dataset: caiman.Dataset</dt><dd><p>Dataset for expression data used in Caiman analysis.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="caiman.analysis.Analysis.correct">
-<code class="sig-name descname">correct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'filter'</span></em>, <em class="sig-param"><span class="n">gmms</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>pandas.core.series.Series<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fit</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">adaptive_num_components</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_iterations</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">num_flank_components</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">monitor</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">]</span><a class="headerlink" href="#caiman.analysis.Analysis.correct" title="Permalink to this definition">¶</a></dt>
-<dd><p>Correct the normalized expression in analysis.dataset.</p>
-<dl>
-<dt>Parameters:</dt><dd><dl>
-<dt>method: str, default: ‘filter’</dt><dd><p>The possible methods are ‘filter’, ‘noise’ and ‘none’. ‘filter’ use the
-posterior probability to replace the normalized expression with zero if
-the fitted model predict the values belong to the centered component.
-‘noise’ add additional noise to the normalized expression based on the
-standard deviation of the centered component. ‘none’ fits the mixture
-model, but does not correct for the expression.</p>
-</dd>
-<dt>gmms: Optional[pd.core.series.Series] (optional)</dt><dd><p>If gmms is provided and fit is False, use the provided gmms to correct
-the expression values.</p>
-</dd>
-<dt>fit: bool, default: False</dt><dd><p>Force to fit the gaussian mixture model given the expression in
-analysis.dataset.</p>
-</dd>
-<dt>adaptive_num_components: bool, default: False</dt><dd><p>Enable using likelihood ratio test to determine the optimal number of
-components.</p>
-</dd>
-<dt>max_iterations: int, default: 10</dt><dd><p>Maximum number of iterations for expectation-maximization. Must be a
-positive integer.</p>
-</dd>
-<dt>num_flank_components: int, defualt: 2</dt><dd><p>Number of non-centered mixture components. Must be a positive integer.</p>
-</dd>
-<dt>verbose: bool, default: False</dt><dd><p>Enable verbose output.</p>
-</dd>
-<dt>monitor: bool, default: False</dt><dd><p>Monitor the memory and computational time usage. (The result is stored
-to ./tmp/correction.log). The result contains 6 columns separated by
-tab:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>timestamp</p></li>
-<li><p>event</p></li>
-<li><p>elapsed time</p></li>
-<li><p>CPU time</p></li>
-<li><p>peak memory usage (Mb)</p></li>
-<li><p>sample size</p></li>
-</ol>
-</div></blockquote>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>pd.core.frame.DataFrame</dt><dd><p>Return the corrected expression.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="caiman.analysis.Analysis.distplot">
-<code class="sig-name descname">distplot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">augmented</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">bins</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">125</span></em>, <em class="sig-param"><span class="n">x_limit</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">15.0</span></em>, <em class="sig-param"><span class="n">figure_size</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">1080, 720</span></em>, <em class="sig-param"><span class="n">outdir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'./'</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#caiman.analysis.Analysis.distplot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make interactive html file visualizing the sampling distribution and the
-posterior probability. Please run analysis.correct() before this function.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>group: str (required)</dt><dd><p>The target group.</p>
-</dd>
-<dt>augmented: bool, default: False</dt><dd><p>Illustrate augmented distribution.</p>
-</dd>
-<dt>bins: int, default: 125</dt><dd><p>The bins in the histogram of posterior probability</p>
-</dd>
-<dt>x_limit: float, default: 15.0</dt><dd><p>The maximum value in the x-axis.</p>
-</dd>
-<dt>figure_size: Tuple[int, int], default: (1080, 720)</dt><dd><p>The figure size (width, height) in pixels.</p>
-</dd>
-<dt>outdir: str, default: ‘./’</dt><dd><p>Output directory.</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="caiman.analysis.Analysis.get_gmm">
-<code class="sig-name descname">get_gmm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span><a class="reference internal" href="#caiman.model.GaussianMixtureModel" title="caiman.model.GaussianMixtureModel">caiman.model.GaussianMixtureModel</a><span class="p">]</span><span class="p">, </span><a class="reference internal" href="#caiman.model.GaussianMixtureModel" title="caiman.model.GaussianMixtureModel">caiman.model.GaussianMixtureModel</a><span class="p">]</span><a class="headerlink" href="#caiman.analysis.Analysis.get_gmm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the instances of GaussianMixtureModel fitted to analysis.dataset.xprs</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>group: str (optional)</dt><dd><p>The target group.</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>Union[Dict[str, GaussianMixtureModel], GaussianMixtureModel]</dt><dd><p>Dictionaries of fitted mixture models for every group if group is not
-specified or the fitted mixture models for the group specified.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-caiman.dataset">
-<span id="caiman-dataset"></span><h2>caiman.dataset<a class="headerlink" href="#module-caiman.dataset" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="caiman.dataset.Dataset">
-<em class="property">class </em><code class="sig-prename descclassname">caiman.dataset.</code><code class="sig-name descname">Dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xprs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.series.Series<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caiman.dataset.Dataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Dataset for expression data used in Caiman.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>xprs: Union[str, pandas.core.frame.DataFrame], required</dt><dd><p>Path to the expression data or the expression dataframe. The data file
-should be formatted as follows: the rows should represent gene expression
-across all samples, and the columns should represent the expression profile
-of each sample. If provided  with dataframe, the index should be the genes
-and the columns should be the samples.</p>
-</dd>
-<dt>groups: Union[str, pandas.core.series.Series], optional</dt><dd><p>Path to the group information for each sample or the series data. The file
-should have two columns without any header. The first column should be the
-sample names, corresponds to the columns in xprs. The second column should
-be the group information for each sample. The two columns must be separated
-with &lt;tab&gt;. If provided with series, the index should be the sample names.</p>
-</dd>
-<dt><a href="#id4"><span class="problematic" id="id5">**</span></a>kargs: dict, optional</dt><dd><p>Additional parameters passed to pandas.read_csv() to read xprs file.</p>
-</dd>
-</dl>
-</dd>
-<dt>Attributes:</dt><dd><dl class="simple">
 <dt>xprs: pandas.core.frame.DataFrame</dt><dd><p>Transposed expression dataframe with group information.</p>
 </dd>
-<dt>groups: numpy.ndarray</dt><dd><p>Unique groups.</p>
+<dt>groups: pandas.core.frame.Series</dt><dd><p>Group information of each sample.</p>
 </dd>
 <dt>num_genes: int</dt><dd><p>Number of genes in xprs dataframe.</p>
 </dd>
@@ -336,8 +198,13 @@ with &lt;tab&gt;. If provided with series, the index should be the sample names.
 </dd>
 </dl>
 <dl class="py method">
-<dt id="caiman.dataset.Dataset.get_xprs">
-<code class="sig-name descname">get_xprs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">copy</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#caiman.dataset.Dataset.get_xprs" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Dataset.get_groups">
+<code class="sig-name descname">get_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.series.Series<a class="headerlink" href="#pysnail.dataset.Dataset.get_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pysnail.dataset.Dataset.get_xprs">
+<code class="sig-name descname">get_xprs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">copy</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#pysnail.dataset.Dataset.get_xprs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the expression table of the given group</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -350,7 +217,7 @@ the reference of the original expression dataframe (False)</p>
 </dl>
 </dd>
 <dt>Returns:</dt><dd><dl class="simple">
-<dt>pd.Dataframe</dt><dd><p>Expression dataframe of the given group.</p>
+<dt>pd.core.frame.Dataframe</dt><dd><p>Expression dataframe of the given group.</p>
 </dd>
 </dl>
 </dd>
@@ -359,257 +226,150 @@ the reference of the original expression dataframe (False)</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-caiman.model">
-<span id="caiman-model"></span><h2>caiman.model<a class="headerlink" href="#module-caiman.model" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="caiman.model.CheckPoint">
-<em class="property">class </em><code class="sig-prename descclassname">caiman.model.</code><code class="sig-name descname">CheckPoint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_augmented_components</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">iteration</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">weights</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">means</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">stds</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caiman.model.CheckPoint" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Qstat">
+<em class="property">class </em><code class="sig-prename descclassname">pysnail.dataset.</code><code class="sig-name descname">Qstat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">affected_genes_each_sample</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">num_affected_genes</span><span class="p">:</span> <span class="n">pandas.core.series.Series</span></em>, <em class="sig-param"><span class="n">num_affected_samples</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">smoothWeights</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">Qhat</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">SST</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">SSB</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">objectNorm</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysnail.dataset.Qstat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Data structure for fitted parameters.</p>
-<dl class="py attribute">
-<dt id="caiman.model.CheckPoint.iteration">
-<code class="sig-name descname">iteration</code><em class="property">: int</em><a class="headerlink" href="#caiman.model.CheckPoint.iteration" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="caiman.model.CheckPoint.means">
-<code class="sig-name descname">means</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman.model.CheckPoint.means" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="caiman.model.CheckPoint.num_augmented_components">
-<code class="sig-name descname">num_augmented_components</code><em class="property">: int</em><a class="headerlink" href="#caiman.model.CheckPoint.num_augmented_components" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="caiman.model.CheckPoint.stds">
-<code class="sig-name descname">stds</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman.model.CheckPoint.stds" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="caiman.model.CheckPoint.weights">
-<code class="sig-name descname">weights</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman.model.CheckPoint.weights" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="caiman.model.Expectation">
-<em class="property">class </em><code class="sig-prename descclassname">caiman.model.</code><code class="sig-name descname">Expectation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">posterior</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">conditional</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">log_likelihood</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caiman.model.Expectation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>CheckPoint</p>
-<p>Data structure for posterior probability, conditional probability and loglikelihood.</p>
-<dl class="py attribute">
-<dt id="caiman.model.Expectation.conditional">
-<code class="sig-name descname">conditional</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman.model.Expectation.conditional" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="caiman.model.Expectation.log_likelihood">
-<code class="sig-name descname">log_likelihood</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman.model.Expectation.log_likelihood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="caiman.model.Expectation.posterior">
-<code class="sig-name descname">posterior</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman.model.Expectation.posterior" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="caiman.model.GaussianMixtureModel">
-<em class="property">class </em><code class="sig-prename descclassname">caiman.model.</code><code class="sig-name descname">GaussianMixtureModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_flank_components</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">adaptive_num_components</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_iterations</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">10</span></em>, <em class="sig-param"><span class="n">store_checkpoints</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Custom Gaussian mixture model for Caiman. This class can only estimate univariate
-Gaussian mixture distribution The optimal number of mixture components can be
-determined using likelihood ratio test. Moreover, the means of centered Gaussian
-mixture will not be updated during the expectation maximization process.</p>
+<p>Data structure for some relevant statistics for qsmooth normalization.</p>
 <dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>num_flank_components: int, defualt: 2</dt><dd><p>Number of non-centered mixture components. Must be a positive integer.</p>
-</dd>
-<dt>adaptive_num_components: bool, default: False</dt><dd><p>Enable using likelihood ratio test to determine the optimal number of
-components.</p>
-</dd>
-<dt>max_iterations: int, default: 10</dt><dd><p>Maximum number of iterations for expectation-maximization. Must be a
-positive integer</p>
-</dd>
-<dt>verbose: bool, default: False</dt><dd><p>Enable verbose output.</p>
-</dd>
-<dt>store_checkpoints: bool, default: False</dt><dd><p>Enable storing for means and standard deviation for each component during
-fitting process.</p>
-</dd>
-</dl>
-</dd>
 <dt>Attributes:</dt><dd><dl class="simple">
-<dt>max_iterations: int</dt><dd><p>Maximum number of iterations for expectation-maximization.</p>
+<dt>affected_genes_each_sample: pd.core.frame.DataFrame</dt><dd><p>Number of affected genes for each sample.</p>
 </dd>
-<dt>adaptive_num_components: bool</dt><dd><p>Whether to use likelihood ratio test to determine the optimal number of
-components.</p>
+<dt>num_affected_genes: pd.core.series.Series</dt><dd><p>Number of affected genes for each sample.</p>
 </dd>
-<dt>verbose: bool</dt><dd><p>Enable verbose output.</p>
+<dt>num_affected_samples: int</dt><dd><p>Number of affected samples.</p>
 </dd>
-<dt>store_checkpoints: bool</dt><dd><p>Whether to store for means and standard deviation for each component during
-fitting process.</p>
+<dt>smoothWeights: np.ndarray</dt><dd><p>Smoothen weights.</p>
 </dd>
-<dt>is_fitted: bool</dt><dd><p>Whether the model is fitted to a dataset.</p>
+<dt>Qhat: np.ndarray</dt><dd><p>Mean value for each quantile across samples.</p>
 </dd>
-</dl>
+<dt>SST: np.ndarray</dt><dd><p>Total sum of squares.</p>
 </dd>
-</dl>
-<dl class="py method">
-<dt id="caiman.model.GaussianMixtureModel.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">sampling</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>float<span class="p">, </span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0.8</span></em>, <em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#caiman.model.GaussianMixtureModel.fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fitting mixture model to target. The means, stds, weights and
-num_augmented_components will be updated to maximize the likelihood.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>target: numpy.ndarray (required)</dt><dd><p>The one dimensional expression vector.</p>
+<dt>SSB: np.ndarray</dt><dd><p>Explained sum of squares.</p>
 </dd>
-<dt>sampling: Union[int, float, bool], default: 0.8</dt><dd><p>If int is provided, randomly sample n number of expression value to fit
-the model. If float is provided (0 &lt; n &lt;= 1), only a portion of
-expression value will be used to fit the model. If True is provided,
-randomly sample 80% of the expression value. If False is provided, use
-all expression value to fit the model.</p>
-</dd>
-<dt>seed: int (optional)</dt><dd><p>Random seed for sampling algorithm.</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>None</dt><dd><p>self.means, self.weights and self.num_augmented_components will be
-updated to maximize the likelihood given the data.</p>
+<dt>objectNorm: np.ndarray</dt><dd><p>Normalized value corresponding to each quantile.</p>
 </dd>
 </dl>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="caiman.model.GaussianMixtureModel.get_means">
-<code class="sig-name descname">get_means</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#caiman.model.GaussianMixtureModel.get_means" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the means of the mixture components.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>numpy.ndarray</dt><dd><p>Return the means of the mixture components.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="caiman.model.GaussianMixtureModel.get_num_components">
-<code class="sig-name descname">get_num_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#caiman.model.GaussianMixtureModel.get_num_components" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt id="pysnail.dataset.Qstat.Qhat">
+<code class="sig-name descname">Qhat</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#pysnail.dataset.Qstat.Qhat" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt id="caiman.model.GaussianMixtureModel.get_stds">
-<code class="sig-name descname">get_stds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#caiman.model.GaussianMixtureModel.get_stds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the standard deviations of the mixture components.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>numpy.ndarray</dt><dd><p>Return the standard deviations of the mixture components.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dl class="py attribute">
+<dt id="pysnail.dataset.Qstat.SSB">
+<code class="sig-name descname">SSB</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#pysnail.dataset.Qstat.SSB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
-<dt id="caiman.model.GaussianMixtureModel.log_likelihood">
-<code class="sig-name descname">log_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">is_aug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>numpy.ndarray<span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.log_likelihood" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the log likelihood of the mixture components.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>target: numpy.ndarray (required)</dt><dd><p>Expression values for the genes.</p>
-</dd>
-<dt>is_aug: bool, default: False</dt><dd><p>Whether or not target is augmeted.</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>numpy.ndarray</dt><dd><p>Return the log likelihood of the mixture components.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dl class="py attribute">
+<dt id="pysnail.dataset.Qstat.SST">
+<code class="sig-name descname">SST</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#pysnail.dataset.Qstat.SST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
-<dt id="caiman.model.GaussianMixtureModel.posterior">
-<code class="sig-name descname">posterior</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">is_aug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>numpy.ndarray<span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.posterior" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the posterior probability of each component given the input data.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>target: numpy.ndarray (required)</dt><dd><p>Expression values for the genes.</p>
-</dd>
-<dt>is_aug: bool, default: False</dt><dd><p>Whether or not target is augmeted.</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>numpy.ndarray</dt><dd><p>The posterior probability of each component given the input data. The
-rows are the components, and the columns are the index of the input
-values. Return None if the model has not been fitted.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dl class="py attribute">
+<dt id="pysnail.dataset.Qstat.affected_genes_each_sample">
+<code class="sig-name descname">affected_genes_each_sample</code><em class="property">: pandas.core.frame.DataFrame</em><a class="headerlink" href="#pysnail.dataset.Qstat.affected_genes_each_sample" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
-<dt id="caiman.model.GaussianMixtureModel.predict">
-<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>numpy.ndarray<span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.predict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Predict the component for each element in the target.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>target: numpy.ndarray (required)</dt><dd><p>Expression values for the genes.</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>numpy.ndarray</dt><dd><p>The component each element in the target belong to. Return None if the
-model has not been fitted.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dl class="py attribute">
+<dt id="pysnail.dataset.Qstat.num_affected_genes">
+<code class="sig-name descname">num_affected_genes</code><em class="property">: pandas.core.series.Series</em><a class="headerlink" href="#pysnail.dataset.Qstat.num_affected_genes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
-<dt id="caiman.model.GaussianMixtureModel.sample">
-<code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_samples</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">augmented</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#caiman.model.GaussianMixtureModel.sample" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sample from the fitted mixture model.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><dl class="simple">
-<dt>num_samples: int (required)</dt><dd><p>Number of samples to generate.</p>
-</dd>
-<dt>augmented: bool, defualt: False</dt><dd><p>Enabling sampling from augmented distribution.</p>
-</dd>
-<dt>seed: int (optional)</dt><dd><p>Random seed for sampling algorithm.</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>Tuple[numpy.ndarray, numpy.ndarray]</dt><dd><p>The first element is the values drawn from the Gaussian distribution,
-and the second element is the label of the component. Return None if the
-model has not been fitted.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dl class="py attribute">
+<dt id="pysnail.dataset.Qstat.num_affected_samples">
+<code class="sig-name descname">num_affected_samples</code><em class="property">: int</em><a class="headerlink" href="#pysnail.dataset.Qstat.num_affected_samples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pysnail.dataset.Qstat.objectNorm">
+<code class="sig-name descname">objectNorm</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#pysnail.dataset.Qstat.objectNorm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="pysnail.dataset.Qstat.smoothWeights">
+<code class="sig-name descname">smoothWeights</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#pysnail.dataset.Qstat.smoothWeights" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-caiman.utils">
-<span id="caiman-utils"></span><h2>caiman.utils<a class="headerlink" href="#module-caiman.utils" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pysnail.qsmooth">
+<span id="pysnail-qsmooth"></span><h2>pysnail.qsmooth<a class="headerlink" href="#module-pysnail.qsmooth" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="caiman.utils.augment_data">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">augment_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#caiman.utils.augment_data" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.qsmooth.compute_qstat">
+<code class="sig-prename descclassname">pysnail.qsmooth.</code><code class="sig-name descname">compute_qstat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">window</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.05</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pysnail.dataset.Qstat" title="pysnail.dataset.Qstat">pysnail.dataset.Qstat</a><a class="headerlink" href="#pysnail.qsmooth.compute_qstat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute relevant statistics for qsmooth normalization.</p>
+<dl>
+<dt>Parameters:</dt><dd><blockquote>
+<div><dl class="simple">
+<dt>dataset: Union[str, Dataset]</dt><dd><p>CAIMAN-Qsmooth Dataset with provided expression and group information. If
+string is provided, it will be treated as the path to the expression data 
+used for creating the dataset. The dataset will be created automatically.</p>
+</dd>
+<dt>groups: str, optional</dt><dd><p>If string is provided, it will be treated as the path to the group
+information used for creating the dataset. This argument is ignored if 
+dataset get a created Dataset object.</p>
+</dd>
+<dt>window: float, default: 0.05</dt><dd><p>Window size for smoothen weight (range from 0.01 to 0.25).</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>Qstat</dt><dd><p>Statistics for qsmooth normalization, including ‘number of affected genes 
+for each sample’, ‘number of affected samples’, ‘smoothen weights’, 
+‘mean value for each quantile across samples’, ‘total sum of squares’, 
+‘explained sum of squares’ and ‘normalized value corresponding to each 
+quantile’.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pysnail.qsmooth.qsmooth">
+<code class="sig-prename descclassname">pysnail.qsmooth.</code><code class="sig-name descname">qsmooth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">aggregation</span><span class="o">=</span><span class="default_value">'median'</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.25</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">, </span><a class="reference internal" href="#pysnail.dataset.Qstat" title="pysnail.dataset.Qstat">pysnail.dataset.Qstat</a><span class="p">]</span><a class="headerlink" href="#pysnail.qsmooth.qsmooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform qsmooth normalization.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><dl class="simple">
+<dt>dataset: Union[str, Dataset]</dt><dd><p>CAIMAN-Qsmooth Dataset with provided expression and group information. If
+string is provided, it will be treated as the path to the expression data 
+used for creating the dataset. The dataset will be created automatically.</p>
+</dd>
+<dt>groups: str, optional</dt><dd><p>If string is provided, it will be treated as the path to the group
+information used for creating the dataset. This argument is ignored if 
+dataset get a created Dataset object.</p>
+</dd>
+<dt>aggregation: str, default: ‘median’</dt><dd><p>Aggregation method used to aggregate the mean value of each quantile when
+the original value are the same. Should be one of ‘mean’, ‘median’ or
+‘auto’. When set to ‘auto’, the threshold argument will be used.</p>
+</dd>
+<dt>threshold: float, default: 0.25</dt><dd><p>Threshold of the proportion of affected samples used to detect whether or 
+not the method should use ‘median’ aggregation instead of ‘mean’. This 
+argumnet is ignored when aggregation is not set to ‘auto’.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>Tuple[pd.core.frame.DataFrame, Qstat]</dt><dd><p>The first element in the tuple is the normalized expression, the second 
+element is the relevant statistics for qsmooth algorithms (Qstat object).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pysnail.utils">
+<span id="pysnail-utils"></span><h2>pysnail.utils<a class="headerlink" href="#module-pysnail.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="pysnail.utils.augment_data">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">augment_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pysnail.utils.augment_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the augmented data.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -630,8 +390,55 @@ model has not been fitted.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman.utils.get_random_state">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">get_random_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; numpy.random.mtrand.RandomState<a class="headerlink" href="#caiman.utils.get_random_state" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.bokeh_affected_barplot">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">bokeh_affected_barplot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">qstat</span></em>, <em class="sig-param"><span class="n">outdir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'./output'</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pysnail.utils.bokeh_affected_barplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make figure summarized the affected genes for each samples. The file will be 
+written to [outdir]/affected_genes_(%)_for_each_sample.html.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><dl class="simple">
+<dt>dataset: Dataset</dt><dd><p>CAIMAN-Qsmooth Dataset with provided expression and group information.</p>
+</dd>
+<dt>qstat: Qstat</dt><dd><p>Statistics for qsmooth normalization.</p>
+</dd>
+<dt>outdir: str, optional</dt><dd><p>Output directory (default: ./output)</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pysnail.utils.bokeh_affected_heatmap">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">bokeh_affected_heatmap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">qstat</span></em>, <em class="sig-param"><span class="n">samples</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">genes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outdir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'./output'</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pysnail.utils.bokeh_affected_heatmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make figure about the affected genes for each samples (small samples and genes
+are recommended, the interactive figure can only deal with small amount of data). 
+The file will be written to [outdir]/affected_genes_for_each_sample.html.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><dl class="simple">
+<dt>dataset: Dataset</dt><dd><p>CAIMAN-Qsmooth Dataset with provided expression and group information.</p>
+</dd>
+<dt>qstat: Qstat</dt><dd><p>Statistics for qsmooth normalization.</p>
+</dd>
+<dt>samples: List[str]</dt><dd><p>Filter for the samples (only samples in this argument will be analyzed). If
+None is provided, all samples will be used.</p>
+</dd>
+<dt>genes: List[str]</dt><dd><p>Filter for the genes (only genes in this argument will be analyzed). If None
+is provided, all genes will be used.</p>
+</dd>
+<dt>outdir: str, optional</dt><dd><p>Output directory (default: ./output)</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pysnail.utils.get_random_state">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">get_random_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; numpy.random.mtrand.RandomState<a class="headerlink" href="#pysnail.utils.get_random_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return numpy random state based on the given seed.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -648,8 +455,8 @@ model has not been fitted.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman.utils.have_same_index">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">have_same_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pandas.core.series.Series<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pandas.core.series.Series<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">target_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable 1'</span></em>, <em class="sig-param"><span class="n">source_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable 2'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman.utils.have_same_index" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.have_same_index">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">have_same_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pandas.core.series.Series<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pandas.core.series.Series<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">target_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable 1'</span></em>, <em class="sig-param"><span class="n">source_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable 2'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.have_same_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target and source share the same index (regardless of the order)</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -676,8 +483,8 @@ model has not been fitted.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman.utils.is_1darray">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">is_1darray</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman.utils.is_1darray" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.is_1darray">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">is_1darray</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.is_1darray" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target is an one dimensional list or numpy.ndarray.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -700,8 +507,8 @@ model has not been fitted.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman.utils.is_file">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">is_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman.utils.is_file" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.is_file">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">is_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.is_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target is the path to a file existed on the file system.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -724,8 +531,8 @@ model has not been fitted.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman.utils.is_integer">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">is_integer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman.utils.is_integer" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.is_integer">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">is_integer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.is_integer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target is an integer.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -748,8 +555,8 @@ model has not been fitted.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman.utils.is_positive_integer">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">is_positive_integer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman.utils.is_positive_integer" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.is_positive_integer">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">is_positive_integer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.is_positive_integer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target is an positive integer.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -772,8 +579,8 @@ model has not been fitted.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman.utils.is_series_dataframe">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">is_series_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman.utils.is_series_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.is_series_dataframe">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">is_series_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.is_series_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target is an instance of pandas.core.series.Series or
 pandas.core.frame.Dataframe</p>
 <dl class="simple">
@@ -798,8 +605,8 @@ pandas.core.frame.Dataframe</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman.utils.likelihood_ratio_test">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">likelihood_ratio_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_likelihood_simplified</span><span class="p">:</span> <span class="n">numpy.float32</span></em>, <em class="sig-param"><span class="n">log_likelihood_complex</span><span class="p">:</span> <span class="n">numpy.float32</span></em>, <em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">4</span></em><span class="sig-paren">)</span> &#x2192; numpy.float32<a class="headerlink" href="#caiman.utils.likelihood_ratio_test" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.likelihood_ratio_test">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">likelihood_ratio_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_likelihood_simplified</span><span class="p">:</span> <span class="n">numpy.float32</span></em>, <em class="sig-param"><span class="n">log_likelihood_complex</span><span class="p">:</span> <span class="n">numpy.float32</span></em>, <em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">4</span></em><span class="sig-paren">)</span> &#x2192; numpy.float32<a class="headerlink" href="#pysnail.utils.likelihood_ratio_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the pvalue of likelihood ratio test.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -820,8 +627,8 @@ pandas.core.frame.Dataframe</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman.utils.read_series">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">read_series</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.series.Series<span class="p">]</span><a class="headerlink" href="#caiman.utils.read_series" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.read_series">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">read_series</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.series.Series<span class="p">]</span><a class="headerlink" href="#pysnail.utils.read_series" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a two column data as pd.core.series.Series</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -843,8 +650,8 @@ headers and must be separated by tab.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman.utils.reduce_data">
-<code class="sig-prename descclassname">caiman.utils.</code><code class="sig-name descname">reduce_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#caiman.utils.reduce_data" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.reduce_data">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">reduce_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pysnail.utils.reduce_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the reduced (the first half) data.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -884,7 +691,7 @@ headers and must be separated by tab.</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, Ping-Han Hsieh
+        &copy; Copyright 2022, Ping-Han Hsieh
 
     </p>
   </div>

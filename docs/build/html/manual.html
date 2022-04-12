@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Manual &mdash; Caiman 0.2.0 documentation</title>
+  <title>Manual &mdash; PySNAIL 0.3.0 documentation</title>
   
 
   
@@ -51,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Caiman
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PySNAIL
           
 
           
@@ -85,16 +85,11 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Manual</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#correct-expression">Correct Expression</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#information-of-input-data">Information of Input Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#interactive-visualization">Interactive Visualization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fitted-gaussianmixturemodels">Fitted GaussianMixtureModels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fitted-statistics">Fitted Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#sample-from-gaussianmixturemodels">Sample from GaussianMixtureModels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#predict-with-gaussianmixturemodels">Predict with GaussianMixtureModels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#posterior-probability">Posterior Probability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#statistics-of-qsmooth">Statistics of Qsmooth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#diagnosis-of-qsmooth">Diagnosis of Qsmooth</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
@@ -113,7 +108,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Caiman</a>
+          <a href="index.html">PySNAIL</a>
         
       </nav>
 
@@ -165,147 +160,103 @@
             
   <div class="section" id="manual">
 <span id="id1"></span><h1>Manual<a class="headerlink" href="#manual" title="Permalink to this headline">¶</a></h1>
-<p>CAIMAN also provides an application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.</p>
+<p>PySNAIL provides an application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.</p>
 <div class="section" id="correct-expression">
 <h2>Correct Expression<a class="headerlink" href="#correct-expression" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">caiman</span> <span class="kn">import</span> <span class="n">Analysis</span>
+<span class="kn">from</span> <span class="nn">pysnail</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">qsmooth</span>
 
-<span class="n">xprs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;test/expression.tsv&#39;</span><span class="p">)</span>
-<span class="n">groups</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;test/groups.tsv&#39;</span><span class="p">)</span>
+<span class="n">xprs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;sample_data/expression.tsv&#39;</span><span class="p">)</span>
+<span class="n">groups</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;sample_data/groups.tsv&#39;</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">xprs</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;index_col&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;sep&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">})</span>
 
-<span class="n">analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">xprs</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;index_col&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;sep&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">})</span>
-<span class="n">corrected</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">correct</span><span class="p">(</span>
-    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;filter&#39;</span><span class="p">,</span>
-    <span class="n">adaptive_num_components</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">corrected</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;caiman_out.tsv&#39;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">xprs_norm</span><span class="p">,</span> <span class="n">qstat</span> <span class="o">=</span> <span class="n">qsmooth</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">aggregation</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">xprs_norm</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;pysnail_out.tsv&#39;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="information-of-input-data">
 <h2>Information of Input Data<a class="headerlink" href="#information-of-input-data" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">analysis</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="interactive-visualization">
-<h2>Interactive Visualization<a class="headerlink" href="#interactive-visualization" title="Permalink to this headline">¶</a></h2>
-<p>Please execute this after <code class="code docutils literal notranslate"><span class="pre">analysis.correct()</span></code></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analysis</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span><span class="s1">&#39;Liver&#39;</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="s1">&#39;outdir&#39;</span><span class="p">)</span>
+<div class="section" id="statistics-of-qsmooth">
+<h2>Statistics of Qsmooth<a class="headerlink" href="#statistics-of-qsmooth" title="Permalink to this headline">¶</a></h2>
+<p>Get number of affected genes for each samples.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qstat</span><span class="o">.</span><span class="n">num_affected_genes</span>
 </pre></div>
 </div>
+<p>Result:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Group</span>                        <span class="n">Sample</span>
+<span class="n">Embryonic</span> <span class="n">Facial</span> <span class="n">Prominence</span>  <span class="n">ENCFF132NQU</span>       <span class="mi">0</span>
+                             <span class="n">ENCFF262TXH</span>       <span class="mi">0</span>
+                             <span class="n">ENCFF369TLJ</span>       <span class="mi">0</span>
+                             <span class="n">ENCFF370UDF</span>       <span class="mi">0</span>
+                             <span class="n">ENCFF536XKZ</span>       <span class="mi">0</span>
+                                             <span class="o">...</span>
+<span class="n">Stomach</span>                      <span class="n">ENCFF052DOQ</span>       <span class="mi">0</span>
+                             <span class="n">ENCFF288JNN</span>       <span class="mi">0</span>
+                             <span class="n">ENCFF355MOU</span>       <span class="mi">0</span>
+                             <span class="n">ENCFF691EQW</span>       <span class="mi">0</span>
+                             <span class="n">ENCFF972NMO</span>    <span class="mi">2730</span>
+<span class="n">Length</span><span class="p">:</span> <span class="mi">126</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+</pre></div>
+</div>
+<p>Get number of affected samples in the dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qstat</span><span class="o">.</span><span class="n">num_affected_samples</span>
+</pre></div>
+</div>
+<p>Result:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>Get affected genes for each sample.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">qstat</span><span class="o">.</span><span class="n">num_affected_samples</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Result:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Group</span>              <span class="n">Embryonic</span> <span class="n">Facial</span> <span class="n">Prominence</span>                          \
+<span class="n">Sample</span>                             <span class="n">ENCFF132NQU</span> <span class="n">ENCFF262TXH</span> <span class="n">ENCFF369TLJ</span>
+<span class="n">ENSMUSG00000082905</span>                       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000026174</span>                       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000031293</span>                       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000062458</span>                       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000083793</span>                       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="o">...</span>                                        <span class="o">...</span>         <span class="o">...</span>         <span class="o">...</span>
+<span class="n">ENSMUSG00000015093</span>                       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000098607</span>                       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000102632</span>                       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000093969</span>                       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000050876</span>                       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+
+<span class="n">Group</span>                                                               \
+<span class="n">Sample</span>             <span class="n">ENCFF370UDF</span> <span class="n">ENCFF536XKZ</span> <span class="n">ENCFF594CEM</span> <span class="n">ENCFF672DDJ</span>
+<span class="n">ENSMUSG00000082905</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000026174</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000031293</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000062458</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000083793</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="o">...</span>                        <span class="o">...</span>         <span class="o">...</span>         <span class="o">...</span>         <span class="o">...</span>
+<span class="n">ENSMUSG00000015093</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000098607</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000102632</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000102632</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000093969</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+<span class="n">ENSMUSG00000050876</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>       <span class="kc">False</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="diagnosis-of-qsmooth">
+<h2>Diagnosis of Qsmooth<a class="headerlink" href="#diagnosis-of-qsmooth" title="Permalink to this headline">¶</a></h2>
+<p>Make bar plot on number of affected genes for each sample</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pysnail</span> <span class="kn">import</span> <span class="n">bokeh_affected_barplot</span>
+<span class="n">bokeh_affected_barplot</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">qstat</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Result (the result shown here is excerpted from the analysis in the manuscript instead of from the sample data. ):</p>
 <div class="figure align-default">
-<img alt="Cannot link to distribution.gif" src="_images/distribution.gif" />
-</div>
-</div>
-<div class="section" id="fitted-gaussianmixturemodels">
-<h2>Fitted GaussianMixtureModels<a class="headerlink" href="#fitted-gaussianmixturemodels" title="Permalink to this headline">¶</a></h2>
-<p>Please execute this after <code class="code docutils literal notranslate"><span class="pre">analysis.correct()</span></code>.</p>
-<p>For specific group:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gmm</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">get_gmm</span><span class="p">(</span><span class="s1">&#39;Liver&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">gmm</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Result:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">GaussianMixtureModel</span>
-
-<span class="n">Attributes</span>
-    <span class="n">num_iterations</span><span class="p">:</span>             <span class="mi">10</span>
-    <span class="n">verbose</span><span class="p">:</span>                 <span class="kc">False</span>
-    <span class="n">store_checkpoints</span><span class="p">:</span>       <span class="kc">False</span>
-    <span class="n">adpative_num_components</span><span class="p">:</span> <span class="kc">False</span>
-    <span class="n">is_fitted</span><span class="p">:</span>                <span class="kc">True</span>
-
-<span class="n">Statistics</span>
-    <span class="n">num_components</span><span class="p">:</span>
-    <span class="mi">3</span>
-
-    <span class="n">means</span><span class="p">:</span>
-    <span class="p">[</span> <span class="mf">0.</span>        <span class="mf">10.543127</span>   <span class="mf">4.2125125</span><span class="p">]</span>
-
-    <span class="n">standard</span> <span class="n">deviations</span><span class="p">:</span>
-    <span class="p">[</span><span class="mf">0.17445941</span> <span class="mf">1.5966247</span>  <span class="mf">3.590845</span>  <span class="p">]</span>
-</pre></div>
-</div>
-<p>For every group:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gmms</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">get_gmm</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">gmm</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Result:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;Embryonic Facial Prominence&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Forebrain&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Heart&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Hindbrain&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Intestine&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Kidney&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Limb&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Liver&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Lung&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Midbrain&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Neural Tube&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;Stomach&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">caiman</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">GaussianMixtureModel</span><span class="o">&gt;</span><span class="p">}</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="fitted-statistics">
-<h2>Fitted Statistics<a class="headerlink" href="#fitted-statistics" title="Permalink to this headline">¶</a></h2>
-<p>Get fitted means.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">means</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">get_means</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Result:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([</span> <span class="mf">0.</span>       <span class="p">,</span> <span class="mf">10.543127</span> <span class="p">,</span>  <span class="mf">4.2125125</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Get fitted standard deviations.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">stds</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">get_stds</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">stds</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Result:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([</span><span class="mf">0.17445941</span><span class="p">,</span> <span class="mf">1.5966247</span> <span class="p">,</span> <span class="mf">3.590845</span>  <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="sample-from-gaussianmixturemodels">
-<h2>Sample from GaussianMixtureModels<a class="headerlink" href="#sample-from-gaussianmixturemodels" title="Permalink to this headline">¶</a></h2>
-<p>Please execute this after <code class="code docutils literal notranslate"><span class="pre">analysis.correct()</span></code>. The first element in the returned tuple is the sampling expression value, while the second element denotes the labels.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampled</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">sampled</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Results:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">array</span><span class="p">([</span> <span class="mf">0.36919074</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.10474598</span><span class="p">,</span>  <span class="mf">0.09662524</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.07132469</span><span class="p">,</span> <span class="mf">13.06010501</span><span class="p">,</span>
-         <span class="mf">8.73190427</span><span class="p">,</span>  <span class="mf">9.51180642</span><span class="p">,</span> <span class="mf">10.94915712</span><span class="p">,</span> <span class="mf">11.04356705</span><span class="p">,</span> <span class="mf">11.81309644</span><span class="p">]),</span>
- <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="predict-with-gaussianmixturemodels">
-<h2>Predict with GaussianMixtureModels<a class="headerlink" href="#predict-with-gaussianmixturemodels" title="Permalink to this headline">¶</a></h2>
-<p>Please execute this after <code class="code docutils literal notranslate"><span class="pre">analysis.correct()</span></code>. Return the label of input data.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gmm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>Results:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
-       <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
-       <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
-       <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
-       <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="posterior-probability">
-<h2>Posterior Probability<a class="headerlink" href="#posterior-probability" title="Permalink to this headline">¶</a></h2>
-<p>Please execute this after <code class="code docutils literal notranslate"><span class="pre">analysis.correct()</span></code>. Return the posterior probability of each component given the input data.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gmm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>Results:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([[</span><span class="mf">9.7392517e-01</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span>
-        <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">,</span>
-        <span class="mf">0.0000000e+00</span><span class="p">,</span> <span class="mf">0.0000000e+00</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">3.9015721e-11</span><span class="p">,</span> <span class="mf">1.1948496e-01</span><span class="p">,</span> <span class="mf">3.7362605e-01</span><span class="p">,</span> <span class="mf">5.5182225e-01</span><span class="p">,</span>
-        <span class="mf">6.5891063e-01</span><span class="p">,</span> <span class="mf">7.2536421e-01</span><span class="p">,</span> <span class="mf">7.6906377e-01</span><span class="p">,</span> <span class="mf">7.9936570e-01</span><span class="p">,</span>
-        <span class="mf">8.2131582e-01</span><span class="p">,</span> <span class="mf">8.3778638e-01</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">2.6074827e-02</span><span class="p">,</span> <span class="mf">8.8051498e-01</span><span class="p">,</span> <span class="mf">6.2637395e-01</span><span class="p">,</span> <span class="mf">4.4817781e-01</span><span class="p">,</span>
-        <span class="mf">3.4108940e-01</span><span class="p">,</span> <span class="mf">2.7463582e-01</span><span class="p">,</span> <span class="mf">2.3093626e-01</span><span class="p">,</span> <span class="mf">2.0063429e-01</span><span class="p">,</span>
-        <span class="mf">1.7868416e-01</span><span class="p">,</span> <span class="mf">1.6221364e-01</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
-</pre></div>
+<img alt="Cannot link to bar_plot_affected_genes.png" src="_images/bar_plot_affected_genes.png" />
 </div>
 </div>
 </div>
@@ -331,7 +282,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, Ping-Han Hsieh
+        &copy; Copyright 2022, Ping-Han Hsieh
 
     </p>
   </div>
