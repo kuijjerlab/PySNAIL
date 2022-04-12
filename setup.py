@@ -1,15 +1,14 @@
 from setuptools import setup
 
 setup(
-    name='CAIMAN Qsmooth',
+    name='PySNAIL',
     version='0.3.0',
-    description="""Count Adjustment to Improve the Modeling of Gene Association
-    Networks with Qsmooth (CAIMAN-Qsmooth)""",
+    description="""Python Implementation for Smooth-quantile Normalization Adaptation for Inference of co-expression Links (PySNAIL)""",
     url='https://github.com/dn070017/Caiman',
     author='Ping-Han Hsieh',
     author_email='dn070017@gmail.com',
     license='MIT',
-    packages=['caiman_qsmooth'],
+    packages=['pysnail'],
     install_requires=[
         'bokeh>=2.2.0',
         'numpy>=1.19.1',
@@ -24,7 +23,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'caiman_qsmooth = caiman_qsmooth.__main__:main'
+            'pysnail = pysnail.__main__:main'
         ],
     },
     zip_safe=False,
