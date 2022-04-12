@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; Caiman 0.2.0 documentation</title>
+  <title>Installation &mdash; PySNAIL 0.3.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Quick Start" href="quickstart.html" />
-    <link rel="prev" title="Caiman" href="index.html" /> 
+    <link rel="prev" title="PySNAIL" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Caiman
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PySNAIL
           
 
           
@@ -90,7 +90,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 </ul>
@@ -108,7 +107,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Caiman</a>
+          <a href="index.html">PySNAIL</a>
         
       </nav>
 
@@ -162,33 +161,38 @@
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="environment-setting">
 <h2>Environment Setting<a class="headerlink" href="#environment-setting" title="Permalink to this headline">¶</a></h2>
-<p>It is highly recommended to use the <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/index.html">conda</a> virtual environment to install this package. After installation of conda, create a virtual environment for CAIMAN using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda create -n caiman <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7.7
-$ conda activate caiman
+<p>It is highly recommended to use the <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/index.html">conda</a> virtual environment to install this package. After installation of conda, create a virtual environment for PySNAIL using the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda create -n pysnail <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7.7
+$ conda activate pysnail
 </pre></div>
 </div>
 </div>
 <div class="section" id="install-package">
 <h2>Install Package<a class="headerlink" href="#install-package" title="Permalink to this headline">¶</a></h2>
-<p>Download the source code from <code class="code docutils literal notranslate"><span class="pre">git&#64;github.com:kuijjerlab/CAIMAN.git</span></code> and install the package using <code class="code docutils literal notranslate"><span class="pre">pip</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:kuijjerlab/CAIMAN.git
-$ <span class="nb">cd</span> Caiman
+<p>Download the source code from <code class="code docutils literal notranslate"><span class="pre">git&#64;github.com:kuijjerlab/PySNAIL.git</span></code> and install the package using <code class="code docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:kuijjerlab/PySNAIL.git
+$ <span class="nb">cd</span> PySNAIL
 $ pip install -e .
 </pre></div>
 </div>
 <p>To reproduce the analysis we provide in the manuscript:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ conda activate caiman
-$ conda config --add channels bokeh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:kuijjerlab/PySNAIL.git
+$ <span class="nb">cd</span> PySNAIL
+$ conda activate pysnail
+$ conda config --add channels anaconda
 $ conda config --add channels defaults
 $ conda config --add channels bioconda
 $ conda config --add channels conda-forge
-$ conda install --file analysis_requirement.txt
+$ conda config --add channels bokeh
+$ conda install --file conda_requirement.txt
+$ pip install -r pip_requirement.txt
+$ pip install -e .
 </pre></div>
 </div>
 </div>
 <div class="section" id="example-dataset">
 <h2>Example Dataset<a class="headerlink" href="#example-dataset" title="Permalink to this headline">¶</a></h2>
-<p>The CAIMAN packages includes an example dataset for users to test the method on. This can be found under the <code class="code docutils literal notranslate"><span class="pre">sample_data</span></code> directories. The <cite>expression.tsv</cite> contains 10,000 randomly selected genes from <a class="reference external" href="https://www.encodeproject.org/reference-epigenome-matrix/?type=Experiment&amp;related_series.&#64;type=ReferenceEpigenome&amp;replicates.library.biosample.donor.organism.scientific_name=Mus+musculus">the Mouse ENCODE Project Consortium</a>. The <code class="code docutils literal notranslate"><span class="pre">groups.tsv</span></code> contains the tissue information for each sample.</p>
+<p>The PySNAIL packages includes an example dataset for users to test the method on. This can be found under the <code class="code docutils literal notranslate"><span class="pre">sample_data</span></code> directories. The <cite>expression.tsv</cite> contains 10,000 randomly selected genes from <a class="reference external" href="https://www.encodeproject.org/reference-epigenome-matrix/?type=Experiment&amp;related_series.&#64;type=ReferenceEpigenome&amp;replicates.library.biosample.donor.organism.scientific_name=Mus+musculus">the Mouse ENCODE Project Consortium</a>. The <code class="code docutils literal notranslate"><span class="pre">groups.tsv</span></code> contains the tissue information for each sample.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sample_data/expression.tsv
 $ sample_data/groups.tsv
 </pre></div>
@@ -207,7 +211,7 @@ $ sample_data/groups.tsv
         <a href="quickstart.html" class="btn btn-neutral float-right" title="Quick Start" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Caiman" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="PySNAIL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -217,7 +221,7 @@ $ sample_data/groups.tsv
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, Ping-Han Hsieh
+        &copy; Copyright 2022, Ping-Han Hsieh
 
     </p>
   </div>

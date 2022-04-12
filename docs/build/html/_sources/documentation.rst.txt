@@ -3,26 +3,26 @@
 Documentation
 =============
 
-caiman_qsmooth.dataset
+pysnail.dataset
 ----------------------
 
-.. automodule:: caiman_qsmooth.dataset
+.. automodule:: pysnail.dataset
    :members:
    :undoc-members:
    :show-inheritance:
 
-caiman_qsmooth.qsmooth
+pysnail.qsmooth
 ----------------------
 
-.. automodule:: caiman_qsmooth.qsmooth
+.. automodule:: pysnail.qsmooth
    :members:
    :undoc-members:
    :show-inheritance:
 
-caiman_qsmooth.utils
+pysnail.utils
 --------------------
 
-.. automodule:: caiman_qsmooth.utils
+.. automodule:: pysnail.utils
    :members:
    :undoc-members:
    :show-inheritance:

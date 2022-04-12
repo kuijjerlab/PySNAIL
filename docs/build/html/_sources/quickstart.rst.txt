@@ -3,21 +3,21 @@
 Quick Start
 ===========
 
-After installation, CAIMAN can be executed directly as a Python module using the following command:
+After installation, PySNAIL can be executed directly as a Python module using the following command:
 
 .. code-block:: bash
 
-    $ caiman_qsmooth sample_data/qsmooth.tsv --groups sample_data/groups.tsv --outdir output
+    $ pysnail sample_data/qsmooth.tsv --groups sample_data/groups.tsv --outdir output
 
-The complete arguments are listed as follows (one can get this information by executing :code:`caiman --help`)
+The complete arguments are listed as follows (one can get this information by executing :code:`pysnail --help`)
 
 .. code-block:: bash
 
-    caiman_qsmooth -h
-    usage: caiman_qsmooth [-h] [-g [path]] [-m {'mean', 'median', 'auto'}]
+    pysnail -h
+    usage: pysnail [-h] [-g [path]] [-m {'mean', 'median', 'auto'}]
         [-t [threshold]] [-o [path]] xprs
 
-    Count Adjustment to Improve the Modeling of Gene Association Networks-Qsmooth (CAIMAN-Qsmooth)
+    Python implementation of Smooth-quantile Normalization Adaptation for Inference of co-expression Links (PySNAIL)
 
     positional arguments:
         xprs            Path to the expression data. The file should be
@@ -62,10 +62,16 @@ The complete arguments are listed as follows (one can get this information by ex
 
 Reproduce Analysis in the Manuscript
 ------------------------------------
-To reproduce analysis in the manuscript:
+The `bioconductor-encodexplorer` package used in the original analysis is deprecated. To reproduce the analysis, please download the ENCODE dataset from `here <https://drive.google.com/file/d/1um7NyiXd_BVYUPGMaOFZEf0y2vnqdCaR/view?usp=sharing>`_ before executing the following commands. 
+To reproduce analysis in the manuscript:To reproduce analysis in the manuscript:
 
 .. code-block:: bash
 
+    $ cd PySNAIL
+    $ # download the ZIP file and put it here.
+    $ mkdir -p manuscript_analysis/datasets/
+    $ unzip PySNAIL-ENCODE.zip
+    $ mv ENCODE manuscript_analysis/datasets/
     $ snakemake --cores [n]
 
 The result can be found in the directory :code:`manuscript_analysis`. Note that it will likely take a while to download and preprocess the datasets.

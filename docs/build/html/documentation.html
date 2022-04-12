@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Documentation &mdash; Caiman 0.2.0 documentation</title>
+  <title>Documentation &mdash; PySNAIL 0.3.0 documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Caiman
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PySNAIL
           
 
           
@@ -84,12 +84,11 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html#reproduce-analysis-in-the-manuscript">Reproduce Analysis in the Manuscript</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-caiman_qsmooth.dataset">caiman_qsmooth.dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-caiman_qsmooth.qsmooth">caiman_qsmooth.qsmooth</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-caiman_qsmooth.utils">caiman_qsmooth.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysnail.dataset">pysnail.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysnail.qsmooth">pysnail.qsmooth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysnail.utils">pysnail.utils</a></li>
 </ul>
 </li>
 </ul>
@@ -107,7 +106,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Caiman</a>
+          <a href="index.html">PySNAIL</a>
         
       </nav>
 
@@ -159,11 +158,11 @@
             
   <div class="section" id="documentation">
 <span id="id1"></span><h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-caiman_qsmooth.dataset">
-<span id="caiman-qsmooth-dataset"></span><h2>caiman_qsmooth.dataset<a class="headerlink" href="#module-caiman_qsmooth.dataset" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pysnail.dataset">
+<span id="pysnail-dataset"></span><h2>pysnail.dataset<a class="headerlink" href="#module-pysnail.dataset" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt id="caiman_qsmooth.dataset.Dataset">
-<em class="property">class </em><code class="sig-prename descclassname">caiman_qsmooth.dataset.</code><code class="sig-name descname">Dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xprs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.series.Series<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caiman_qsmooth.dataset.Dataset" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Dataset">
+<em class="property">class </em><code class="sig-prename descclassname">pysnail.dataset.</code><code class="sig-name descname">Dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xprs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.series.Series<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysnail.dataset.Dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Dataset for expression data used in CAIMAN-Qsmooth normalization.</p>
 <dl class="simple">
@@ -199,13 +198,13 @@ with &lt;tab&gt;. If provided with series, the index should be the sample names.
 </dd>
 </dl>
 <dl class="py method">
-<dt id="caiman_qsmooth.dataset.Dataset.get_groups">
-<code class="sig-name descname">get_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.series.Series<a class="headerlink" href="#caiman_qsmooth.dataset.Dataset.get_groups" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Dataset.get_groups">
+<code class="sig-name descname">get_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.series.Series<a class="headerlink" href="#pysnail.dataset.Dataset.get_groups" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="caiman_qsmooth.dataset.Dataset.get_xprs">
-<code class="sig-name descname">get_xprs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">copy</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#caiman_qsmooth.dataset.Dataset.get_xprs" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Dataset.get_xprs">
+<code class="sig-name descname">get_xprs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">copy</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="headerlink" href="#pysnail.dataset.Dataset.get_xprs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the expression table of the given group</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -228,8 +227,8 @@ the reference of the original expression dataframe (False)</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="caiman_qsmooth.dataset.Qstat">
-<em class="property">class </em><code class="sig-prename descclassname">caiman_qsmooth.dataset.</code><code class="sig-name descname">Qstat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">affected_genes_each_sample</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">num_affected_genes</span><span class="p">:</span> <span class="n">pandas.core.series.Series</span></em>, <em class="sig-param"><span class="n">num_affected_samples</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">smoothWeights</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">Qhat</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">SST</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">SSB</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">objectNorm</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="headerlink" href="#caiman_qsmooth.dataset.Qstat" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Qstat">
+<em class="property">class </em><code class="sig-prename descclassname">pysnail.dataset.</code><code class="sig-name descname">Qstat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">affected_genes_each_sample</span><span class="p">:</span> <span class="n">pandas.core.frame.DataFrame</span></em>, <em class="sig-param"><span class="n">num_affected_genes</span><span class="p">:</span> <span class="n">pandas.core.series.Series</span></em>, <em class="sig-param"><span class="n">num_affected_samples</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">smoothWeights</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">Qhat</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">SST</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">SSB</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">objectNorm</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pysnail.dataset.Qstat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Data structure for some relevant statistics for qsmooth normalization.</p>
 <dl class="simple">
@@ -254,53 +253,53 @@ the reference of the original expression dataframe (False)</p>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="caiman_qsmooth.dataset.Qstat.Qhat">
-<code class="sig-name descname">Qhat</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman_qsmooth.dataset.Qstat.Qhat" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Qstat.Qhat">
+<code class="sig-name descname">Qhat</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#pysnail.dataset.Qstat.Qhat" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="caiman_qsmooth.dataset.Qstat.SSB">
-<code class="sig-name descname">SSB</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman_qsmooth.dataset.Qstat.SSB" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Qstat.SSB">
+<code class="sig-name descname">SSB</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#pysnail.dataset.Qstat.SSB" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="caiman_qsmooth.dataset.Qstat.SST">
-<code class="sig-name descname">SST</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman_qsmooth.dataset.Qstat.SST" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Qstat.SST">
+<code class="sig-name descname">SST</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#pysnail.dataset.Qstat.SST" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="caiman_qsmooth.dataset.Qstat.affected_genes_each_sample">
-<code class="sig-name descname">affected_genes_each_sample</code><em class="property">: pandas.core.frame.DataFrame</em><a class="headerlink" href="#caiman_qsmooth.dataset.Qstat.affected_genes_each_sample" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Qstat.affected_genes_each_sample">
+<code class="sig-name descname">affected_genes_each_sample</code><em class="property">: pandas.core.frame.DataFrame</em><a class="headerlink" href="#pysnail.dataset.Qstat.affected_genes_each_sample" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="caiman_qsmooth.dataset.Qstat.num_affected_genes">
-<code class="sig-name descname">num_affected_genes</code><em class="property">: pandas.core.series.Series</em><a class="headerlink" href="#caiman_qsmooth.dataset.Qstat.num_affected_genes" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Qstat.num_affected_genes">
+<code class="sig-name descname">num_affected_genes</code><em class="property">: pandas.core.series.Series</em><a class="headerlink" href="#pysnail.dataset.Qstat.num_affected_genes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="caiman_qsmooth.dataset.Qstat.num_affected_samples">
-<code class="sig-name descname">num_affected_samples</code><em class="property">: int</em><a class="headerlink" href="#caiman_qsmooth.dataset.Qstat.num_affected_samples" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Qstat.num_affected_samples">
+<code class="sig-name descname">num_affected_samples</code><em class="property">: int</em><a class="headerlink" href="#pysnail.dataset.Qstat.num_affected_samples" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="caiman_qsmooth.dataset.Qstat.objectNorm">
-<code class="sig-name descname">objectNorm</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman_qsmooth.dataset.Qstat.objectNorm" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Qstat.objectNorm">
+<code class="sig-name descname">objectNorm</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#pysnail.dataset.Qstat.objectNorm" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="caiman_qsmooth.dataset.Qstat.smoothWeights">
-<code class="sig-name descname">smoothWeights</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#caiman_qsmooth.dataset.Qstat.smoothWeights" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.dataset.Qstat.smoothWeights">
+<code class="sig-name descname">smoothWeights</code><em class="property">: numpy.ndarray</em><a class="headerlink" href="#pysnail.dataset.Qstat.smoothWeights" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-caiman_qsmooth.qsmooth">
-<span id="caiman-qsmooth-qsmooth"></span><h2>caiman_qsmooth.qsmooth<a class="headerlink" href="#module-caiman_qsmooth.qsmooth" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pysnail.qsmooth">
+<span id="pysnail-qsmooth"></span><h2>pysnail.qsmooth<a class="headerlink" href="#module-pysnail.qsmooth" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="caiman_qsmooth.qsmooth.compute_qstat">
-<code class="sig-prename descclassname">caiman_qsmooth.qsmooth.</code><code class="sig-name descname">compute_qstat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">window</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.05</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#caiman_qsmooth.dataset.Qstat" title="caiman_qsmooth.dataset.Qstat">caiman_qsmooth.dataset.Qstat</a><a class="headerlink" href="#caiman_qsmooth.qsmooth.compute_qstat" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.qsmooth.compute_qstat">
+<code class="sig-prename descclassname">pysnail.qsmooth.</code><code class="sig-name descname">compute_qstat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">window</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.05</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pysnail.dataset.Qstat" title="pysnail.dataset.Qstat">pysnail.dataset.Qstat</a><a class="headerlink" href="#pysnail.qsmooth.compute_qstat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute relevant statistics for qsmooth normalization.</p>
 <dl>
 <dt>Parameters:</dt><dd><blockquote>
@@ -333,8 +332,8 @@ quantile’.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.qsmooth.qsmooth">
-<code class="sig-prename descclassname">caiman_qsmooth.qsmooth.</code><code class="sig-name descname">qsmooth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">aggregation</span><span class="o">=</span><span class="default_value">'median'</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.25</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">, </span><a class="reference internal" href="#caiman_qsmooth.dataset.Qstat" title="caiman_qsmooth.dataset.Qstat">caiman_qsmooth.dataset.Qstat</a><span class="p">]</span><a class="headerlink" href="#caiman_qsmooth.qsmooth.qsmooth" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.qsmooth.qsmooth">
+<code class="sig-prename descclassname">pysnail.qsmooth.</code><code class="sig-name descname">qsmooth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">aggregation</span><span class="o">=</span><span class="default_value">'median'</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.25</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">, </span><a class="reference internal" href="#pysnail.dataset.Qstat" title="pysnail.dataset.Qstat">pysnail.dataset.Qstat</a><span class="p">]</span><a class="headerlink" href="#pysnail.qsmooth.qsmooth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform qsmooth normalization.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -366,11 +365,11 @@ element is the relevant statistics for qsmooth algorithms (Qstat object).</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-caiman_qsmooth.utils">
-<span id="caiman-qsmooth-utils"></span><h2>caiman_qsmooth.utils<a class="headerlink" href="#module-caiman_qsmooth.utils" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pysnail.utils">
+<span id="pysnail-utils"></span><h2>pysnail.utils<a class="headerlink" href="#module-pysnail.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.augment_data">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">augment_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#caiman_qsmooth.utils.augment_data" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.augment_data">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">augment_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pysnail.utils.augment_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the augmented data.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -391,8 +390,8 @@ element is the relevant statistics for qsmooth algorithms (Qstat object).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.bokeh_affected_barplot">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">bokeh_affected_barplot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">qstat</span></em>, <em class="sig-param"><span class="n">outdir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'./output'</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#caiman_qsmooth.utils.bokeh_affected_barplot" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.bokeh_affected_barplot">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">bokeh_affected_barplot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">qstat</span></em>, <em class="sig-param"><span class="n">outdir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'./output'</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pysnail.utils.bokeh_affected_barplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make figure summarized the affected genes for each samples. The file will be 
 written to [outdir]/affected_genes_(%)_for_each_sample.html.</p>
 <dl class="simple">
@@ -411,8 +410,8 @@ written to [outdir]/affected_genes_(%)_for_each_sample.html.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.bokeh_affected_heatmap">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">bokeh_affected_heatmap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">qstat</span></em>, <em class="sig-param"><span class="n">samples</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">genes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outdir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'./output'</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#caiman_qsmooth.utils.bokeh_affected_heatmap" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.bokeh_affected_heatmap">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">bokeh_affected_heatmap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">qstat</span></em>, <em class="sig-param"><span class="n">samples</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">genes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outdir</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'./output'</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pysnail.utils.bokeh_affected_heatmap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make figure about the affected genes for each samples (small samples and genes
 are recommended, the interactive figure can only deal with small amount of data). 
 The file will be written to [outdir]/affected_genes_for_each_sample.html.</p>
@@ -438,8 +437,8 @@ is provided, all genes will be used.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.get_random_state">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">get_random_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; numpy.random.mtrand.RandomState<a class="headerlink" href="#caiman_qsmooth.utils.get_random_state" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.get_random_state">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">get_random_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; numpy.random.mtrand.RandomState<a class="headerlink" href="#pysnail.utils.get_random_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return numpy random state based on the given seed.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -456,8 +455,8 @@ is provided, all genes will be used.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.have_same_index">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">have_same_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pandas.core.series.Series<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pandas.core.series.Series<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">target_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable 1'</span></em>, <em class="sig-param"><span class="n">source_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable 2'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman_qsmooth.utils.have_same_index" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.have_same_index">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">have_same_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pandas.core.series.Series<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>pandas.core.series.Series<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">target_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable 1'</span></em>, <em class="sig-param"><span class="n">source_name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable 2'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.have_same_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target and source share the same index (regardless of the order)</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -484,8 +483,8 @@ is provided, all genes will be used.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.is_1darray">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">is_1darray</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman_qsmooth.utils.is_1darray" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.is_1darray">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">is_1darray</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.is_1darray" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target is an one dimensional list or numpy.ndarray.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -508,8 +507,8 @@ is provided, all genes will be used.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.is_file">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">is_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman_qsmooth.utils.is_file" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.is_file">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">is_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.is_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target is the path to a file existed on the file system.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -532,8 +531,8 @@ is provided, all genes will be used.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.is_integer">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">is_integer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman_qsmooth.utils.is_integer" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.is_integer">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">is_integer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.is_integer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target is an integer.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -556,8 +555,8 @@ is provided, all genes will be used.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.is_positive_integer">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">is_positive_integer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman_qsmooth.utils.is_positive_integer" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.is_positive_integer">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">is_positive_integer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.is_positive_integer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target is an positive integer.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -580,8 +579,8 @@ is provided, all genes will be used.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.is_series_dataframe">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">is_series_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#caiman_qsmooth.utils.is_series_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.is_series_dataframe">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">is_series_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'variable'</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pysnail.utils.is_series_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if target is an instance of pandas.core.series.Series or
 pandas.core.frame.Dataframe</p>
 <dl class="simple">
@@ -606,8 +605,8 @@ pandas.core.frame.Dataframe</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.likelihood_ratio_test">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">likelihood_ratio_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_likelihood_simplified</span><span class="p">:</span> <span class="n">numpy.float32</span></em>, <em class="sig-param"><span class="n">log_likelihood_complex</span><span class="p">:</span> <span class="n">numpy.float32</span></em>, <em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">4</span></em><span class="sig-paren">)</span> &#x2192; numpy.float32<a class="headerlink" href="#caiman_qsmooth.utils.likelihood_ratio_test" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.likelihood_ratio_test">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">likelihood_ratio_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_likelihood_simplified</span><span class="p">:</span> <span class="n">numpy.float32</span></em>, <em class="sig-param"><span class="n">log_likelihood_complex</span><span class="p">:</span> <span class="n">numpy.float32</span></em>, <em class="sig-param"><span class="n">df</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">4</span></em><span class="sig-paren">)</span> &#x2192; numpy.float32<a class="headerlink" href="#pysnail.utils.likelihood_ratio_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the pvalue of likelihood ratio test.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -628,8 +627,8 @@ pandas.core.frame.Dataframe</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.read_series">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">read_series</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.series.Series<span class="p">]</span><a class="headerlink" href="#caiman_qsmooth.utils.read_series" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.read_series">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">read_series</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">warn</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">error</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>pandas.core.series.Series<span class="p">]</span><a class="headerlink" href="#pysnail.utils.read_series" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a two column data as pd.core.series.Series</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -651,8 +650,8 @@ headers and must be separated by tab.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="caiman_qsmooth.utils.reduce_data">
-<code class="sig-prename descclassname">caiman_qsmooth.utils.</code><code class="sig-name descname">reduce_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#caiman_qsmooth.utils.reduce_data" title="Permalink to this definition">¶</a></dt>
+<dt id="pysnail.utils.reduce_data">
+<code class="sig-prename descclassname">pysnail.utils.</code><code class="sig-name descname">reduce_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pysnail.utils.reduce_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the reduced (the first half) data.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -692,7 +691,7 @@ headers and must be separated by tab.</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, Ping-Han Hsieh
+        &copy; Copyright 2022, Ping-Han Hsieh
 
     </p>
   </div>

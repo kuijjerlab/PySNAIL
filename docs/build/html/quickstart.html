@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Quick Start &mdash; Caiman 0.2.0 documentation</title>
+  <title>Quick Start &mdash; PySNAIL 0.3.0 documentation</title>
   
 
   
@@ -51,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Caiman
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PySNAIL
           
 
           
@@ -105,7 +105,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Caiman</a>
+          <a href="index.html">PySNAIL</a>
         
       </nav>
 
@@ -157,16 +157,16 @@
             
   <div class="section" id="quick-start">
 <span id="quickstart"></span><h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
-<p>After installation, CAIMAN can be executed directly as a Python module using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ caiman_qsmooth sample_data/qsmooth.tsv --groups sample_data/groups.tsv --outdir output
+<p>After installation, PySNAIL can be executed directly as a Python module using the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pysnail sample_data/qsmooth.tsv --groups sample_data/groups.tsv --outdir output
 </pre></div>
 </div>
-<p>The complete arguments are listed as follows (one can get this information by executing <code class="code docutils literal notranslate"><span class="pre">caiman</span> <span class="pre">--help</span></code>)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>caiman_qsmooth -h
-usage: caiman_qsmooth <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-g <span class="o">[</span>path<span class="o">]]</span> <span class="o">[</span>-m <span class="o">{</span><span class="s1">&#39;mean&#39;</span>, <span class="s1">&#39;median&#39;</span>, <span class="s1">&#39;auto&#39;</span><span class="o">}]</span>
+<p>The complete arguments are listed as follows (one can get this information by executing <code class="code docutils literal notranslate"><span class="pre">pysnail</span> <span class="pre">--help</span></code>)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pysnail -h
+usage: pysnail <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-g <span class="o">[</span>path<span class="o">]]</span> <span class="o">[</span>-m <span class="o">{</span><span class="s1">&#39;mean&#39;</span>, <span class="s1">&#39;median&#39;</span>, <span class="s1">&#39;auto&#39;</span><span class="o">}]</span>
     <span class="o">[</span>-t <span class="o">[</span>threshold<span class="o">]]</span> <span class="o">[</span>-o <span class="o">[</span>path<span class="o">]]</span> xprs
 
-Count Adjustment to Improve the Modeling of Gene Association Networks-Qsmooth <span class="o">(</span>CAIMAN-Qsmooth<span class="o">)</span>
+Python implementation of Smooth-quantile Normalization Adaptation <span class="k">for</span> Inference of co-expression Links <span class="o">(</span>PySNAIL<span class="o">)</span>
 
 positional arguments:
     xprs            Path to the expression data. The file should be
@@ -212,8 +212,14 @@ optional arguments:
 </div>
 <div class="section" id="reproduce-analysis-in-the-manuscript">
 <h2>Reproduce Analysis in the Manuscript<a class="headerlink" href="#reproduce-analysis-in-the-manuscript" title="Permalink to this headline">¶</a></h2>
-<p>To reproduce analysis in the manuscript:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ snakemake --cores <span class="o">[</span>n<span class="o">]</span>
+<p>The <cite>bioconductor-encodexplorer</cite> package used in the original analysis is deprecated. To reproduce the analysis, please download the ENCODE dataset from <a class="reference external" href="https://drive.google.com/file/d/1um7NyiXd_BVYUPGMaOFZEf0y2vnqdCaR/view?usp=sharing">here</a> before executing the following commands.
+To reproduce analysis in the manuscript:To reproduce analysis in the manuscript:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">cd</span> PySNAIL
+$ <span class="c1"># download the ZIP file and put it here.</span>
+$ mkdir -p manuscript_analysis/datasets/
+$ unzip PySNAIL-ENCODE.zip
+$ mv ENCODE manuscript_analysis/datasets/
+$ snakemake --cores <span class="o">[</span>n<span class="o">]</span>
 </pre></div>
 </div>
 <p>The result can be found in the directory <code class="code docutils literal notranslate"><span class="pre">manuscript_analysis</span></code>. Note that it will likely take a while to download and preprocess the datasets.</p>
@@ -241,7 +247,7 @@ optional arguments:
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, Ping-Han Hsieh
+        &copy; Copyright 2022, Ping-Han Hsieh
 
     </p>
   </div>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Caiman &mdash; Caiman 0.2.0 documentation</title>
+  <title>PySNAIL &mdash; PySNAIL 0.3.0 documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> Caiman
+            <a href="#" class="icon icon-home" alt="Documentation Home"> PySNAIL
           
 
           
@@ -101,7 +101,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Caiman</a>
+          <a href="#">PySNAIL</a>
         
       </nav>
 
@@ -132,7 +132,7 @@
     
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Caiman</li>
+      <li>PySNAIL</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -151,9 +151,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="caiman">
-<h1>Caiman<a class="headerlink" href="#caiman" title="Permalink to this headline">¶</a></h1>
-<p>Count Adjustment to Improve the Modeling of Gene Association Networks-Smooth Quantile Normalization (CAIMAN-Qsmooth) is a method that corrects for false-positive associations, which may form between lowly expressed genes after smooth quantile normalization of the data, and which may affect downstream co-expression network analysis.</p>
+  <div class="section" id="pysnail">
+<h1>PySNAIL<a class="headerlink" href="#pysnail" title="Permalink to this headline">¶</a></h1>
+<p>Smooth-quantile Normalization Adaptation for Inference of co-expression Links (SNAIL) is a method that corrects for false-positive associations, which may form between lowly expressed genes after smooth quantile normalization of the data, and which may affect downstream co-expression network analysis. The PySNAIL software is developed by the <a class="reference external" href="https://www.kuijjerlab.org/">Kuijjer’s Lab</a>.</p>
 <div class="section" id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
@@ -176,9 +176,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-caiman_qsmooth.dataset">caiman_qsmooth.dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-caiman_qsmooth.qsmooth">caiman_qsmooth.qsmooth</a></li>
-<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-caiman_qsmooth.utils">caiman_qsmooth.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-pysnail.dataset">pysnail.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-pysnail.qsmooth">pysnail.qsmooth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#module-pysnail.utils">pysnail.utils</a></li>
 </ul>
 </li>
 </ul>
@@ -189,11 +189,14 @@
 </div>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>CAIMAN-Qsmooth is an algorithm developed by the <a class="reference external" href="https://www.kuijjerlab.org/">Kuijjer’s Lab</a> that is specifically designed to correct false-positive gene associations in RNA-Seq data that is normalized with <a class="reference external" href="https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028">smooth quantile normalization</a>. CAIMAN-Qsmooth computes the number of affected genes for each samples and use different aggregation function to summarize the normalized value of quantiles when dealing with identical values. CAIMAN-Qsmooth also provides a function that detect whether the false-positive will occur after qsmooth normalization. The implementation is available in a Python software package.</p>
+<p>SNAIL is an alternative implementation of <a class="reference external" href="https://academic.oup.com/biostatistics/article-lookup/doi/10.1093/biostatistics/kxx028">smooth quantile normalization (qsmooth)</a>, designed to correct false-positive gene associations in <em>qsmooth</em>-normalized RNA-Seq data. Specifically, instead of using the mean value of counts to normalize the expression of genes with the same read count, as is done in the original qsmooth algorithm, SNAIL uses median aggregation (step 7 and step 8 in the following figure). We developed PySNAIL as a standalone Python package supporting multi-thread optimization. We’ve also implemented a diagnostic function that computes the proportion of affected genes for each sample, to help detect whether smooth quantile normalization would introduce false-positive co-expression between genes in a specific dataset.</p>
+<div class="figure align-default">
+<img alt="Cannot link to method.png" src="_images/snail_method.png" />
+</div>
 </div>
 <div class="section" id="issues">
 <h2>Issues<a class="headerlink" href="#issues" title="Permalink to this headline">¶</a></h2>
-<p>Please report any issue, feedback or bug report to the GitHub <a class="reference external" href="https://github.com/dn070017/Caiman/issues">issues</a> page.</p>
+<p>Please report any issue, feedback or bug report to the GitHub <a class="reference external" href="https://github.com/dn070017/PySNAIL/issues">issues</a> page.</p>
 </div>
 </div>
 
@@ -216,7 +219,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, Ping-Han Hsieh
+        &copy; Copyright 2022, Ping-Han Hsieh
 
     </p>
   </div>

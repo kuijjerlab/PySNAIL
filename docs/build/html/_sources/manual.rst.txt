@@ -3,7 +3,7 @@
 Manual
 ======
 
-CAIMAN also provides an application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.
+PySNAIL provides an application programming interface (API) in Python for developers or bioinformaticians who wants to control more parameters used in the analysis.
 
 Correct Expression
 ------------------
@@ -11,14 +11,14 @@ Correct Expression
 .. code-block:: python
 
     import os
-    from caiman_qsmooth import Dataset, qsmooth
+    from pysnail import Dataset, qsmooth
 
     xprs = os.path.realpath('sample_data/expression.tsv')
     groups = os.path.realpath('sample_data/groups.tsv')
     dataset = Dataset(xprs, groups, **{'index_col': 0, 'sep': '\t'})
 
     xprs_norm, qstat = qsmooth(dataset, aggregation='auto', threshold=0.2)
-    xprs_norm.to_csv(os.path.realpath('caiman_out.tsv'), sep='\t')
+    xprs_norm.to_csv(os.path.realpath('pysnail_out.tsv'), sep='\t')
 
 Information of Input Data
 -------------------------
@@ -100,9 +100,9 @@ Result:
     ENSMUSG00000015093       False       False       False       False   
     ENSMUSG00000098607       False       False       False       False   
     ENSMUSG00000102632       False       False       False       False
-    ENSMUSG00000102632       False       False       False       False       False  
-    ENSMUSG00000093969       False       False       False       False       False  
-    ENSMUSG00000050876       False       False       False       False        True
+    ENSMUSG00000102632       False       False       False       False   
+    ENSMUSG00000093969       False       False       False       False   
+    ENSMUSG00000050876       False       False       False       False
 
 Diagnosis of Qsmooth
 --------------------
@@ -110,10 +110,10 @@ Make bar plot on number of affected genes for each sample
 
 .. code-block:: python
 
-    from caiman_qsmooth import bokeh_affected_barplot
+    from pysnail import bokeh_affected_barplot
     bokeh_affected_barplot(dataset, qstat, 'output')
 
-Result:
+Result (the result shown here is excerpted from the analysis in the manuscript instead of from the sample data. ):
 
 .. figure:: _static/bar_plot_affected_genes.png
     :alt: Cannot link to bar_plot_affected_genes.png
