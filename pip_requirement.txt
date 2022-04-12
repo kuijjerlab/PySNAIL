@@ -1,0 +1,9 @@
+bokeh>=2.2.0
+numpy>=1.19.1
+pandarallel>=1.5.4
+pandas>=1.1.1
+scikit-learn>=0.24.1
+scipy>=1.5.2
+seaborn>=0.11.1
+snakemake>=6.0.3
+tqdm>=4.62.3
