@@ -12,8 +12,8 @@ from time import time
 
 #%%
 def main() -> None:
-    description = """Count Adjustment to Improve the Modeling of Gene Association
-    Networks-Qsmooth (CAIMAN-Qsmooth)"""
+    description = """Python implementation of Smooth-quantile Normalization Adaptation
+    for Inference of co-expression Links (PySNAIL)"""
 
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument(
