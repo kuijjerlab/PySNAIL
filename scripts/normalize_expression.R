@@ -109,20 +109,8 @@ rownames(group) <- group[, 1]
 group <- group[colnames(count), ]
 
 # DESeq
-filename <- paste0(prefix, 'deseq.tsv')
+filename <- paste0(prefix, 'rle.tsv')
 sf <- getFactors(count, method = "DESeq")
-norm <- t(t(count) * sf)
-rownames(norm) <- rownames(count)
-colnames(norm) <- colnames(count)
-write.table(
-    norm, 
-    filename,
-    sep='\t', quote=FALSE, row.names=TRUE, col.names=NA
-)
-
-# UQ
-filename <- paste0(prefix, 'uq.tsv')
-sf <- getFactors(count, method = "UQ")
 norm <- t(t(count) * sf)
 rownames(norm) <- rownames(count)
 colnames(norm) <- colnames(count)

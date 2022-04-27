@@ -8,7 +8,7 @@ rule all:
             data=[
                 'meta', 'meta_tissue',
                 'xprs_qsmooth', 'xprs_snail',
-                'xprs_quantile', 'xprs_deseq', 'xprs_uq', 'xprs_tmm'
+                'xprs_quantile', 'xprs_rle', 'xprs_tmm'
             ]
         ),
         expand("{out_dir}/{dataset}_spearman_heatmap_{data}.html",
@@ -29,11 +29,12 @@ rule all:
         expand("{out_dir}/{data}_comparison_{metric}.html",
             out_dir=config['out_dir'],
             data=[
+                'random_genes',
                 'tissue-exclusive_genes',
-                'expressed_proportion_[0%,_25%)',
-                'expressed_proportion_[25%,_50%)',
-                'expressed_proportion_[50%,_75%)',
-                'expressed_proportion_[75%,_100%)'
+                #'expressed_proportion_[0%,_25%)',
+                #'expressed_proportion_[25%,_50%)',
+                #'expressed_proportion_[50%,_75%)',
+                #'expressed_proportion_[75%,_100%)'
             ],
             metric=['auprc', 'auroc']
         )
@@ -93,7 +94,7 @@ rule normalization:
         expand("{dataset_dir}/{dataset}/{data}.tsv", 
             dataset_dir=config['datasets_dir'],
             dataset=['GTEx', 'ENCODE'],
-            data=['xprs_qsmooth', 'xprs_quantile', 'xprs_deseq', 'xprs_uq', 'xprs_tmm']
+            data=['xprs_qsmooth', 'xprs_quantile', 'xprs_rle', 'xprs_tmm']
         ),
     run:
         shell(
@@ -224,21 +225,21 @@ rule comparison:
             dataset_dir=config['datasets_dir'],
             dataset=['ENCODE'],
             data=[
-                'meta_tissue', 'xprs_validation', 'xprs_deseq', 'xprs_tmm', 'xprs_uq',
-                'xprs_qsmooth', 'xprs_snail',
+                'meta_tissue', 'xprs_validation', 'xprs_rle', 'xprs_tmm', 'xprs_qsmooth'
             ]
         ),
     output:
         expand("{out_dir}/{data}_comparison_{metric}.html",
             out_dir=config['out_dir'],
             data=[
+                'random_genes',
                 'tissue-exclusive_genes',
-                'expressed_proportion_[0%,_25%)',
-                'expressed_proportion_[25%,_50%)',
-                'expressed_proportion_[50%,_75%)',
-                'expressed_proportion_[75%,_100%)'
+                #'expressed_proportion_[0%,_25%)',
+                #'expressed_proportion_[25%,_50%)',
+                #'expressed_proportion_[50%,_75%)',
+                #'expressed_proportion_[75%,_100%)'
             ],
             metric=['auprc', 'auroc']
         )
     shell:
-        "python3 scripts/comparison.py config.yaml validation deseq tmm uq qsmooth snail"
+        "python3 scripts/comparison.py config.yaml validation rle tmm qsmooth snail"

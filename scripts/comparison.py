@@ -17,8 +17,6 @@ for suffix in sys.argv[2:]:
     name = suffix.upper()
     if suffix.lower() == 'snail':
         skiprows = 1
-    if suffix.lower() == 'deseq':
-        name = 'DESeq'
     if suffix.lower() == 'qsmooth':
         name = 'Qsmooth'
     if suffix.lower() == 'validation':
@@ -52,15 +50,18 @@ tissue_of_gene, sample_order = sort_xprs_samples(
 val = dataset['Validation']
 num_samples = val.shape[1]
 
-for threshold in [-1, 0, 25, 50, 75]:
-    if threshold == -1:
-        targets = val.loc[val.sum(axis=1) != 0].index
+for threshold in [-2, -1]:
+    if threshold == -2:
+        #targets = val.loc[val.sum(axis=1) != 0].index
+        #random_index = np.random.choice(targets, 1000, replace=False)
+        random_index = val.loc[val.sum(axis=1) != 0].index
+    elif threshold == -1:
         random_index = all_tissue_exclusive_genes
     else:
         criteria = ((val > 10).sum(axis=1) >= int(val.shape[1] * threshold / 100)) & ((val > 10).sum(axis=1) < int(val.shape[1] * (threshold + 25) / 100))
         random_index = np.random.choice(
             val.loc[criteria].index, 1000, replace=False)
-        random_index = np.random.choice(random_index, 1000, replace=False)
+        #random_index = np.random.choice(random_index, 1000, replace=False)
 
     corr = []
     names = []
@@ -72,7 +73,10 @@ for threshold in [-1, 0, 25, 50, 75]:
     corr.insert(0, compute_correlation_coefficients(val.loc[random_index], 'spearman'))
     names.insert(0, 'Validation')
 
-    if threshold == -1:
+    if threshold == -2:
+        #file_label = "Random genes"
+        file_label = "All genes"
+    elif threshold == -1:
         file_label = 'Tissue-exclusive genes'
     else:
         file_label = f'Expressed proportion [{threshold}%, {threshold+25}%)'
@@ -83,7 +87,7 @@ for threshold in [-1, 0, 25, 50, 75]:
             file_label,
             corr,
             names,
-            ['green', 'chocolate', 'navy', 'green', 'blueviolet', 'crimson'],
+            ['green', 'chocolate', 'navy', 'blueviolet', 'crimson'],
             metric,
             False
         )
