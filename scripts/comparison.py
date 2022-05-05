@@ -52,9 +52,9 @@ num_samples = val.shape[1]
 
 for threshold in [-2, -1]:
     if threshold == -2:
-        #targets = val.loc[val.sum(axis=1) != 0].index
-        #random_index = np.random.choice(targets, 1000, replace=False)
-        random_index = val.loc[val.sum(axis=1) != 0].index
+        targets = val.loc[val.sum(axis=1) != 0].index
+        random_index = np.random.choice(targets, 1000, replace=False)
+        #random_index = val.loc[val.sum(axis=1) != 0].index
     elif threshold == -1:
         random_index = all_tissue_exclusive_genes
     else:
@@ -75,7 +75,7 @@ for threshold in [-2, -1]:
 
     if threshold == -2:
         #file_label = "Random genes"
-        file_label = "All genes"
+        file_label = "Random genes"
     elif threshold == -1:
         file_label = 'Tissue-exclusive genes'
     else:
