@@ -92,7 +92,7 @@ def compute_qstat(
     num_genes, num_samples = xprs.shape
 
     Q = np.sort(xprs, axis=0)
-    Qref = trim_mean(Q, 0.1, axis=1)
+    Qref = trim_mean(Q, 0.15, axis=1)
     SST = np.sum((Q.T - Qref) ** 2, axis=0)
 
     SSB = []
@@ -101,7 +101,7 @@ def compute_qstat(
         index = xprs.columns.get_level_values('Group') == g
         X_group = xprs.loc[:, index]
         Q_group = np.sort(X_group, axis=0)
-        Qhat_group = trim_mean(Q_group, 0.1, axis=1)
+        Qhat_group = trim_mean(Q_group, 0.15, axis=1)
         SSB_group =  X_group.shape[1] * ((Qhat_group - Qref) ** 2)
         
         Qhat.append(Qhat_group)

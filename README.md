@@ -55,7 +55,8 @@ The complete arguments are listed as follows (one can get this information by ex
     usage: pysnail [-h] [-g [path]] [-m {'mean', 'median', 'auto'}]
         [-t [threshold]] [-o [path]] xprs
 
-    Python implementation of Smooth-quantile Normalization Adaptation for Inference of co-expression Links (PySNAIL)
+    Python implementation of Smooth-quantile Normalization Adaptation for 
+    Inference of co-expression Links (PySNAIL)
 
     positional arguments:
         xprs            Path to the expression data. The file should be
