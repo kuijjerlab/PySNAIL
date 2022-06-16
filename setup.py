@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='PySNAIL',
-    version='0.3.0',
+    version='0.3.2',
     description="""Python Implementation for Smooth-quantile Normalization Adaptation for Inference of co-expression Links (PySNAIL)""",
     url='https://github.com/dn070017/Caiman',
     author='Ping-Han Hsieh',

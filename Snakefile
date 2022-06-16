@@ -31,12 +31,16 @@ rule all:
             data=[
                 'random_genes',
                 'tissue-exclusive_genes',
-                #'expressed_proportion_[0%,_25%)',
-                #'expressed_proportion_[25%,_50%)',
-                #'expressed_proportion_[50%,_75%)',
-                #'expressed_proportion_[75%,_100%)'
             ],
             metric=['auprc', 'auroc']
+        ),
+        expand("{out_dir}/tissue_distribution_{norm}.png",
+            out_dir=config['out_dir'],
+            norm=["SNAIL", "RLE", "Qsmooth", "COUNT", "TMM"]
+        ),
+        expand("{out_dir}/{data}_proportion_scatter.png",
+            out_dir=config['out_dir'],
+            data=['GTEx', 'ENCODE']
         )
 
 rule download_encode:
@@ -234,12 +238,34 @@ rule comparison:
             data=[
                 'random_genes',
                 'tissue-exclusive_genes',
-                #'expressed_proportion_[0%,_25%)',
-                #'expressed_proportion_[25%,_50%)',
-                #'expressed_proportion_[50%,_75%)',
-                #'expressed_proportion_[75%,_100%)'
             ],
             metric=['auprc', 'auroc']
         )
     shell:
         "python3 scripts/comparison.py config.yaml validation rle tmm qsmooth snail"
+
+rule distribution:
+    input:
+        expand("{dataset_dir}/{dataset}/{data}.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['GTEx'],
+            data=[
+                'meta_tissue', 'xprs_count', 'xprs_rle', 'xprs_tmm', 'xprs_qsmooth', 'xprs_snail'
+            ]
+        ),
+        expand("{dataset_dir}/{dataset}/{data}.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['ENCODE'],
+            data=['xprs_count']
+        )
+    output:
+        expand("{out_dir}/tissue_distribution_{norm}.png",
+            out_dir=config['out_dir'],
+            norm=["SNAIL", "RLE", "Qsmooth", "COUNT", "TMM"]
+        ),
+        expand("{out_dir}/{data}_proportion_scatter.png",
+            out_dir=config['out_dir'],
+            data=['GTEx', 'ENCODE']
+        )
+    shell:
+        "python3 scripts/distribution_analysis.py"
