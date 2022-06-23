@@ -45,7 +45,8 @@ def __running_median(x: np.ndarray, N: int):
 def compute_qstat(
   dataset: Union[str, pd.DataFrame],
   groups: Optional[Union[str, pd.DataFrame]] = None,
-  window: float = 0.05
+  window: float = 0.05,
+  cutoff: float = 0.15
 ) -> Qstat:
     """Compute relevant statistics for qsmooth normalization.
 
@@ -62,6 +63,10 @@ def compute_qstat(
 
         window: float, default: 0.05
             Window size for smoothen weight (range from 0.01 to 0.25).
+
+        cutoff: float, default: 0.15
+            Cutoff used for trimmed mean when inferring quantile distribution.
+            (range from 0.00 to 0.25)
 
       Returns:
           Qstat
@@ -87,12 +92,21 @@ def compute_qstat(
       message = "Argument window needs to be smaller than 0.25, set to 0.25."
       warnings.warn(message, RuntimeWarning)
 
+    if cutoff < 0.00:
+      cutoff = 0.00
+      message = "Argument window needs to be larger than 0.00, set to 0.00."
+      warnings.warn(message, RuntimeWarning)
+    if cutoff > 0.25:
+      cutoff = 0.25
+      message = "Argument window needs to be smaller than 0.25, set to 0.25."
+      warnings.warn(message, RuntimeWarning)
+
     xprs = dataset.get_xprs()
     groups = dataset.get_groups()
     num_genes, num_samples = xprs.shape
 
     Q = np.sort(xprs, axis=0)
-    Qref = trim_mean(Q, 0.15, axis=1)
+    Qref = trim_mean(Q, cutoff, axis=1)
     SST = np.sum((Q.T - Qref) ** 2, axis=0)
 
     SSB = []
@@ -101,7 +115,7 @@ def compute_qstat(
         index = xprs.columns.get_level_values('Group') == g
         X_group = xprs.loc[:, index]
         Q_group = np.sort(X_group, axis=0)
-        Qhat_group = trim_mean(Q_group, 0.15, axis=1)
+        Qhat_group = trim_mean(Q_group, cutoff, axis=1)
         SSB_group =  X_group.shape[1] * ((Qhat_group - Qref) ** 2)
         
         Qhat.append(Qhat_group)
@@ -182,7 +196,8 @@ def qsmooth(
   dataset: Union[str, pd.DataFrame],
   groups: Optional[Union[str, pd.DataFrame]] = None,
   aggregation='median',
-  threshold=0.25
+  threshold=0.25,
+  cutoff=0.15
 ) -> Tuple[pd.core.frame.DataFrame, Qstat]:
     """Perform qsmooth normalization.
 
@@ -207,6 +222,10 @@ def qsmooth(
             not the method should use 'median' aggregation instead of 'mean'. This 
             argumnet is ignored when aggregation is not set to 'auto'.
 
+        cutoff: float, default: 0.15
+            Cutoff used for trimmed mean when inferring quantile distribution.
+            (range from 0.00 to 0.25)
+
     Returns:
         Tuple[pd.core.frame.DataFrame, Qstat]
             The first element in the tuple is the normalized expression, the second 
@@ -223,7 +242,7 @@ def qsmooth(
       message = "Dataset has been created, ignore argument 'groups'"
       warnings.warn(message, RuntimeWarning)
     
-    qstat = compute_qstat(dataset)
+    qstat = compute_qstat(dataset, cutoff=cutoff)
 
     if aggregation.lower() == 'auto':
       use_median = qstat.num_affected_samples / dataset.num_samples >= threshold

@@ -17,7 +17,7 @@ Correct Expression
     groups = os.path.realpath('sample_data/groups.tsv')
     dataset = Dataset(xprs, groups, **{'index_col': 0, 'sep': '\t'})
 
-    xprs_norm, qstat = qsmooth(dataset, aggregation='auto', threshold=0.2)
+    xprs_norm, qstat = qsmooth(dataset, aggregation='auto', threshold=0.2, cutoff=0.15)
     xprs_norm.to_csv(os.path.realpath('pysnail_out.tsv'), sep='\t')
 
 Information of Input Data

@@ -25,7 +25,6 @@ def main() -> None:
         the columns should represent samples (the first column must be the gene names). 
         The columns must be separated with <tab>."""
     )
-
     parser.add_argument(
         '-g', '--groups',
         metavar='[path]',
@@ -58,7 +57,16 @@ def main() -> None:
         if the proportion of the affected samples is larger or equal to this threshold 
         when [--method] is set to 'auto'. This argument is ignored if method is 
         specified with 'mean' or 'median'.
-        Defulat: 0.25""" 
+        Default: 0.25""" 
+    )
+    parser.add_argument(
+        '-c', '--cutoff',
+        metavar='[cutoff]',
+        type=float,
+        default=0.15,
+        help="""Cutoff used for trimmed mean when inferring quantile distribution.
+        (range from 0.00 to 0.25)
+        Default: 0.15."""
     )
     parser.add_argument(
         '-o', '--outdir',
@@ -75,7 +83,12 @@ def main() -> None:
     args = parser.parse_args()
 
     dataset = Dataset(args.xprs, args.groups, **{'index_col': 0, 'sep': '\t'})
-    xprs_norm, qstat = qsmooth(dataset, aggregation=args.method, threshold=args.threshold)
+    xprs_norm, qstat = qsmooth(
+        dataset,
+        aggregation=args.method,
+        threshold=args.threshold,
+        cutoff=args.cutoff
+    )
 
     directory = os.path.realpath(args.outdir)
     if not os.path.isdir(directory):
