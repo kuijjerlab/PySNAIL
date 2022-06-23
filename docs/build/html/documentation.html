@@ -299,7 +299,7 @@ the reference of the original expression dataframe (False)</p>
 <span id="pysnail-qsmooth"></span><h2>pysnail.qsmooth<a class="headerlink" href="#module-pysnail.qsmooth" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="pysnail.qsmooth.compute_qstat">
-<code class="sig-prename descclassname">pysnail.qsmooth.</code><code class="sig-name descname">compute_qstat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">window</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.05</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pysnail.dataset.Qstat" title="pysnail.dataset.Qstat">pysnail.dataset.Qstat</a><a class="headerlink" href="#pysnail.qsmooth.compute_qstat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pysnail.qsmooth.</code><code class="sig-name descname">compute_qstat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">window</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">cutoff</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.15</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pysnail.dataset.Qstat" title="pysnail.dataset.Qstat">pysnail.dataset.Qstat</a><a class="headerlink" href="#pysnail.qsmooth.compute_qstat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute relevant statistics for qsmooth normalization.</p>
 <dl>
 <dt>Parameters:</dt><dd><blockquote>
@@ -313,6 +313,9 @@ information used for creating the dataset. This argument is ignored if
 dataset get a created Dataset object.</p>
 </dd>
 <dt>window: float, default: 0.05</dt><dd><p>Window size for smoothen weight (range from 0.01 to 0.25).</p>
+</dd>
+<dt>cutoff: float, default: 0.15</dt><dd><p>Cutoff used for trimmed mean when inferring quantile distribution.
+(range from 0.00 to 0.25)</p>
 </dd>
 </dl>
 </div></blockquote>
@@ -333,7 +336,7 @@ quantile’.</p>
 
 <dl class="py function">
 <dt id="pysnail.qsmooth.qsmooth">
-<code class="sig-prename descclassname">pysnail.qsmooth.</code><code class="sig-name descname">qsmooth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">aggregation</span><span class="o">=</span><span class="default_value">'median'</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.25</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">, </span><a class="reference internal" href="#pysnail.dataset.Qstat" title="pysnail.dataset.Qstat">pysnail.dataset.Qstat</a><span class="p">]</span><a class="headerlink" href="#pysnail.qsmooth.qsmooth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pysnail.qsmooth.</code><code class="sig-name descname">qsmooth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>pandas.core.frame.DataFrame<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">aggregation</span><span class="o">=</span><span class="default_value">'median'</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">cutoff</span><span class="o">=</span><span class="default_value">0.15</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>pandas.core.frame.DataFrame<span class="p">, </span><a class="reference internal" href="#pysnail.dataset.Qstat" title="pysnail.dataset.Qstat">pysnail.dataset.Qstat</a><span class="p">]</span><a class="headerlink" href="#pysnail.qsmooth.qsmooth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform qsmooth normalization.</p>
 <dl class="simple">
 <dt>Parameters:</dt><dd><dl class="simple">
@@ -352,6 +355,9 @@ the original value are the same. Should be one of ‘mean’, ‘median’ or
 <dt>threshold: float, default: 0.25</dt><dd><p>Threshold of the proportion of affected samples used to detect whether or 
 not the method should use ‘median’ aggregation instead of ‘mean’. This 
 argumnet is ignored when aggregation is not set to ‘auto’.</p>
+</dd>
+<dt>cutoff: float, default: 0.15</dt><dd><p>Cutoff used for trimmed mean when inferring quantile distribution.
+(range from 0.00 to 0.25)</p>
 </dd>
 </dl>
 </dd>

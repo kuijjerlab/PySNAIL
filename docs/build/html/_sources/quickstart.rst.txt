@@ -54,7 +54,10 @@ The complete arguments are listed as follows (one can get this information by ex
                         the affected samples is larger or equal to this
                         threshold when [--method] is set to 'auto'. This
                         argument is ignored if method is specified with 'mean'
-                        or 'median'. Defulat: 0.25
+                        or 'median'. Default: 0.25
+        -c [cutoff], --cutoff [cutoff]
+                        Cutoff used for trimmed mean when inferring quantile
+                        distribution. (range from 0.00 to 0.25) Default: 0.15.
         -o [path], --outdir [path]
                         Output directory for the corrected qsmooth expression
                         and some informative statistics. The directory

@@ -203,7 +203,10 @@ optional arguments:
                     the affected samples is larger or equal to this
                     threshold when <span class="o">[</span>--method<span class="o">]</span> is <span class="nb">set</span> to <span class="s1">&#39;auto&#39;</span>. This
                     argument is ignored <span class="k">if</span> method is specified with <span class="s1">&#39;mean&#39;</span>
-                    or <span class="s1">&#39;median&#39;</span>. Defulat: <span class="m">0</span>.25
+                    or <span class="s1">&#39;median&#39;</span>. Default: <span class="m">0</span>.25
+    -c <span class="o">[</span>cutoff<span class="o">]</span>, --cutoff <span class="o">[</span>cutoff<span class="o">]</span>
+                    Cutoff used <span class="k">for</span> trimmed mean when inferring quantile
+                    distribution. <span class="o">(</span>range from <span class="m">0</span>.00 to <span class="m">0</span>.25<span class="o">)</span> Default: <span class="m">0</span>.15.
     -o <span class="o">[</span>path<span class="o">]</span>, --outdir <span class="o">[</span>path<span class="o">]</span>
                     Output directory <span class="k">for</span> the corrected qsmooth expression
                     and some informative statistics. The directory
