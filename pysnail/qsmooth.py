@@ -94,11 +94,11 @@ def compute_qstat(
 
     if cutoff < 0.00:
       cutoff = 0.00
-      message = "Argument window needs to be larger than 0.00, set to 0.00."
+      message = "Argument cutoff needs to be larger than 0.00, set to 0.00."
       warnings.warn(message, RuntimeWarning)
     if cutoff > 0.25:
       cutoff = 0.25
-      message = "Argument window needs to be smaller than 0.25, set to 0.25."
+      message = "Argument cufoff needs to be smaller than 0.25, set to 0.25."
       warnings.warn(message, RuntimeWarning)
 
     xprs = dataset.get_xprs()

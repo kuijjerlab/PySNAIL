@@ -16,8 +16,8 @@ def compute_same_rank(x, y):
   return (x==y).sum() / size
 
 #%%
-##os.chdir('../')
-config_path = os.path.realpath('config.yaml')#sys.argv[1])
+#os.chdir('../')
+config_path = os.path.realpath(sys.argv[1])
 config = yaml.load(open(config_path, 'r'), Loader=yaml.FullLoader)
 
 for project in ['GTEx']:
@@ -40,8 +40,8 @@ for project in ['GTEx']:
   for suffix in ['snail', 'rle', 'qsmooth', 'count', 'tmm']:
     skiprows = 0
     name = suffix.upper()
-    if suffix.lower() == 'snail':
-      skiprows = 1
+    #if suffix.lower() == 'snail':
+    #  skiprows = 1
     if suffix.lower() == 'deseq':
       name = 'DESeq'
     if suffix.lower() == 'qsmooth':
@@ -57,9 +57,6 @@ for project in ['GTEx']:
       dataset['SNAIL'] = dataset['SNAIL'].iloc[1:]
 
   tissue_exclusive_genes, tissue_exclusive_count = extract_tissue_exclusive_genes(
-    config['out_dir'],
-    project,
-    'comparison',
     dataset['COUNT'],
     tissues
   )
@@ -85,10 +82,13 @@ for project in ['GTEx']:
       f.set_xlim(0, 10)
       f.set_ylim(0., 0.8)
       f.set_title(name)
+      f.set_xlabel('Normalized Expression')
 
     plt.legend(handles=legend_list)
     plt.savefig(os.path.join(config['out_dir'], f"tissue_distribution_{name}.png"))    
 
+
+#%%
 for project in ['GTEx', 'ENCODE']:
   data_df = pd.read_csv(
     os.path.join(config['datasets_dir'], project, f'xprs_count.tsv'),

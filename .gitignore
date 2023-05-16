@@ -19,3 +19,5 @@ caiman/__pycache__
 # System Files
 .DS_Store
 Thumbs.db
+
+scripts/*.png

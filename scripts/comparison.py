@@ -15,8 +15,6 @@ dataset = {}
 for suffix in sys.argv[2:]:
     skiprows = 0
     name = suffix.upper()
-    if suffix.lower() == 'snail':
-        skiprows = 1
     if suffix.lower() == 'qsmooth':
         name = 'Qsmooth'
     if suffix.lower() == 'validation':
@@ -33,9 +31,6 @@ tissues = pd.read_csv(
 )
 tissues = pd.Series(tissues.values.reshape(-1), index=tissues.index)
 tissue_exclusive_genes, tissue_exclusive_count = extract_tissue_exclusive_genes(
-    config['out_dir'],
-    'ENCODE',
-    'comparison',
     dataset['Validation'],
     tissues
 )
@@ -63,31 +58,32 @@ for threshold in [-2, -1]:
             val.loc[criteria].index, 1000, replace=False)
         #random_index = np.random.choice(random_index, 1000, replace=False)
 
-    corr = []
+    method = []
     names = []
     for name, table in dataset.items():
         if name != 'Validation':
-            corr.append(compute_correlation_coefficients(table.loc[random_index], 'spearman'))
+            method.append(compute_correlation_coefficients(table.loc[random_index], 'spearman'))
             names.append(name)
 
-    corr.insert(0, compute_correlation_coefficients(val.loc[random_index], 'spearman'))
+    method.insert(0, compute_correlation_coefficients(val.loc[random_index], 'spearman'))
     names.insert(0, 'Validation')
 
     if threshold == -2:
         #file_label = "Random genes"
         file_label = "Random genes"
+        dir_label = 'random_genes'
     elif threshold == -1:
         file_label = 'Tissue-exclusive genes'
+        dir_label = 'tissue_exclusive_genes'
     else:
         file_label = f'Expressed proportion [{threshold}%, {threshold+25}%)'
 
+    os.makedirs(f"{config['out_dir']}/ENCODE/comparison/{dir_label}", exist_ok=True)
     for metric in ['roc', 'prc']:
         _ = bokeh_area_under_curve(
-            config['out_dir'],
-            file_label,
-            corr,
-            names,
-            ['green', 'chocolate', 'navy', 'blueviolet', 'crimson'],
-            metric,
-            False
+            f"{config['out_dir']}/ENCODE/comparison/{dir_label}",
+            method,
+            legend_labels=names,
+            colors=['green', 'chocolate', 'navy', 'blueviolet', 'crimson'],
+            method=metric
         )
