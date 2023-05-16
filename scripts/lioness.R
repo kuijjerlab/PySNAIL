@@ -61,6 +61,14 @@ after_file <- args[3]
 out_file_before <- args[4]
 out_file_after <- args[5]
 
+#ref_file <- './manuscript_analysis_20230328/datasets/ENCODE/tissue_exclusive_xprs_validation_symbol.tsv'
+#before_file <- './manuscript_analysis_20230328/datasets/ENCODE/tissue_exclusive_xprs_qsmooth_symbol.tsv'
+#after_file <- './manuscript_analysis_20230328/datasets/ENCODE/tissue_exclusive_xprs_snail_symbol.tsv'
+#out_file_before <- './manuscript_analysis_20230328/results/ENCODE/qsmooth_symbol'
+#out_file_after <- './manuscript_analysis_20230328/results/ENCODE/snail_symbol'
+
+#args <- c(ref_file, before_file, after_file, out_file_before, out_file_after)
+
 sink(paste0(out_file_after, "_logging.txt")) 
 sink(stdout(), type = "message")
 
@@ -69,28 +77,28 @@ cormat <- list()
 for(index in seq(3)){
     xprs[[index]] <- read.table(args[index], sep='\t', header=TRUE, row.names=1)
     
-    if(index == 1){
-        ensembl <- useMart(
-            "ensembl", 
-            dataset = "mmusculus_gene_ensembl", 
-            host = "uswest.ensembl.org"
-        )
-        annotation <- getBM(
-            attributes = c('ensembl_gene_id', 'uniprot_gn_symbol'),
-            filters = 'ensembl_gene_id', 
-            values = rownames(xprs[[index]]), 
-            mart = ensembl,
-            useCache = FALSE
-        )
-        annotation <- annotation[annotation$uniprot_gn_symbol != '' & !duplicated(annotation$uniprot_gn_symbol), ]
-    }
+    #if(index == 1){
+    #    ensembl <- useMart(
+    #        "ensembl", 
+    #        dataset = "mmusculus_gene_ensembl", 
+    #        host = "uswest.ensembl.org"
+    #    )
+    #    annotation <- getBM(
+    #        attributes = c('ensembl_gene_id', 'uniprot_gn_symbol'),
+    #        filters = 'ensembl_gene_id', 
+    #        values = rownames(xprs[[index]]), 
+    #        mart = ensembl,
+    #        useCache = FALSE
+    #    )
+    #    annotation <- annotation[annotation$uniprot_gn_symbol != '' & !duplicated(annotation$uniprot_gn_symbol), ]
+    #}
 
     num_all_genes <- nrow(xprs[[index]])
-    xprs[[index]] <- xprs[[index]][annotation$ensembl_gene_id, ]
+    #xprs[[index]] <- xprs[[index]][annotation$ensembl_gene_id, ]
 
     message(num_all_genes - nrow(xprs[[index]]), ' genes without annotation are removed')
 
-    rownames(xprs[[index]]) = annotation$uniprot_gn_symbol
+    #rownames(xprs[[index]]) = annotation$uniprot_gn_symbol
     tmp_cormat <- lioness(as.matrix(xprs[[index]]), spearman)
     cormat[[index]] <- assays(tmp_cormat)[['lioness']]
 }
@@ -121,7 +129,7 @@ write.table(
 
 write.table(
     toptable_after, 
-    paste0(out_file_after, "_round_limma.tsv"),
+    paste0(out_file_after, "_limma.tsv"),
     sep='\t', quote=FALSE, row.names=TRUE, col.names=NA
 )
 

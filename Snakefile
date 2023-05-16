@@ -8,40 +8,76 @@ rule all:
             data=[
                 'meta', 'meta_tissue',
                 'xprs_qsmooth', 'xprs_snail',
+                'xprs_qsmooth_symbol', 'xprs_snail_symbol',
                 'xprs_quantile', 'xprs_rle', 'xprs_tmm'
             ]
         ),
-        expand("{out_dir}/{dataset}_spearman_heatmap_{data}.html",
+        expand("{out_dir}/ENCODE/{dataset}/{metrics}.html",
             out_dir=config['out_dir'],
-            dataset=['gtex', 'encode'],
-            data=['qsmooth', 'snail']
-        ),
-        expand("{out_dir}/{dataset}_{label}_{metrics}.html",
-            out_dir=config['out_dir'],
-            dataset=['gtex', 'encode'],
-            label=['comparison'],
+            dataset=['encode'],
             metrics=['auroc', 'auprc']
         ),
-        expand("{out_dir}/encode_lioness_{data}.pdf",
+        expand("{out_dir}/{dataset}/spearman_heatmap_{data}.html",
+            out_dir=config['out_dir'],
+            dataset=['GTEx/gtex', 'ENCODE/encode'],
+            data=['qsmooth', 'snail']
+        ),
+        expand("{out_dir}/{dataset}/spearman_pvalue_heatmap_{data}.html",
+            out_dir=config['out_dir'],
+            dataset=['GTEx/gtex', 'ENCODE/encode'],
+            data=['qsmooth', 'snail']
+        ),
+        expand("{out_dir}/{dataset}/pvalue_distribution.png",
+            out_dir=config['out_dir'],
+            dataset=['GTEx/gtex', 'ENCODE/encode'],
+        ),
+        expand("{out_dir}/ENCODE/encode/lioness_{data}.pdf",
             out_dir=config['out_dir'],
             data=['qsmooth', 'snail']
         ),
-        expand("{out_dir}/{data}_comparison_{metric}.html",
+        expand("{out_dir}/ENCODE/comparison/{data}/{metric}.html",
             out_dir=config['out_dir'],
             data=[
                 'random_genes',
-                'tissue-exclusive_genes',
+                'tissue_exclusive_genes',
             ],
             metric=['auprc', 'auroc']
         ),
-        expand("{out_dir}/tissue_distribution_{norm}.png",
-            out_dir=config['out_dir'],
-            norm=["SNAIL", "RLE", "Qsmooth", "COUNT", "TMM"]
+        expand("{dataset_dir}/{dataset}/gene_prediction_kegg_{norm}.png", 
+            dataset_dir=config['out_dir'],
+            dataset=['GTEx/gtex'],
+            norm=[
+                'qsmooth', 'snail'
+            ]
         ),
-        expand("{out_dir}/{data}_proportion_scatter.png",
-            out_dir=config['out_dir'],
-            data=['GTEx', 'ENCODE']
-        )
+        expand("{dataset_dir}/{dataset}/gene_prediction_kegg_{norm}.png", 
+            dataset_dir=config['out_dir'],
+            dataset=['ENCODE/encode'],
+            norm=[
+                'validation', 'qsmooth', 'snail'
+            ]
+        ),
+        expand("{dataset_dir}/{dataset}/annotation_{metric}_curve.html", 
+            dataset_dir=config['out_dir'],
+            dataset=['GTEx/gtex'],
+            metric=['roc', 'prc']
+        ),
+        expand("{dataset_dir}/{dataset}/hubscore.png", 
+            dataset_dir=config['out_dir'],
+            dataset=['ENCODE/encode'],
+        ),
+        expand("{dataset_dir}/{dataset}/limma_analysis.png", 
+            dataset_dir=config['out_dir'],
+            dataset=['ENCODE/encode'],
+        ),
+        #expand("{out_dir}/tissue_distribution_{norm}.png",
+        #    out_dir=config['out_dir'],
+        #    norm=["SNAIL", "RLE", "Qsmooth", "COUNT", #"TMM"]
+        #),
+        #expand("{out_dir}/{data}_proportion_scatter.png",
+        #    out_dir=config['out_dir'],
+        #    data=['GTEx', 'ENCODE']
+        #)
 
 rule download_encode:
     output: expand("{dataset_dir}/ENCODE/{sample}/{sample}_meta.tsv", dataset_dir=config['datasets_dir'], sample=config['encode_tissues'])
@@ -162,66 +198,71 @@ rule evaluation:
         f"{config['datasets_dir']}/GTEx/xprs_count.tsv",
         f"{config['datasets_dir']}/ENCODE/xprs_validation.tsv"
     output:
-        expand("{out_dir}/{dataset}_comparison_{metrics}.html",
+        expand("{out_dir}/ENCODE/{dataset}/{metrics}.html",
             out_dir=config['out_dir'],
-            dataset=['gtex', 'encode'],
+            dataset=['encode'],
             metrics=['auroc', 'auprc']
         ),
-        expand("{out_dir}/{dataset}_spearman_heatmap_{data}.html",
+        expand("{out_dir}/{dataset}/spearman_heatmap_{data}.html",
             out_dir=config['out_dir'],
-            dataset=['gtex', 'encode'],
+            dataset=['GTEx/gtex', 'ENCODE/encode'],
             data=['qsmooth', 'snail']
+        ),
+        expand("{out_dir}/{dataset}/spearman_pvalue_heatmap_{data}.html",
+            out_dir=config['out_dir'],
+            dataset=['GTEx/gtex', 'ENCODE/encode'],
+            data=['qsmooth', 'snail']
+        ),
+        expand("{out_dir}/{dataset}/pvalue_distribution.png",
+            out_dir=config['out_dir'],
+            dataset=['GTEx/gtex', 'ENCODE/encode'],
         ),
         expand("{dataset_dir}/ENCODE/{data}.tsv", 
             dataset_dir=config['datasets_dir'],
             data=[
-                'lioness_input_ref_qsmooth_snail', 
-                'lioness_input_qsmooth',
-                'lioness_input_snail',
+                'tissue_exclusive_xprs_validation', 
+                'tissue_exclusive_xprs_qsmooth',
+                'tissue_exclusive_xprs_snail',
             ]
         )
     run:
         shell(
-            f"python3 scripts/evaluation.py"
-            f" -r {config['datasets_dir']}/ENCODE/xprs_validation.tsv"
-            f" -t {config['datasets_dir']}/ENCODE/meta_tissue.tsv"
-            f" -d ENCODE -x validation -y Qsmooth -z SNAIL"
-            f" -a {config['datasets_dir']}/ENCODE/xprs_qsmooth.tsv"
-            f" -b {config['datasets_dir']}/ENCODE/xprs_snail.tsv"
-            f" -c config.yaml"
+            f"python3 scripts/evaluation.py config.yaml GTEx"
         ),
         shell(
-            f"python3 scripts/evaluation.py"
-            f" -r {config['datasets_dir']}/GTEx/xprs_count.tsv"
-            f" -t {config['datasets_dir']}/GTEx/meta_tissue.tsv"
-            f" -d GTEx -x count -y Qsmooth -z SNAIL"
-            f" -a {config['datasets_dir']}/GTEx/xprs_qsmooth.tsv"
-            f" -b {config['datasets_dir']}/GTEx/xprs_snail.tsv"
-            f" -c config.yaml"
-        )
+            f"python3 scripts/evaluation.py config.yaml ENCODE"
+        ),
+        #shell(
+        #    f"python3 scripts/evaluation.py config.yaml #ENCODE cutoff"
+        #)
 
 rule lioness:
     input:
         expand("{dataset_dir}/ENCODE/{data}.tsv", 
             dataset_dir=config['datasets_dir'],
             data=[
-                'lioness_input_ref_qsmooth_snail', 
-                'lioness_input_qsmooth',
-                'lioness_input_snail',
+                'tissue_exclusive_xprs_validation_symbol', 
+                'tissue_exclusive_xprs_qsmooth_symbol',
+                'tissue_exclusive_xprs_snail_symbol',
             ]
         ),
     output:
-        expand("{out_dir}/encode_lioness_{data}.pdf",
+        expand("{out_dir}/ENCODE/encode/lioness_{data}.pdf",
             out_dir=config['out_dir'],
             data=['qsmooth', 'snail']
+        ),
+        expand("{dataset_dir}/{dataset}/lioness_{norm}_limma.tsv", 
+            dataset_dir=config['out_dir'],
+            dataset=['ENCODE/encode'],
+            norm=['snail', 'qsmooth']
         )
     shell:
         f"Rscript --vanilla scripts/lioness.R"
-        f" {config['datasets_dir']}/ENCODE/lioness_input_ref_qsmooth_snail.tsv"
-        f" {config['datasets_dir']}/ENCODE/lioness_input_qsmooth.tsv"
-        f" {config['datasets_dir']}/ENCODE/lioness_input_snail.tsv"
-        f" {config['out_dir']}/encode_lioness_qsmooth"
-        f" {config['out_dir']}/encode_lioness_snail"
+        f" {config['datasets_dir']}/ENCODE/tissue_exclusive_xprs_validation_symbol.tsv"
+        f" {config['datasets_dir']}/ENCODE/tissue_exclusive_xprs_qsmooth_symbol.tsv"
+        f" {config['datasets_dir']}/ENCODE/tissue_exclusive_xprs_snail_symbol.tsv"
+        f" {config['out_dir']}/ENCODE/encode/lioness_qsmooth"
+        f" {config['out_dir']}/ENCODE/encode/lioness_snail"
 
 rule comparison:
     input:
@@ -233,14 +274,14 @@ rule comparison:
             ]
         ),
     output:
-        expand("{out_dir}/{data}_comparison_{metric}.html",
+        expand("{out_dir}/ENCODE/comparison/{data}/{metric}.html",
             out_dir=config['out_dir'],
             data=[
                 'random_genes',
-                'tissue-exclusive_genes',
+                'tissue_exclusive_genes',
             ],
             metric=['auprc', 'auroc']
-        )
+        ),
     shell:
         "python3 scripts/comparison.py config.yaml validation rle tmm qsmooth snail"
 
@@ -268,4 +309,119 @@ rule distribution:
             data=['GTEx', 'ENCODE']
         )
     shell:
-        "python3 scripts/distribution_analysis.py"
+        "python3 scripts/distribution_analysis.py config.yaml"
+
+rule convert_gene_name:
+    input:
+        expand("{dataset_dir}/{dataset}/{data}.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['GTEx'],
+            data=[
+                'xprs_count', 'xprs_qsmooth', 'xprs_snail'
+            ]
+        ),
+        expand("{dataset_dir}/{dataset}/{data}.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['ENCODE'],
+            data=['xprs_count', 'xprs_validation', 'xprs_qsmooth', 'xprs_snail']
+        )
+    output:
+        expand("{dataset_dir}/{dataset}/{data}_symbol.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['GTEx'],
+            data=[
+                'xprs_count', 'xprs_qsmooth', 'xprs_snail', 'tissue_exclusive_xprs_count', 'tissue_exclusive_xprs_qsmooth', 'tissue_exclusive_xprs_snail'
+            ]
+        ),
+        expand("{dataset_dir}/{dataset}/{data}_symbol.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['ENCODE'],
+            data=['xprs_validation', 'xprs_qsmooth', 'xprs_snail', 'tissue_exclusive_xprs_validation', 'tissue_exclusive_xprs_qsmooth', 'tissue_exclusive_xprs_snail']
+        )
+    run:
+        shell("python3 scripts/convert_gene_name.py config.yaml GTEx"),
+        shell("python3 scripts/convert_gene_name.py config.yaml ENCODE")
+
+rule predict_gene_function:
+    input:
+        expand("{dataset_dir}/{dataset}/{data}_symbol.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['ENCODE'],
+            data=['xprs_validation', 'xprs_qsmooth', 'xprs_snail', 'tissue_exclusive_xprs_validation', 'tissue_exclusive_xprs_qsmooth', 'tissue_exclusive_xprs_snail']
+        ),
+        expand("{dataset_dir}/{dataset}/{data}_symbol.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['GTEx'],
+            data=['xprs_count', 'xprs_qsmooth', 'xprs_snail', 'tissue_exclusive_xprs_count', 'tissue_exclusive_xprs_qsmooth', 'tissue_exclusive_xprs_snail']
+        )
+    output:
+        expand("{dataset_dir}/{dataset}/gene_prediction_kegg_{norm}.png", 
+            dataset_dir=config['out_dir'],
+            dataset=['GTEx/gtex'],
+            norm=[
+                'qsmooth', 'snail'
+            ]
+        ),
+        expand("{dataset_dir}/{dataset}/gene_prediction_kegg_{norm}.png", 
+            dataset_dir=config['out_dir'],
+            dataset=['ENCODE/encode'],
+            norm=[
+                'validation', 'qsmooth', 'snail'
+            ]
+        ),
+    run:
+        shell("python3 scripts/predict_gene_function.py config.yaml GTEx"),
+        shell("python3 scripts/predict_gene_function.py config.yaml ENCODE")
+
+rule annotate_false_positives:
+    input:
+        expand("{dataset_dir}/{dataset}/{data}.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['GTEx'],
+            data=[
+                'xprs_count', 'xprs_qsmooth', 'xprs_snail'
+            ]
+        ),
+        expand("{dataset_dir}/{dataset}/{data}.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['ENCODE'],
+            data=['xprs_count', 'xprs_validation', 'xprs_qsmooth', 'xprs_snail']
+        )
+    output:
+        expand("{dataset_dir}/{dataset}/annotation_{metric}_curve.html", 
+            dataset_dir=config['out_dir'],
+            dataset=['GTEx/gtex'],
+            metric=['roc', 'prc']
+        ),
+    run:
+        shell("python3 scripts/annotate_false_positives.py config.yaml"),
+
+rule hubscore_limma:
+    input:
+        expand("{dataset_dir}/{dataset}/tissue_exclusive_xprs_{ref}_symbol.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['GTEx'],
+            ref=['count', 'qsmooth', 'snail']
+        ),
+        expand("{dataset_dir}/{dataset}/tissue_exclusive_xprs_{ref}_symbol.tsv", 
+            dataset_dir=config['datasets_dir'],
+            dataset=['ENCODE'],
+            ref=['validation', 'qsmooth', 'snail']
+        ),
+        expand("{dataset_dir}/{dataset}/lioness_{norm}_limma.tsv", 
+            dataset_dir=config['out_dir'],
+            dataset=['ENCODE/encode'],
+            norm=['snail', 'qsmooth']
+        )
+    output:
+        expand("{dataset_dir}/{dataset}/hubscore.png", 
+            dataset_dir=config['out_dir'],
+            dataset=['ENCODE/encode'],
+        ),
+        expand("{dataset_dir}/{dataset}/limma_analysis.png", 
+            dataset_dir=config['out_dir'],
+            dataset=['ENCODE/encode'],
+        ),
+    run:
+        shell("python3 scripts/compute_lioness.py config.yaml ENCODE"),
+        shell("python3 scripts/compute_lioness.py config.yaml GTEx")

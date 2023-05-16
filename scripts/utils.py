@@ -3,21 +3,164 @@ import math
 import numpy as np
 import os
 import pandas as pd
+import scipy.stats as stats
 
 from bokeh.models import ColorBar, ColumnDataSource, HoverTool, LabelSet, Legend
-from bokeh.models import LinearColorMapper, FactorRange
+from bokeh.models import LinearColorMapper, FactorRange, Span
 from bokeh.palettes import Magma, d3
 from bokeh.plotting import figure, output_file, save
 from sklearn.metrics import roc_curve, auc, precision_recall_curve
+from tqdm import tqdm
+
+def pearson_pvalue(a, b, only_positive=True):
+    corr, pvalue = stats.pearsonr(a, b)
+    if only_positive:
+        if corr <= 0:
+            pvalue = 1
+    return pvalue
+
+def spearman_pvalue(a, b, only_positive=True):
+    corr, pvalue = stats.spearmanr(a, b)
+    if only_positive:
+        if corr <= 0:
+            pvalue = 1
+    return pvalue
+
+def bokeh_curve(
+    outdir,
+    file_prefix,
+    corrs,
+    ground_truth,
+    significant_boundary=-1.0,
+    legend_labels=['Qsmooth', 'SNAIL' 'RLE', 'TMM'],
+    colors=['blueviolet', 'crimson', 'chocolate', 'navy'],
+    method='ROC',
+):
+
+    if method.lower() == 'roc':
+        auc_fn = roc_curve
+        metric_x_label = 'False Positive Rate'
+        metric_y_label = 'True Positive Rate'
+    else:
+        auc_fn = precision_recall_curve
+        metric_x_label = 'Recall'
+        metric_y_label = 'Precision'
+    
+    title = ''
+
+    fig = figure(
+        plot_width=800, plot_height=800,
+        title=title,
+        x_axis_location="below",
+        tools=["pan", "wheel_zoom", "box_zoom", "reset", "hover", "save"],
+        tooltips=[
+            (metric_x_label, '$x'),
+            (metric_y_label, '$y'),
+            ('Normalization', '@label')
+        ]
+    )
+    
+    corr_truth_binarized = ground_truth['Ground Truth'].astype(int)
+
+    auc_results = {}
+    significant_boundary_points = []
+    vertical_line = -1
+    n_corrs = len(corrs)
+    for corr, label, color in zip(corrs[0:n_corrs], legend_labels[0:n_corrs], colors[0:n_corrs]):
+        auc_list = list()
+        num_edges = list()
+        cross_index = -1
+        metric_a, metric_b, threshold = auc_fn(
+            corr_truth_binarized.values, 
+            np.abs(corr.values)
+        )
+        cross_index = np.min(np.where(threshold >= significant_boundary)[0])
+        if method.lower() == 'roc':
+            metric_a_label = metric_x_label
+            metric_b_label = metric_y_label
+        else:
+            metric_a_label = metric_y_label
+            metric_b_label = metric_x_label
+        
+        table = pd.DataFrame({
+            metric_a_label: metric_a,
+            metric_b_label: metric_b,
+            'method': label
+        })
+        if method.lower() == 'roc':
+            x = table[metric_a_label].values
+            y = table[metric_b_label].values
+        else:
+            x = table[metric_b_label].values
+            y = table[metric_a_label].values
+        
+        score = auc(x, y)
+        #auc_list.append([
+        #        threshold,
+        #        score,
+        #        label])
+        #if threshold >= significant_boundary and not cross_significance:
+        #    cross_score = score
+        #    cross_significance = True
+        #    vertical_line = threshold
+        #    significant_boundary_points.append([label, color, threshold, score])
+        #auc_df = pd.DataFrame(auc_list, columns=['threshold', 'auc', 'label'])
+        #legend_label = label
+        #if cross_score >= 0.9995:
+        #    cross_score = 0.999
+        legend_label = f'{label} (AUC: {score:>.3f})'
+        
+        data_source = ColumnDataSource(
+            data=dict(
+                x=x,
+                y=y,
+                label=table['method']
+            )
+        )
+
+        fig.line(
+            x='x',
+            y='y',
+            color=color, alpha=0.5, line_width=5,
+            legend_label=legend_label,
+            source=data_source,
+        )
+        if cross_index > 0:
+            #vline = Span(location=vertical_line, dimension='height', line_color='grey', line_dash='dashed', line_width=2)
+            #fig.renderers.extend([vline])
+            fig.asterisk(x[cross_index], y[cross_index], size=20, color=color, alpha=1, line_width=3)
+    #for point in significant_boundary_points:
+    #vline = Span(location=vertical_line, dimension='height', line_color='grey', line_dash='dashed', line_width=2)
+    #fig.renderers.extend([vline])
+    #for point in significant_boundary_points:
+    #    fig.asterisk([point[2]], [point[3]], size=20, color=point[1], alpha=1, line_width=3)
+    
+    fig.legend.location = 'bottom_left'
+    fig.xaxis.axis_label = metric_x_label
+    fig.yaxis.axis_label = metric_y_label
+    fig.xaxis.axis_label_text_font_size = '20pt'
+    fig.yaxis.axis_label_text_font_size = '20pt'
+    fig.legend.label_text_font_size = '18pt'
+    fig.axis.major_label_text_font_size = '12pt'
+    fig.title.text_font_size = '20pt'
+    fig.legend.click_policy="hide"
+
+    outfile = os.path.join(
+        outdir,
+        f'{file_prefix.lower()}_{method.lower()}_curve.html'
+    )
+    output_file(outfile, title=f'{method.upper()} Curve')
+    save(fig)
+
+    return
 
 def bokeh_area_under_curve(
     outdir,
-    file_label,
     corrs,
-    legend_labels=['Validation', 'Qsmooth', 'SNAIL'],
-    colors=['white', 'blueviolet', 'crimson'],
+    significant_boundary=0.5,
+    legend_labels=['Validation', 'Qsmooth', 'SNAIL' 'RLE', 'TMM'],
+    colors=['green', 'blueviolet', 'crimson', 'chocolate', 'navy'],
     method='ROC',
-    for_main_text=True
 ):
 
     if method.lower() == 'roc':
@@ -28,11 +171,8 @@ def bokeh_area_under_curve(
         auc_fn = precision_recall_curve
         metric_x_label = 'Recall'
         metric_y_label = 'Precision'
-
-    if for_main_text:
-        title = ''
-    else:
-        title = file_label
+    
+    title = ''
 
     fig = figure(
         plot_width=800, plot_height=800,
@@ -48,10 +188,16 @@ def bokeh_area_under_curve(
     
     corr_truth = corrs[0]
     auc_results = {}
-    for corr, label, color in zip(corrs[1:], legend_labels[1:], colors[1:]):
+    significant_boundary_points = []
+    vertical_line = -1
+    n_corrs = len(corrs)
+    for corr, label, color in zip(corrs[1:n_corrs], legend_labels[1:n_corrs], colors[1:n_corrs]):
+        print(label)
         auc_list = list()
         num_edges = list()
-        for threshold in np.linspace(0.2, 0.8, 50):
+        cross_significance = False
+        cross_score = -1
+        for threshold in np.linspace(0.2, 0.8, 101):
             corr_truth_binarized = corr_truth.copy()
             corr_truth_binarized[np.abs(corr_truth_binarized) >= threshold] = 1
             corr_truth_binarized[np.abs(corr_truth_binarized) < threshold] = 0
@@ -78,22 +224,23 @@ def bokeh_area_under_curve(
                 'method': label
             })
             if method.lower() == 'roc':
-                auc_list.append([
-                    threshold,
-                    auc(table[metric_a_label].values, table[metric_b_label].values),
-                    label
-                ])
+                score = auc(table[metric_a_label].values, table[metric_b_label].values)
             else:
-                auc_list.append([
+                score = auc(table[metric_b_label].values, table[metric_a_label].values)
+            auc_list.append([
                     threshold,
-                    auc(table[metric_b_label].values, table[metric_a_label].values),
-                    label
-                ])
+                    score,
+                    label])
+            if threshold >= significant_boundary and not cross_significance:
+                cross_score = score
+                cross_significance = True
+                vertical_line = threshold
+                significant_boundary_points.append([label, color, threshold, score])
         auc_df = pd.DataFrame(auc_list, columns=['threshold', 'auc', 'label'])
-        if for_main_text:
-            legend_label = label
-        else:
-            legend_label = f'{label} ({compute_rmse(corr_truth, corr):>.2f})'
+        legend_label = label
+        if cross_score >= 0.9995:
+            cross_score = 0.999
+        legend_label = f'{label} (AUC*: {cross_score:>.3f})'
         
         data_source = ColumnDataSource(
             data=dict(
@@ -112,6 +259,11 @@ def bokeh_area_under_curve(
         )
         auc_results[label] = auc_df
 
+    vline = Span(location=vertical_line, dimension='height', line_color='grey', line_dash='dashed', line_width=2)
+    fig.renderers.extend([vline])
+    for point in significant_boundary_points:
+        fig.asterisk([point[2]], [point[3]], size=20, color=point[1], alpha=1, line_width=3)
+    
     fig.legend.location = 'bottom_left'
     fig.xaxis.axis_label = 'Threshold applied to the validation dataset'
     fig.yaxis.axis_label = f'AU{method.upper()}'
@@ -124,7 +276,7 @@ def bokeh_area_under_curve(
 
     outfile = os.path.join(
         outdir,
-        f'{file_label.lower().replace(" ", "_")}_comparison_au{method.lower()}.html'
+        f'au{method.lower()}.html'
     )
     output_file(outfile, title=f'AU{method.upper()}')
     save(fig)
@@ -136,29 +288,43 @@ def bokeh_area_under_curve(
     ]
     return pd.DataFrame(num_edges, columns=columns)
 
-def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
-    for corr in ['pearson', 'spearman']:
-        figure_table = table.T.corr(method=corr).stack()
+def bokeh_correlation_heatmap(xprs, gene_to_group, target_label, norm_label, outdir):
+    n_genes = xprs.shape[0]
+    n_pairs = n_genes * (n_genes - 1) / 2 + n_genes
+    for i, method in tqdm(enumerate(['pearson', 'spearman', pearson_pvalue, spearman_pvalue])):
+        if i == 0 or i == 2:
+            continue
+        
+        figure_table = xprs.T.corr(method=method).stack()
         figure_table.index.names = ['0', '1']
         figure_table = figure_table.reset_index()
         figure_table.columns = ['xname', 'yname', 'target']
-        figure_table['target'] = np.round(figure_table['target'], 2)
+        if i <= 1:
+            figure_table['target'] = np.round(figure_table['target'], 2)
+            method_label = method.capitalize()
+        else:
+            figure_table['target'] = figure_table['target'] * n_pairs
+            figure_table.loc[:, 'target'].loc[figure_table['target'] > 1] = 1
+            if i == 2:
+                method_label = 'Pearson Pvalue'
+            else:
+                method_label = 'Spearman Pvalue'
 
-        figure_table.loc[:, 'group_x'] = group[figure_table.xname].values
-        figure_table.loc[:, 'group_y'] = group[figure_table.yname].values
-        figure_table.loc[:, 'color'] = '#000000'
-        figure_table.loc[figure_table['target'] >= 0.5, 'color'] = '#FFFFFF'
+        figure_table.loc[:, 'group_x'] = gene_to_group[figure_table.xname].values
+        figure_table.loc[:, 'group_y'] = gene_to_group[figure_table.yname].values
+        if i <= 1:
+            mapper = LinearColorMapper(palette=list(Magma[256])[256:128:-1], low=0, high=1)
+        else:
+            mapper = LinearColorMapper(palette=list(Magma[256])[128:256], low=0, high=0.05)
 
         x_data = [(data.group_x, data.xname) for i, data in figure_table.iterrows()]
         x_uniq = [(data.group_y, data.yname) for i, data in figure_table.loc[figure_table.xname == figure_table.xname[0]].iterrows()]
         y_data = [(data.group_y, data.yname) for i, data in figure_table.iterrows()]
         num_genes = len(x_uniq)
 
-        mapper = LinearColorMapper(palette=list(Magma[256])[256:128:-1], low=0, high=1)
-
         title = ''.join((
-            f'{label.capitalize()} Lowly Expressed Genes {corr.capitalize()} ',
-            f'Correlations ({norm_method.capitalize()})'
+            f'{target_label.capitalize()} Lowly Expressed Genes {method_label} ',
+            f'Correlations ({norm_label.capitalize()})'
         ))
 
         data_source = ColumnDataSource(
@@ -178,7 +344,7 @@ def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
             tooltips=[
                 ('Gene X', '@xname'),
                 ('Gene Y', '@yname'),
-                (corr.capitalize(), '@target')
+                (method_label, '@target')
             ]
         )
 
@@ -223,7 +389,7 @@ def bokeh_correlation_heatmap(table, group, label, norm_method, outdir):
 
         file_name = os.path.join(
             outdir,
-            f"{label.lower()}_{corr}_heatmap_{norm_method.lower().replace(' ', '_')}.html"
+            f"{method_label.lower().replace(' ', '_')}_heatmap_{norm_label.lower().replace(' ', '_')}.html"
         )
         output_file(file_name, title=title)
 
@@ -421,25 +587,23 @@ def bokeh_xprs_distribution(dataset_name, outdir, xprs, groups):
     
     return
 
-def compute_correlation_coefficients(data, method='spearman'):
+def compute_correlation_coefficients(data, method='spearman', stack=True):
     corr = data.T.corr(method=method).fillna(0)
-    index = np.triu(np.ones(corr.shape)).astype(bool)
-    index[np.diag_indices_from(index)] = False
-    corr = corr.where(index).stack()
-    corr.columns = ['gene_a', 'gene_b', method]
+    if stack:
+        index = np.triu(np.ones(corr.shape)).astype(bool)
+        index[np.diag_indices_from(index)] = False
+        corr = corr.where(index).stack()
+        corr.columns = ['gene_a', 'gene_b', method]
 
     return corr
 
 def extract_tissue_exclusive_genes(
-    outdir,
-    dataset_name,
-    norm,
     xprs,
     tissues,
     xprs_high_threshold=10,
     xprs_low_threshold=1,
-    num_high_threshold=1000,
-    num_low_threshold=5
+    #num_high_threshold=1000,
+    #num_low_threshold=5
 ):
     index = {}
     gene_count = []
@@ -456,33 +620,68 @@ def extract_tissue_exclusive_genes(
         
         gene_count.append(intersection.sum())
 
-        if num_high_threshold >= intersection.sum() >= num_low_threshold:
-            filtered = xprs.loc[intersection]
-            index[tissue_a] = list(filtered.index)
+        #if num_high_threshold >= intersection.sum() >= num_low_threshold:
+        filtered = xprs.loc[intersection]
+        index[tissue_a] = list(filtered.index)
         
     gene_count = pd.Series(gene_count, index=tissues.unique())
-    gene_count.to_csv(
-        os.path.join(
-            outdir,
-            f'{dataset_name.lower()}_{norm.lower()}_number_tissue_exclusive_genes.tsv'
-        ), sep='\t', header=False
-    )
 
     return index, gene_count
 
 def compute_rmse(true, pred):
     return np.sqrt(((true - pred) ** 2).mean())
 
+def rename_tissue(tissue_to_gene, tissue_exclusive_count):
+    tissue_to_gene_rename = {}
+    for tissue, genes_of_tissue in tissue_to_gene.items():
+        tissue_name = tissue.capitalize()
+        if tissue_name == 'Cells - ebv-transformed lymphocytes':
+            tissue_name = 'LCL'
+        if tissue_name == 'Brain - cerebellum':
+            tissue_name = 'Cerebellum'
+        if tissue_name == 'Embryonic facial prominence':
+            tissue_name = 'EF'
+        if tissue_name == 'Stomach':
+            tissue_name = 'Stom.'
+        if tissue_name == 'Stomach':
+            tissue_name = 'Stom.'
+        if tissue_name == 'Intestine':
+            tissue_name = 'Inst.'
+
+        tissue_to_gene_rename[tissue_name] = genes_of_tissue
+    index = []
+    for tissue in tissue_exclusive_count.index:
+        tissue_name = tissue.capitalize()
+        if tissue_name == 'Cells - ebv-transformed lymphocytes':
+            tissue_name = 'LCL'
+        if tissue_name == 'Brain - cerebellum':
+            tissue_name = 'Cerebellum'
+        if tissue_name == 'Embryonic facial prominence':
+            tissue_name = 'EF'
+        if tissue_name == 'Stomach':
+            tissue_name = 'Stom.'
+        if tissue_name == 'Stomach':
+            tissue_name = 'Stom.'
+        if tissue_name == 'Intestine':
+            tissue_name = 'Inst.'
+        index.append(tissue_name)
+    tissue_exclusive_count.index = index
+
+    return tissue_to_gene_rename, tissue_exclusive_count
+
 def sort_xprs_samples(xprs, tissues, tissue_exclusive_genes):
+    # TODO: archive this function
     tissue_of_gene = []
     sample_order = []
     for tissue, genes_of_tissue in tissue_exclusive_genes.items():
-        tissue_name = tissue
+        tissue_name = tissue.capitalize()
         if tissue_name == 'Cells - EBV-transformed lymphocytes':
             tissue_name = 'LCL'
         if tissue_name == 'Brain - Cerebellum':
             tissue_name = 'Cerebellum'
-
+        if tissue_name == 'Embryonic facial prominence':
+            tissue_name = 'EFP'
+        
         tissue_of_gene.append(pd.Series(
             [tissue_name] * len(genes_of_tissue), 
             index=genes_of_tissue
@@ -495,3 +694,4 @@ def sort_xprs_samples(xprs, tissues, tissue_exclusive_genes):
     tissue_of_gene = pd.concat(tissue_of_gene)
     
     return tissue_of_gene, sample_order
+# %%

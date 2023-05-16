@@ -99,6 +99,8 @@ def main() -> None:
 
         os.makedirs(directory, exist_ok=True)
 
+    xprs_norm.columns = xprs_norm.columns.get_level_values(1)
+    xprs_norm.index.name = None
     xprs_norm.to_csv(os.path.join(directory, 'xprs_norm.tsv'), sep='\t')
     with open(os.path.join(directory, 'xprs_qstat.pkl'), 'wb') as handle:
         pickle.dump(qstat, handle, protocol=pickle.HIGHEST_PROTOCOL)
